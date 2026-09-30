@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI School with Bobik</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="logo">BOBIK AI SCHOOL</div>
+            <nav>
+                <button class="nav-btn" onclick="app.changeSection('home')">Home</button>
+                <button class="nav-btn" onclick="app.changeSection('map')">Learning Map</button>
+                <button class="nav-btn" onclick="app.changeSection('profile')">My Bobik</button>
+            </nav>
+        </header>
+
+        <main id="main-content">
+            <!-- Home Section -->
+            <section id="home" class="section active">
+                <div class="hero">
+                    <div id="bobik-container" class="bobik-widget"></div>
+                    <div class="hero-text">
+                        <h1>Explore AI with Bobik!</h1>
+                        <p>Learn the future of technology through games and experiments.</p>
+                        <button id="start-btn" class="cta-button" onclick="app.startAdventure()">Start Adventure</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Map Section -->
+            <section id="map" class="section">
+                <div class="map-container">
+                    <h2>Your Learning Path</h2>
+                    <div class="path">
+                        <div class="level active" data-level="1" onclick="app.selectLevel(1)">
+                            <div class="level-icon">1</div>
+                            <span>Intro to AI</span>
+                        </div>
+                        <div class="level" data-level="2" onclick="app.selectLevel(2)">
+                            <div class="level-icon">2</div>
+                            <span>Prompt Magic</span>
+                        </div>
+                        <div class="level" data-level="3" onclick="app.selectLevel(3)">
+                            <div class="level-icon">3</div>
+                            <span>AI Art</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="section">
+                <div class="profile-container">
+                    <h2>Customize Your Bobik</h2>
+                    <div id="bobik-profile" class="bobik-widget large"></div>
+                    <div class="palette-picker">
+                        <button class="palette-btn mint" onclick="app.setPalette('mint')">Mint</button>
+                        <button class="palette-btn sky" onclick="app.setPalette('sky')">Sky</button>
+                        <button class="palette-btn lav" onclick="app.setPalette('lav')">Lavender</button>
+                        <button class="palette-btn peach" onclick="app.setPalette('peach')">Peach</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="bobik.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
