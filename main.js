@@ -8,81 +8,76 @@ const CONFIG = {
 };
 
 const COURSES = [
-    { id: 'hello-ai', title: 'Привет, ИИ!', age: '6-8', lessons: 8, minutes: 30, level: 'Старт',
-      desc: 'Знакомимся с искусственным интеллектом через игры и забавные эксперименты.',
+    { id: 'hello-ai', title: 'Hello, AI!', age: '6-8', lessons: 8, minutes: 30, level: 'Starter',
+      desc: 'Meet artificial intelligence through games and fun experiments.',
       palette: 'mint', pose: 'hello', thumb: '#DDF6EF' },
-    { id: 'ai-tales', title: 'Сказки с нейросетью', age: '6-8', lessons: 6, minutes: 30, level: 'Старт',
-      desc: 'Придумываем героев и сочиняем волшебные истории вместе с ИИ.',
+    { id: 'ai-tales', title: 'Fairy Tales with AI', age: '6-8', lessons: 6, minutes: 30, level: 'Starter',
+      desc: 'Invent heroes and write magical stories together with AI.',
       palette: 'peach', pose: 'delight', thumb: '#FFEADF' },
-    { id: 'prompts', title: 'Волшебные промпты', age: '9-11', lessons: 10, minutes: 45, level: 'Начальный',
-      desc: 'Учимся разговаривать с нейросетью так, чтобы она понимала нас с полуслова.',
+    { id: 'prompts', title: 'Magic Prompts', age: '9-11', lessons: 10, minutes: 45, level: 'Beginner',
+      desc: 'Learn to talk to AI so it understands you right away.',
       palette: 'sky', pose: 'idea', thumb: '#E1F0FF' },
-    { id: 'ai-art', title: 'Художник с ИИ', age: '9-11', lessons: 8, minutes: 45, level: 'Начальный',
-      desc: 'Создаём картинки, комиксы и открытки с помощью нейросетей.',
+    { id: 'ai-art', title: 'AI Artist', age: '9-11', lessons: 8, minutes: 45, level: 'Beginner',
+      desc: 'Create pictures, comics and greeting cards with AI tools.',
       palette: 'lav', pose: 'wink', thumb: '#EEE9FF' },
-    { id: 'my-bot', title: 'Свой робот-помощник', age: '12-14', lessons: 12, minutes: 60, level: 'Средний',
-      desc: 'Собираем собственного чат-бота и учим его помогать с делами.',
+    { id: 'my-bot', title: 'Build Your Robot Helper', age: '12-14', lessons: 12, minutes: 60, level: 'Intermediate',
+      desc: 'Build your own chatbot and teach it to help with everyday tasks.',
       palette: 'sky', pose: 'victory', thumb: '#FFF1C9' },
-    { id: 'ai-games', title: 'Игры и ИИ', age: '12-14', lessons: 10, minutes: 60, level: 'Средний',
-      desc: 'Создаём простую игру, где персонажи думают с помощью искусственного интеллекта.',
+    { id: 'ai-games', title: 'Games and AI', age: '12-14', lessons: 10, minutes: 60, level: 'Intermediate',
+      desc: 'Make a simple game where the characters think with artificial intelligence.',
       palette: 'mint', pose: 'run', thumb: '#FFE0EA' }
 ];
 
-const AGE_LABEL = { '6-8': '6–8 лет', '9-11': '9–11 лет', '12-14': '12–14 лет' };
+const AGE_LABEL = { '6-8': 'Ages 6–8', '9-11': 'Ages 9–11', '12-14': 'Ages 12–14' };
 
 // Шапка для каждой страницы: тексты и поза Бобика
 const ROUTES = {
     home: {
-        kicker: 'Школа искусственного интеллекта для детей 6–14 лет',
+        kicker: 'AI school for kids aged 6–14',
         title: 'Bloop <span>AI School</span>',
-        lead: 'Учимся дружить с нейросетями: рисуем, сочиняем сказки и собираем своих роботов-помощников вместе с Бобиком.',
-        pose: 'hello', bubble: 'Привет! Я Бобик 👋'
+        lead: 'We learn to be friends with AI: drawing pictures, writing fairy tales and building our own robot helpers together with Bobik.',
+        pose: 'hello', bubble: "Hi! I'm Bobik 👋"
     },
     courses: {
-        kicker: 'Каталог',
-        title: 'Наши курсы',
-        lead: 'Выбирайте по возрасту: от первых игр с ИИ до собственных проектов.',
-        pose: 'point', bubble: 'Выбирай любой!'
+        kicker: 'Catalog',
+        title: 'Our courses',
+        lead: 'Pick by age: from first games with AI to your own projects.',
+        pose: 'point', bubble: 'Pick any one!'
     },
     method: {
-        kicker: 'Методика',
-        title: 'Как мы учимся',
-        lead: 'Короткие уроки-квесты, много практики и награды за каждый шаг.',
-        pose: 'idea', bubble: 'У меня идея! 💡'
+        kicker: 'Our method',
+        title: 'How we learn',
+        lead: 'Short quest lessons, lots of practice and a reward for every step.',
+        pose: 'idea', bubble: 'I have an idea! 💡'
     },
     parents: {
-        kicker: 'Для родителей',
-        title: 'Родителям',
-        lead: 'Форматы занятий, безопасность и ответы на частые вопросы.',
-        pose: 'wink', bubble: 'Всё расскажу 😉'
+        kicker: 'For parents',
+        title: 'For parents',
+        lead: 'Lesson formats, safety and answers to common questions.',
+        pose: 'wink', bubble: "I'll tell you everything 😉"
     },
     cabinet: {
-        kicker: 'Личный кабинет',
-        title: 'Привет!',
-        lead: 'Здесь твои курсы, звёзды и награды.',
-        pose: 'joy', bubble: 'Ура, ты здесь! 🎉'
+        kicker: 'My cabinet',
+        title: 'Hi!',
+        lead: 'Here are your courses, stars and badges.',
+        pose: 'joy', bubble: "Yay, you're here! 🎉"
     }
 };
 
 const BADGES = [
-    { icon: '👋', title: 'Первый урок' },
-    { icon: '⭐', title: '10 звёзд' },
-    { icon: '🔥', title: '3 дня подряд' },
-    { icon: '🎨', title: 'Первая картинка' },
-    { icon: '🤖', title: 'Свой бот' },
-    { icon: '🏆', title: 'Курс пройден' }
+    { icon: '👋', title: 'First lesson' },
+    { icon: '⭐', title: '10 stars' },
+    { icon: '🔥', title: '3-day streak' },
+    { icon: '🎨', title: 'First picture' },
+    { icon: '🤖', title: 'Own bot' },
+    { icon: '🏆', title: 'Course complete' }
 ];
 
 const HAPPY_STATES = ['joy', 'surprise', 'delight', 'wink', 'victory'];
 const STORAGE_KEY = 'bloop-user';
 
-// Склонение: plural(3, ['звезда', 'звезды', 'звёзд']) → 'звезды'
-const plural = (n, [one, few, many]) => {
-    const n10 = n % 10, n100 = n % 100;
-    if (n10 === 1 && n100 !== 11) return one;
-    if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return few;
-    return many;
-};
+// plural(3, 'star') → 'stars'
+const plural = (n, one, many = one + 's') => (n === 1 ? one : many);
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -180,7 +175,7 @@ const app = {
 
         const title = $('#hero-title');
         if (route === 'cabinet' && this.user) {
-            title.textContent = `Привет, ${this.user.name}!`;
+            title.textContent = `Hi, ${this.user.name}!`;
         } else {
             title.innerHTML = r.title;
         }
@@ -200,7 +195,7 @@ const app = {
         const open = typeof force === 'boolean' ? force : !menu.classList.contains('is-open');
         menu.classList.toggle('is-open', open);
         $('#burger').setAttribute('aria-expanded', String(open));
-        $('#burger').setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+        $('#burger').setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     },
 
     closeMenu() { this.toggleMenu(false); },
@@ -217,13 +212,13 @@ const app = {
                     <h3>${c.title}</h3>
                     <p>${c.desc}</p>
                     <ul class="tags">
-                        <li>📚 ${c.lessons} ${plural(c.lessons, ['урок', 'урока', 'уроков'])}</li>
-                        <li>⏱ ${c.minutes} мин</li>
+                        <li>📚 ${c.lessons} ${plural(c.lessons, 'lesson')}</li>
+                        <li>⏱ ${c.minutes} min</li>
                         <li>${c.level}</li>
                     </ul>
                     <div class="course__foot">
-                        <span class="course__free">Первый урок бесплатно</span>
-                        <button class="btn" type="button" data-open="lead" data-course="${c.id}">Начать</button>
+                        <span class="course__free">First lesson free</span>
+                        <button class="btn" type="button" data-open="lead" data-course="${c.id}">Start</button>
                     </div>
                 </div>
             </article>`;
@@ -236,7 +231,7 @@ const app = {
     filterCourses(age) {
         const list = age === 'all' ? COURSES : COURSES.filter(c => c.age === age);
         this.renderCourseList($('#all-courses'), list);
-        $('#results-count').textContent = `Найдено ${list.length} ${plural(list.length, ['курс', 'курса', 'курсов'])}`;
+        $('#results-count').textContent = `${list.length} ${plural(list.length, 'course')} found`;
         $$('#age-filter .chip').forEach(ch => {
             const active = ch.dataset.age === age;
             ch.classList.toggle('is-active', active);
@@ -260,10 +255,10 @@ const app = {
         const earned = 3;
 
         $('#stats').innerHTML = [
-            ['⭐', u.stars, plural(u.stars, ['звезда', 'звезды', 'звёзд'])],
-            ['🔥', u.streak, plural(u.streak, ['день', 'дня', 'дней']) + ' подряд'],
-            ['📚', done, plural(done, ['урок пройден', 'урока пройдено', 'уроков пройдено'])],
-            ['🏆', earned, plural(earned, ['награда', 'награды', 'наград'])]
+            ['⭐', u.stars, plural(u.stars, 'star')],
+            ['🔥', u.streak, plural(u.streak, 'day') + ' in a row'],
+            ['📚', done, plural(done, 'lesson') + ' done'],
+            ['🏆', earned, plural(earned, 'badge')]
         ].map(([icon, value, label]) => `
             <div class="stat">
                 <span class="stat__icon" aria-hidden="true">${icon}</span>
@@ -279,14 +274,18 @@ const app = {
                     <div class="my-course__thumb" style="--thumb:${c.thumb}">${this.bobik(locked ? 'sleep' : c.pose, c.palette)}</div>
                     <div>
                         <h3>${c.title}</h3>
-                        <p class="my-course__meta">${locked ? '🔒 Откроется после предыдущего курса' : `${p}% · ${c.lessons} ${plural(c.lessons, ['урок', 'урока', 'уроков'])}`}</p>
-                        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}" aria-label="Прогресс курса ${c.title}">
+                        <p class="my-course__meta">${locked ? '🔒 Unlocks after the previous course' : `${p}% · ${c.lessons} ${plural(c.lessons, 'lesson')}`}</p>
+                        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}" aria-label="${c.title} progress">
                             <div class="progress__fill" data-value="${p}"></div>
                         </div>
                     </div>
-                    ${locked ? '' : `<button class="btn" type="button" data-continue="${c.id}">${p > 0 ? 'Продолжить' : 'Начать'}</button>`}
+                    ${locked ? '' : `<button class="btn" type="button" data-continue="${c.id}">${p > 0 ? 'Continue' : 'Start'}</button>`}
                 </article>`;
         }).join('');
+
+        $('#profile-bobik').innerHTML = this.bobik('delight');
+        $('#profile-name').textContent = u.name;
+        $('#profile-age').textContent = `${AGE_LABEL[u.age]} · Level ${1 + Math.floor(u.stars / 10)}`;
 
         requestAnimationFrame(() => {
             $$('#my-courses .progress__fill').forEach(f => { f.style.width = f.dataset.value + '%'; });
@@ -322,11 +321,11 @@ const app = {
         if (this.user) {
             $('.auth-text', btn).textContent = this.user.name;
             $('.btn__icon', btn).textContent = '🙂';
-            btn.setAttribute('aria-label', 'Личный кабинет: ' + this.user.name);
+            btn.setAttribute('aria-label', 'My cabinet: ' + this.user.name);
         } else {
-            $('.auth-text', btn).textContent = 'Личный кабинет';
+            $('.auth-text', btn).textContent = 'My cabinet';
             $('.btn__icon', btn).textContent = '🔑';
-            btn.setAttribute('aria-label', 'Войти в личный кабинет');
+            btn.setAttribute('aria-label', 'Log in to my cabinet');
         }
     },
 
@@ -357,11 +356,11 @@ const app = {
         data.page = location.href;
 
         if (!CONFIG.leadWebhook) {
-            note.textContent = 'Демо-режим: заявки пока не отправляются.';
+            note.textContent = 'Demo mode: sign-ups are not sent yet.';
             return;
         }
 
-        note.textContent = 'Отправляем…';
+        note.textContent = 'Sending…';
         try {
             const res = await fetch(CONFIG.leadWebhook, {
                 method: 'POST',
@@ -370,9 +369,9 @@ const app = {
             });
             if (!res.ok) throw new Error(res.status);
             form.reset();
-            note.textContent = 'Спасибо! Мы скоро свяжемся с вами 💛';
+            note.textContent = "Thank you! We'll get in touch soon 💛";
         } catch (e) {
-            note.textContent = 'Не получилось отправить. Попробуйте ещё раз.';
+            note.textContent = "Couldn't send. Please try again.";
         }
     },
 
@@ -426,7 +425,7 @@ const app = {
             if (cont) {
                 const c = COURSES.find(x => x.id === cont.dataset.continue);
                 this.setHeroBobik('run');
-                $('#bubble').textContent = `Поехали в «${c.title}»!`;
+                $('#bubble').textContent = `Off to "${c.title}"!`;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 

@@ -89,7 +89,7 @@ button { font: inherit; color: inherit; }
 }
 
 .wrap {
-    max-width: 1160px;
+    max-width: 1240px;
     margin: 0 auto;
     padding: 0 24px;
 }
@@ -204,7 +204,7 @@ button { font: inherit; color: inherit; }
     display: flex;
     align-items: center;
     gap: 20px;
-    max-width: 1160px;
+    max-width: 1240px;
     margin: 0 auto;
     padding: 10px 12px 10px 16px;
     border-radius: 26px;
@@ -303,7 +303,7 @@ button { font: inherit; color: inherit; }
     grid-template-columns: 1.1fr 1fr;
     align-items: center;
     gap: 32px;
-    max-width: 1160px;
+    max-width: 1240px;
     margin: 0 auto;
     padding: 28px 24px 0;
 }
@@ -342,6 +342,32 @@ button { font: inherit; color: inherit; }
     gap: 14px;
     margin-top: 30px;
 }
+
+.hero__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 34px 0 0;
+    padding: 0;
+    list-style: none;
+}
+.hero__facts li {
+    padding: 10px 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .65);
+    font-weight: 700;
+    color: var(--ink-soft);
+}
+.hero__facts b {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--ink);
+    margin-right: 4px;
+}
+
+/* Главная на компьютере: шапка почти на весь экран */
+.sky:not(.sky--compact) .hero { min-height: min(640px, calc(100vh - 190px)); }
 
 .hero__mascot {
     position: relative;
@@ -406,7 +432,8 @@ button { font: inherit; color: inherit; }
 .sky--compact .hero__title { font-size: clamp(36px, 5vw, 60px); }
 .sky--compact .hero__title span { display: inline; }
 .sky--compact .hero__lead { font-size: 18px; }
-.sky--compact .hero__cta { display: none; }
+.sky--compact .hero__cta,
+.sky--compact .hero__facts { display: none; }
 .sky--compact .mascot { width: 220px; }
 .sky--compact .mascot__cloud { width: 230px; margin-top: -68px; }
 .sky--compact .bubble { font-size: 15px; translate: -30% 0; top: -6px; }
@@ -469,8 +496,16 @@ button { font: inherit; color: inherit; }
 /* ---------- Курсы ---------- */
 .course-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .course {
@@ -575,7 +610,7 @@ button { font: inherit; color: inherit; }
 .chip:hover { border-color: var(--blue); }
 .chip.is-active { background: var(--ink); border-color: var(--ink); color: #fff; }
 
-.results { margin: 10px 0 20px; color: var(--ink-soft); font-weight: 700; }
+.results { margin: 0; color: var(--ink-soft); font-weight: 700; white-space: nowrap; }
 
 /* Шаги урока */
 .steps-band {
@@ -817,11 +852,11 @@ button { font: inherit; color: inherit; }
 
 .badges {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
 }
 .badge {
-    padding: 20px 14px;
+    padding: 20px 10px;
     border-radius: var(--radius);
     background: #fff;
     box-shadow: var(--shadow);
@@ -842,21 +877,41 @@ button { font: inherit; color: inherit; }
 .badge.is-locked .badge__icon { background: #E8EFF8; filter: grayscale(1); opacity: .6; }
 .badge.is-locked h3 { color: var(--ink-soft); }
 
+/* Кабинет на компьютере: основная колонка + боковая панель профиля */
+.cabinet {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 32px;
+    align-items: start;
+    margin-bottom: 72px;
+}
+.cabinet__main .section-head:first-of-type { margin-top: 48px; }
+.cabinet__side {
+    position: sticky;
+    top: 110px;
+    display: grid;
+    gap: 20px;
+}
+
 .panel {
-    margin-top: 40px;
-    padding: 32px;
+    padding: 28px 24px;
     border-radius: var(--radius);
     background: #fff;
     box-shadow: var(--shadow);
     text-align: center;
 }
-.panel h2 { font-size: 28px; }
+.panel h2 { font-size: 24px; }
 .panel p { color: var(--ink-soft); margin-top: 4px; }
 
-.palette-picker { display: flex; justify-content: center; gap: 18px; margin-top: 20px; }
+.profile { background: linear-gradient(180deg, var(--sky-soft) 0%, #fff 70%); }
+.profile__bot { width: 150px; margin: 0 auto 8px; animation: float 4s ease-in-out infinite; }
+.profile__bot svg { display: block; width: 100%; }
+.profile p { font-weight: 700; }
+
+.palette-picker { display: flex; justify-content: center; gap: 12px; margin-top: 18px; }
 .swatch {
-    width: 58px;
-    height: 58px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     border: 5px solid #fff;
     box-shadow: 0 0 0 2px #E1EAF5, 0 6px 14px rgba(47, 62, 107, .12);
@@ -999,9 +1054,18 @@ button { font: inherit; color: inherit; }
 }
 
 /* ---------- Адаптив ---------- */
+@media (min-width: 1280px) {
+    .mascot { width: 440px; }
+    .mascot__cloud { width: 430px; margin-top: -124px; }
+}
+
 @media (max-width: 1024px) {
-    .features, .path, .stats { grid-template-columns: repeat(2, 1fr); }
+    .features, .path, .stats, .course-grid { grid-template-columns: repeat(2, 1fr); }
     .formats { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; }
+    .cabinet { grid-template-columns: 1fr; }
+    .badges { grid-template-columns: repeat(3, 1fr); }
+    .cabinet__side { position: static; grid-template-columns: 1fr 1fr; }
+    .cabinet__side .btn { grid-column: 1 / -1; }
 }
 
 @media (max-width: 900px) {
@@ -1032,10 +1096,11 @@ button { font: inherit; color: inherit; }
 
     .hero { grid-template-columns: 1fr; text-align: center; gap: 8px; }
     .hero__lead { margin-left: auto; margin-right: auto; }
-    .hero__cta { justify-content: center; }
+    .hero__cta, .hero__facts { justify-content: center; }
+    .sky:not(.sky--compact) .hero { min-height: 0; }
     .hero__mascot { order: -1; }
     .mascot { width: min(260px, 70vw); }
-    .mascot__cloud { width: min(270px, 74vw); margin-top: -76px; }
+    .mascot__cloud { width: min(230px, 62vw); margin-top: -72px; }
 
     .sky--compact .hero { grid-template-columns: 1fr; }
     .sky--compact .mascot { width: 150px; }
@@ -1072,7 +1137,9 @@ button { font: inherit; color: inherit; }
     .stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .stat { padding: 16px; }
     .stat__value { font-size: 28px; }
-    .course-grid { grid-template-columns: 1fr; }
+    .course-grid, .cabinet__side { grid-template-columns: 1fr; }
+    .badges { grid-template-columns: repeat(2, 1fr); }
+    .toolbar { flex-direction: column; align-items: flex-start; gap: 4px; }
     .steps-band, .skills { padding: 32px 20px; border-radius: 28px; }
     .my-course { grid-template-columns: 72px 1fr; gap: 14px; }
     .my-course__thumb { width: 72px; height: 72px; border-radius: 18px; }

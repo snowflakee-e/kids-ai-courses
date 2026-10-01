@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloop AI School — школа искусственного интеллекта для детей</title>
-    <meta name="description" content="Курсы по искусственному интеллекту для детей 6–14 лет: играем, рисуем, сочиняем и собираем роботов-помощников вместе с Бобиком.">
+    <title>Bloop AI School — AI courses for kids</title>
+    <meta name="description" content="Artificial intelligence courses for kids aged 6–14: play, draw, write stories and build robot helpers together with Bobik.">
     <meta name="theme-color" content="#9ED3FF">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Общая форма облака: используется в шапке, футере и под маскотом -->
+    <!-- Shared cloud shape: used in the header, footer and under the mascot -->
     <svg class="sprite" aria-hidden="true">
         <symbol id="cloud" viewBox="0 0 200 110">
             <g class="cloud-shade" transform="translate(8 8)">
@@ -27,9 +27,9 @@
         </symbol>
     </svg>
 
-    <a class="skip-link" href="#main">К содержимому</a>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- ШАПКА: небо, облака, маскот и название школы -->
+    <!-- HEADER: sky, clouds, mascot and school name -->
     <header class="sky" id="sky">
         <div class="sky__bg" aria-hidden="true">
             <div class="sun"></div>
@@ -45,25 +45,25 @@
         </div>
 
         <div class="nav-slot">
-            <nav class="nav" id="nav" aria-label="Главное меню">
+            <nav class="nav" id="nav" aria-label="Main menu">
                 <a class="logo" href="#/">
                     <span class="logo__bot" id="logo-bobik"></span>
                     <span class="logo__text">Bloop <b>AI School</b></span>
                 </a>
 
                 <ul class="nav__menu" id="nav-menu">
-                    <li><a href="#/" data-route="home"><span aria-hidden="true">🏠</span> Главная</a></li>
-                    <li><a href="#/courses" data-route="courses"><span aria-hidden="true">🚀</span> Курсы</a></li>
-                    <li><a href="#/method" data-route="method"><span aria-hidden="true">💡</span> Как учимся</a></li>
-                    <li><a href="#/parents" data-route="parents"><span aria-hidden="true">💛</span> Родителям</a></li>
+                    <li><a href="#/" data-route="home"><span aria-hidden="true">🏠</span> Home</a></li>
+                    <li><a href="#/courses" data-route="courses"><span aria-hidden="true">🚀</span> Courses</a></li>
+                    <li><a href="#/method" data-route="method"><span aria-hidden="true">💡</span> How we learn</a></li>
+                    <li><a href="#/parents" data-route="parents"><span aria-hidden="true">💛</span> For parents</a></li>
                 </ul>
 
                 <div class="nav__actions">
                     <button class="btn btn--login" id="auth-btn" type="button">
                         <span class="btn__icon" aria-hidden="true">🔑</span>
-                        <span class="auth-text">Личный кабинет</span>
+                        <span class="auth-text">My cabinet</span>
                     </button>
-                    <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav-menu">
+                    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
                         <span></span><span></span><span></span>
                     </button>
                 </div>
@@ -72,17 +72,22 @@
 
         <div class="hero" id="hero">
             <div class="hero__text">
-                <p class="hero__kicker" id="hero-kicker">Школа искусственного интеллекта для детей 6–14 лет</p>
+                <p class="hero__kicker" id="hero-kicker">AI school for kids aged 6–14</p>
                 <h1 class="hero__title" id="hero-title">Bloop <span>AI School</span></h1>
-                <p class="hero__lead" id="hero-lead">Учимся дружить с нейросетями: рисуем, сочиняем сказки и собираем своих роботов-помощников вместе с Бобиком.</p>
+                <p class="hero__lead" id="hero-lead">We learn to be friends with AI: drawing pictures, writing fairy tales and building our own robot helpers together with Bobik.</p>
                 <div class="hero__cta" id="hero-cta">
-                    <a class="btn btn--primary btn--lg" href="#/courses" data-point>Выбрать курс</a>
-                    <button class="btn btn--white btn--lg" type="button" data-open="lead">Бесплатный урок</button>
+                    <a class="btn btn--primary btn--lg" href="#/courses" data-point>Choose a course</a>
+                    <button class="btn btn--white btn--lg" type="button" data-open="lead">Free trial lesson</button>
                 </div>
+                <ul class="hero__facts" aria-label="Key facts">
+                    <li><b>6</b> courses</li>
+                    <li><b>6–14</b> years old</li>
+                    <li><b>1st</b> lesson free</li>
+                </ul>
             </div>
             <div class="hero__mascot">
-                <p class="bubble" id="bubble">Привет! Я Бобик 👋</p>
-                <button class="mascot" id="hero-bobik" type="button" aria-label="Погладить Бобика"></button>
+                <p class="bubble" id="bubble">Hi! I'm Bobik 👋</p>
+                <button class="mascot" id="hero-bobik" type="button" aria-label="Pet Bobik"></button>
                 <svg class="mascot__cloud" aria-hidden="true"><use href="#cloud"/></svg>
             </div>
         </div>
@@ -94,189 +99,199 @@
     </header>
 
     <main id="main" tabindex="-1">
-        <!-- ГЛАВНАЯ -->
+        <!-- HOME -->
         <section class="page" data-page="home">
             <div class="wrap">
                 <div class="section-head">
-                    <h2>Почему детям у нас нравится</h2>
-                    <p>Никаких скучных лекций — только игры, творчество и маленькие открытия каждый урок.</p>
+                    <h2>Why kids love it here</h2>
+                    <p>No boring lectures: just games, creativity and a small discovery every lesson.</p>
                 </div>
                 <div class="features">
                     <article class="feature feature--sky">
                         <span class="feature__icon" aria-hidden="true">🎮</span>
-                        <h3>Учимся играя</h3>
-                        <p>Каждый урок — мини-квест с заданиями, звёздами и наградами.</p>
+                        <h3>Learn by playing</h3>
+                        <p>Every lesson is a mini quest with tasks, stars and rewards.</p>
                     </article>
                     <article class="feature feature--mint">
                         <span class="feature__icon" aria-hidden="true">🎨</span>
-                        <h3>Творим с ИИ</h3>
-                        <p>Рисуем картинки, сочиняем сказки и музыку вместе с нейросетью.</p>
+                        <h3>Create with AI</h3>
+                        <p>Draw pictures, write stories and make music together with AI.</p>
                     </article>
                     <article class="feature feature--peach">
                         <span class="feature__icon" aria-hidden="true">🧠</span>
-                        <h3>Думаем сами</h3>
-                        <p>Разбираемся, как ИИ учится и почему он иногда ошибается.</p>
+                        <h3>Think for yourself</h3>
+                        <p>Find out how AI learns and why it sometimes gets things wrong.</p>
                     </article>
                     <article class="feature feature--lav">
                         <span class="feature__icon" aria-hidden="true">🛡️</span>
-                        <h3>Безопасно</h3>
-                        <p>Проверенные сервисы и правила цифровой безопасности с первого урока.</p>
+                        <h3>Stay safe</h3>
+                        <p>Trusted tools and online safety rules from the very first lesson.</p>
                     </article>
                 </div>
 
                 <div class="section-head section-head--row">
                     <div>
-                        <h2>Популярные курсы</h2>
-                        <p>Подберите курс по возрасту — Бобик уже ждёт на первом уроке.</p>
+                        <h2>Popular courses</h2>
+                        <p>Pick a course by age: Bobik is already waiting for you in the first lesson.</p>
                     </div>
-                    <a class="link-more" href="#/courses">Все курсы →</a>
+                    <a class="link-more" href="#/courses">All courses →</a>
                 </div>
                 <div class="course-grid" id="home-courses"></div>
 
                 <div class="steps-band">
-                    <h2>Как проходит урок</h2>
+                    <h2>How a lesson works</h2>
                     <ol class="steps">
-                        <li><span class="steps__num">1</span><h3>Встречаем Бобика</h3><p>Бобик рассказывает историю и ставит задачу урока.</p></li>
-                        <li><span class="steps__num">2</span><h3>Пробуем сами</h3><p>Ребёнок выполняет задания в безопасной ИИ-песочнице.</p></li>
-                        <li><span class="steps__num">3</span><h3>Получаем награду</h3><p>Звёзды, значки и новый уровень за каждый шаг.</p></li>
+                        <li><span class="steps__num">1</span><h3>Meet Bobik</h3><p>Bobik tells a story and sets the goal of the lesson.</p></li>
+                        <li><span class="steps__num">2</span><h3>Try it yourself</h3><p>Your child completes tasks in a safe AI sandbox.</p></li>
+                        <li><span class="steps__num">3</span><h3>Get a reward</h3><p>Stars, badges and a new level for every step.</p></li>
                     </ol>
                 </div>
 
                 <div class="cta-band">
                     <div class="cta-band__bot" id="cta-bobik"></div>
                     <div class="cta-band__text">
-                        <h2>Первый урок — бесплатно!</h2>
-                        <p>Попробуйте вместе с ребёнком и посмотрите, как загораются глаза.</p>
+                        <h2>The first lesson is free!</h2>
+                        <p>Try it together with your child and watch their eyes light up.</p>
                     </div>
-                    <button class="btn btn--primary btn--lg" type="button" data-open="lead">Записаться</button>
+                    <button class="btn btn--primary btn--lg" type="button" data-open="lead">Sign up</button>
                 </div>
             </div>
         </section>
 
-        <!-- КУРСЫ -->
+        <!-- COURSES -->
         <section class="page" data-page="courses" hidden>
             <div class="wrap">
-                <div class="chips" role="group" aria-label="Фильтр по возрасту" id="age-filter">
-                    <button class="chip is-active" type="button" data-age="all">Все курсы</button>
-                    <button class="chip" type="button" data-age="6-8">6–8 лет</button>
-                    <button class="chip" type="button" data-age="9-11">9–11 лет</button>
-                    <button class="chip" type="button" data-age="12-14">12–14 лет</button>
+                <div class="toolbar">
+                    <div class="chips" role="group" aria-label="Filter by age" id="age-filter">
+                        <button class="chip is-active" type="button" data-age="all">All courses</button>
+                        <button class="chip" type="button" data-age="6-8">Ages 6–8</button>
+                        <button class="chip" type="button" data-age="9-11">Ages 9–11</button>
+                        <button class="chip" type="button" data-age="12-14">Ages 12–14</button>
+                    </div>
+                    <p class="results" id="results-count"></p>
                 </div>
-                <p class="results" id="results-count"></p>
                 <div class="course-grid" id="all-courses"></div>
             </div>
         </section>
 
-        <!-- КАК УЧИМСЯ -->
+        <!-- HOW WE LEARN -->
         <section class="page" data-page="method" hidden>
             <div class="wrap">
                 <div class="section-head">
-                    <h2>Путь юного исследователя</h2>
-                    <p>От «что такое ИИ?» до собственного робота-помощника — шаг за шагом.</p>
+                    <h2>The young explorer's path</h2>
+                    <p>From "what is AI?" to your own robot helper, one step at a time.</p>
                 </div>
                 <ol class="path">
-                    <li class="path__step path__step--sky"><span class="path__badge">Уровень 1</span><h3>Знакомство</h3><p>Что такое искусственный интеллект, где он живёт и как учится на примерах.</p></li>
-                    <li class="path__step path__step--mint"><span class="path__badge">Уровень 2</span><h3>Разговор с ИИ</h3><p>Учимся задавать вопросы и писать понятные задания — промпты.</p></li>
-                    <li class="path__step path__step--peach"><span class="path__badge">Уровень 3</span><h3>Творчество</h3><p>Создаём картинки, истории, музыку и мультфильмы вместе с нейросетями.</p></li>
-                    <li class="path__step path__step--lav"><span class="path__badge">Уровень 4</span><h3>Свой проект</h3><p>Собираем своего чат-бота или игру и показываем друзьям и родителям.</p></li>
+                    <li class="path__step path__step--sky"><span class="path__badge">Level 1</span><h3>Getting to know AI</h3><p>What artificial intelligence is, where it lives and how it learns from examples.</p></li>
+                    <li class="path__step path__step--mint"><span class="path__badge">Level 2</span><h3>Talking to AI</h3><p>Learning to ask questions and write clear instructions: prompts.</p></li>
+                    <li class="path__step path__step--peach"><span class="path__badge">Level 3</span><h3>Creativity</h3><p>Making pictures, stories, music and cartoons with AI tools.</p></li>
+                    <li class="path__step path__step--lav"><span class="path__badge">Level 4</span><h3>Own project</h3><p>Building a chatbot or a game and showing it to friends and family.</p></li>
                 </ol>
 
                 <div class="skills">
-                    <h2>Чему научится ребёнок</h2>
+                    <h2>What your child will learn</h2>
                     <ul class="skills__list">
-                        <li>🗣️ Чётко формулировать мысли и задачи</li>
-                        <li>🔍 Проверять факты и не верить всему подряд</li>
-                        <li>🎨 Превращать идеи в картинки и истории</li>
-                        <li>🧩 Разбивать большую задачу на шаги</li>
-                        <li>🛡️ Безопасно вести себя в интернете</li>
-                        <li>🤝 Работать в команде и защищать проект</li>
+                        <li>🗣️ Express ideas and tasks clearly</li>
+                        <li>🔍 Check facts instead of believing everything</li>
+                        <li>🎨 Turn ideas into pictures and stories</li>
+                        <li>🧩 Break a big task into small steps</li>
+                        <li>🛡️ Stay safe on the internet</li>
+                        <li>🤝 Work in a team and present a project</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- РОДИТЕЛЯМ -->
+        <!-- FOR PARENTS -->
         <section class="page" data-page="parents" hidden>
             <div class="wrap">
                 <div class="section-head">
-                    <h2>Форматы занятий</h2>
-                    <p>Выберите, как удобнее учиться вашему ребёнку.</p>
+                    <h2>Lesson formats</h2>
+                    <p>Choose the way that works best for your child.</p>
                 </div>
                 <div class="formats">
                     <article class="format">
                         <span class="format__icon" aria-hidden="true">👫</span>
-                        <h3>Мини-группа</h3>
-                        <ul><li>До 6 детей одного возраста</li><li>2 занятия в неделю по 45 минут</li><li>Живой преподаватель онлайн</li></ul>
+                        <h3>Mini group</h3>
+                        <ul><li>Up to 6 kids of the same age</li><li>Two 45-minute lessons a week</li><li>Live teacher online</li></ul>
                     </article>
                     <article class="format format--hot">
-                        <span class="format__tag">Чаще выбирают</span>
-                        <span class="format__icon" aria-hidden="true">🧑‍🏫</span>
-                        <h3>Индивидуально</h3>
-                        <ul><li>Программа под интересы ребёнка</li><li>Гибкое расписание</li><li>Отчёт родителям после урока</li></ul>
+                        <span class="format__tag">Most popular</span>
+                        <span class="format__icon" aria-hidden="true">🎓</span>
+                        <h3>One-on-one</h3>
+                        <ul><li>Program built around your child's interests</li><li>Flexible schedule</li><li>Report for parents after each lesson</li></ul>
                     </article>
                     <article class="format">
                         <span class="format__icon" aria-hidden="true">🤖</span>
-                        <h3>С Бобиком</h3>
-                        <ul><li>Самостоятельные уроки-квесты</li><li>В любое время, в своём темпе</li><li>Прогресс в личном кабинете</li></ul>
+                        <h3>With Bobik</h3>
+                        <ul><li>Self-paced quest lessons</li><li>Any time, at your own speed</li><li>Progress in the personal cabinet</li></ul>
                     </article>
                 </div>
                 <div class="center">
-                    <button class="btn btn--primary btn--lg" type="button" data-open="lead">Записаться на бесплатный урок</button>
+                    <button class="btn btn--primary btn--lg" type="button" data-open="lead">Book a free trial lesson</button>
                 </div>
 
                 <div class="section-head">
-                    <h2>Частые вопросы</h2>
+                    <h2>Frequently asked questions</h2>
                 </div>
                 <div class="faq">
                     <details>
-                        <summary>С какого возраста можно начинать?</summary>
-                        <p>С 6 лет. Для младших — курсы в игровой форме без сложного текста, для старших — проекты и программирование.</p>
+                        <summary>What age can my child start at?</summary>
+                        <p>From 6. Younger kids get game-based courses with little text; older kids work on projects and coding.</p>
                     </details>
                     <details>
-                        <summary>Это безопасно? Ребёнок будет общаться с нейросетью напрямую?</summary>
-                        <p>Дети работают в учебной песочнице с фильтрами контента. Первый модуль каждого курса — правила цифровой безопасности.</p>
+                        <summary>Is it safe? Will my child talk to AI directly?</summary>
+                        <p>Kids work in a learning sandbox with content filters. The first module of every course covers online safety rules.</p>
                     </details>
                     <details>
-                        <summary>Что нужно для занятий?</summary>
-                        <p>Компьютер или планшет, интернет и хорошее настроение. Всё остальное есть на платформе.</p>
+                        <summary>What do we need for the lessons?</summary>
+                        <p>A computer or tablet, an internet connection and a good mood. Everything else is on the platform.</p>
                     </details>
                     <details>
-                        <summary>Как я узнаю об успехах ребёнка?</summary>
-                        <p>Прогресс, награды и проекты видны в личном кабинете. В групповых и индивидуальных форматах преподаватель присылает отчёт.</p>
+                        <summary>How will I know how my child is doing?</summary>
+                        <p>Progress, rewards and projects are visible in the personal cabinet. In group and one-on-one formats the teacher also sends a report.</p>
                     </details>
                 </div>
             </div>
         </section>
 
-        <!-- ЛИЧНЫЙ КАБИНЕТ -->
+        <!-- PERSONAL CABINET -->
         <section class="page" data-page="cabinet" hidden>
-            <div class="wrap">
-                <div class="stats" id="stats"></div>
+            <div class="wrap cabinet">
+                <div class="cabinet__main">
+                    <div class="stats" id="stats"></div>
 
-                <div class="section-head section-head--row">
-                    <h2>Мои курсы</h2>
-                </div>
-                <div class="my-courses" id="my-courses"></div>
-
-                <div class="section-head">
-                    <h2>Мои награды</h2>
-                </div>
-                <div class="badges" id="badges"></div>
-
-                <div class="panel">
-                    <h2>Цвет Бобика</h2>
-                    <p>Выбери, каким будет твой Бобик.</p>
-                    <div class="palette-picker" id="palette-picker" role="radiogroup" aria-label="Цвет Бобика">
-                        <button type="button" role="radio" class="swatch swatch--mint" data-palette="mint" aria-label="Мятный"></button>
-                        <button type="button" role="radio" class="swatch swatch--sky" data-palette="sky" aria-label="Небесный"></button>
-                        <button type="button" role="radio" class="swatch swatch--lav" data-palette="lav" aria-label="Лавандовый"></button>
-                        <button type="button" role="radio" class="swatch swatch--peach" data-palette="peach" aria-label="Персиковый"></button>
+                    <div class="section-head section-head--row">
+                        <h2>My courses</h2>
                     </div>
+                    <div class="my-courses" id="my-courses"></div>
+
+                    <div class="section-head">
+                        <h2>My badges</h2>
+                    </div>
+                    <div class="badges" id="badges"></div>
                 </div>
 
-                <div class="center">
-                    <button class="btn btn--white" type="button" id="logout-btn">Выйти из кабинета</button>
-                </div>
+                <aside class="cabinet__side">
+                    <div class="panel profile">
+                        <div class="profile__bot" id="profile-bobik"></div>
+                        <h2 id="profile-name">Explorer</h2>
+                        <p id="profile-age"></p>
+                    </div>
+
+                    <div class="panel">
+                        <h2>Bobik's color</h2>
+                        <p>Choose what your Bobik looks like.</p>
+                        <div class="palette-picker" id="palette-picker" role="radiogroup" aria-label="Bobik's color">
+                            <button type="button" role="radio" class="swatch swatch--mint" data-palette="mint" aria-label="Mint"></button>
+                            <button type="button" role="radio" class="swatch swatch--sky" data-palette="sky" aria-label="Sky"></button>
+                            <button type="button" role="radio" class="swatch swatch--lav" data-palette="lav" aria-label="Lavender"></button>
+                            <button type="button" role="radio" class="swatch swatch--peach" data-palette="peach" aria-label="Peach"></button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn--white btn--block" type="button" id="logout-btn">Log out</button>
+                </aside>
             </div>
         </section>
     </main>
@@ -288,69 +303,69 @@
         <div class="wrap footer__inner">
             <div class="footer__brand">
                 <span class="logo__text">Bloop <b>AI School</b></span>
-                <p>Школа искусственного интеллекта для детей. Учимся с улыбкой.</p>
+                <p>The artificial intelligence school for kids. Learning with a smile.</p>
             </div>
-            <nav class="footer__nav" aria-label="Меню в подвале">
-                <a href="#/">Главная</a>
-                <a href="#/courses">Курсы</a>
-                <a href="#/method">Как учимся</a>
-                <a href="#/parents">Родителям</a>
-                <a href="#/cabinet">Личный кабинет</a>
+            <nav class="footer__nav" aria-label="Footer menu">
+                <a href="#/">Home</a>
+                <a href="#/courses">Courses</a>
+                <a href="#/method">How we learn</a>
+                <a href="#/parents">For parents</a>
+                <a href="#/cabinet">My cabinet</a>
             </nav>
             <p class="footer__copy">© <span id="year"></span> Bloop AI School</p>
         </div>
     </footer>
 
-    <!-- Вход в личный кабинет -->
+    <!-- Cabinet login -->
     <dialog class="modal" id="login-modal" aria-labelledby="login-title">
         <form class="modal__box" id="login-form" method="dialog">
-            <button class="modal__close" type="button" data-close aria-label="Закрыть">✕</button>
+            <button class="modal__close" type="button" data-close aria-label="Close">✕</button>
             <div class="modal__bot" id="login-bobik"></div>
-            <h2 id="login-title">Вход в кабинет</h2>
-            <p>Введи своё имя, и Бобик покажет твои успехи.</p>
+            <h2 id="login-title">Log in to your cabinet</h2>
+            <p>Type your name and Bobik will show your progress.</p>
             <label class="field">
-                <span>Как тебя зовут?</span>
-                <input name="name" type="text" autocomplete="given-name" maxlength="24" required placeholder="Например, Маша">
+                <span>What's your name?</span>
+                <input name="name" type="text" autocomplete="given-name" maxlength="24" required placeholder="For example, Emma">
             </label>
             <label class="field">
-                <span>Сколько тебе лет?</span>
+                <span>How old are you?</span>
                 <select name="age" required>
-                    <option value="" disabled selected>Выбери возраст</option>
-                    <option value="6-8">6–8 лет</option>
-                    <option value="9-11">9–11 лет</option>
-                    <option value="12-14">12–14 лет</option>
+                    <option value="" disabled selected>Choose your age</option>
+                    <option value="6-8">6–8 years</option>
+                    <option value="9-11">9–11 years</option>
+                    <option value="12-14">12–14 years</option>
                 </select>
             </label>
-            <button class="btn btn--primary btn--block" type="submit">Войти 🚀</button>
+            <button class="btn btn--primary btn--block" type="submit">Let's go 🚀</button>
         </form>
     </dialog>
 
-    <!-- Запись на бесплатный урок -->
+    <!-- Free trial lesson sign-up -->
     <dialog class="modal" id="lead-modal" aria-labelledby="lead-title">
         <form class="modal__box" id="lead-form" method="dialog">
-            <button class="modal__close" type="button" data-close aria-label="Закрыть">✕</button>
+            <button class="modal__close" type="button" data-close aria-label="Close">✕</button>
             <div class="modal__bot" id="lead-bobik"></div>
             <div class="lead-body">
-                <h2 id="lead-title">Бесплатный урок</h2>
-                <p>Оставьте контакты — мы подберём курс и время.</p>
+                <h2 id="lead-title">Free trial lesson</h2>
+                <p>Leave your contacts and we'll find the right course and time.</p>
                 <label class="field">
-                    <span>Имя родителя</span>
+                    <span>Parent's name</span>
                     <input name="parent" type="text" autocomplete="name" required>
                 </label>
                 <label class="field">
-                    <span>Телефон или Telegram</span>
-                    <input name="contact" type="text" autocomplete="tel" required>
+                    <span>Email or phone</span>
+                    <input name="contact" type="text" autocomplete="email" required>
                 </label>
                 <label class="field">
-                    <span>Возраст ребёнка</span>
+                    <span>Child's age</span>
                     <select name="age" required>
-                        <option value="" disabled selected>Выберите</option>
-                        <option value="6-8">6–8 лет</option>
-                        <option value="9-11">9–11 лет</option>
-                        <option value="12-14">12–14 лет</option>
+                        <option value="" disabled selected>Choose</option>
+                        <option value="6-8">6–8 years</option>
+                        <option value="9-11">9–11 years</option>
+                        <option value="12-14">12–14 years</option>
                     </select>
                 </label>
-                <button class="btn btn--primary btn--block" type="submit">Записаться</button>
+                <button class="btn btn--primary btn--block" type="submit">Sign up</button>
                 <p class="form-note" id="lead-note" role="status"></p>
             </div>
         </form>
