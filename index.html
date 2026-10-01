@@ -10,7 +10,27 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Background Clouds -->
+    <div class="clouds-container">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+        <div class="cloud cloud-5"></div>
+    </div>
+
     <div id="app">
+        <!-- Top Header with Mascot and Title -->
+        <header class="site-header">
+            <div class="header-content">
+                <div id="header-bloop" class="bloop-widget small"></div>
+                <div class="brand">
+                    <h1>Bloop AI School</h1>
+                    <span>The Magic of Intelligence</span>
+                </div>
+            </div>
+        </header>
+
         <!-- Floating List Menu -->
         <nav class="main-menu">
             <div class="menu-item active" onclick="app.changeSection('home')">
@@ -37,7 +57,7 @@
                 <div class="hero">
                     <div id="bloop-container" class="bloop-widget"></div>
                     <div class="hero-text">
-                        <h1>Explore AI with Bloop!</h1>
+                        <h1 class="main-title">Ready for Magic?</h1>
                         <p>Learn the future of technology through games and experiments.</p>
                         <button id="start-btn" class="cta-button" onclick="app.startAdventure()">Start Adventure</button>
                     </div>
@@ -47,7 +67,7 @@
             <!-- Map Section -->
             <section id="map" class="section">
                 <div class="map-container">
-                    <h2>Your Learning Journey</h2>
+                    <h2 class="section-title">Your Learning Journey</h2>
                     <div id="course-grid" class="course-grid">
                         <!-- Courses injected by JS -->
                     </div>
@@ -81,7 +101,7 @@
             <!-- Help Section -->
             <section id="help" class="section">
                 <div class="help-container">
-                    <h2>Need Help?</h2>
+                    <h2 class="section-title">Need Help?</h2>
                     <p>Bloop is here to guide you! Just ask a question or check the guide.</p>
                     <div class="help-card">
                         <h3>Common Questions</h3>

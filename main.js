@@ -14,6 +14,7 @@ const app = {
     },
 
     init() {
+        this.updateBobik('header-bloop', 'hello');
         this.updateBobik('bloop-container', 'hello');
         this.updateBobik('bloop-profile', 'neutral');
         this.applyPaletteToCSS(this.currentPalette);
