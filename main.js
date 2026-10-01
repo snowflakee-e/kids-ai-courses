@@ -1,7 +1,7 @@
 const app = {
     currentPalette: 'mint',
+    isLoggedIn: false,
 
-    // Mock User Data for Personal Cabinet
     userData: {
         name: "Super Student",
         progress: 45,
@@ -18,19 +18,39 @@ const app = {
         this.updateBobik('bloop-container', 'hello');
         this.updateBobik('bloop-profile', 'neutral');
         this.applyPaletteToCSS(this.currentPalette);
-        this.renderCourseMap();
+        this.renderHomeCourses();
+        this.renderProfileCourses();
         this.updateProfile();
 
+        // Start button interaction
         const startBtn = document.getElementById('start-btn');
-        startBtn.onmouseover = () => this.updateBobik('bloop-container', 'point');
-        startBtn.onmouseout = () => this.updateBobik('bloop-container', 'hello');
+        if(startBtn) {
+            startBtn.onmouseover = () => this.updateBobik('bloop-container', 'point');
+            startBtn.onmouseout = () => this.updateBobik('bloop-container', 'hello');
+        }
+    },
+
+    toggleAuth() {
+        this.isLoggedIn = !this.isLoggedIn;
+        const btn = document.getElementById('auth-btn');
+        const text = btn.querySelector('.auth-text');
+        const icon = btn.querySelector('.auth-icon');
+
+        if (this.isLoggedIn) {
+            text.innerText = 'Logout';
+            icon.innerText = '🚪';
+            this.changeSection('profile'); // Go to cabinet after login
+        } else {
+            text.innerText = 'Login';
+            icon.innerText = '🔑';
+            this.changeSection('home');
+        }
     },
 
     updateBobik(containerId, stateId) {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        // To make animations smooth, we use a fade transition
         container.style.opacity = '0';
         setTimeout(() => {
             container.innerHTML = renderBobik(stateId, PALETTES[this.currentPalette]);
@@ -42,7 +62,8 @@ const app = {
         const currentSection = document.querySelector('.section.active');
         const targetSection = document.getElementById(sectionId);
 
-        // Smooth transition: fade out -> change -> fade in
+        if (!currentSection || !targetSection) return;
+
         currentSection.style.opacity = '0';
         currentSection.style.transform = 'translateY(10px)';
 
@@ -50,18 +71,11 @@ const app = {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             targetSection.classList.add('active');
 
-            // Update active state in menu
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('onclick').includes(`'${sectionId}'`)) {
-                    item.classList.add('active');
-                }
-            });
-
             targetSection.style.opacity = '1';
             targetSection.style.transform = 'translateY(0)';
         }, 300);
 
+        // Update mascot state based on section
         if (sectionId === 'home') {
             this.updateBobik('bloop-container', 'hello');
         } else if (sectionId === 'map') {
@@ -71,16 +85,23 @@ const app = {
         }
     },
 
-    startAdventure() {
-        this.updateBobik('bloop-container', 'joy');
-        setTimeout(() => {
-            this.changeSection('map');
-            this.updateBobik('bloop-container', 'run');
-        }, 800);
+    renderHomeCourses() {
+        const list = document.getElementById('home-course-list');
+        if (!list) return;
+
+        list.innerHTML = this.userData.courses.map(course => `
+            <div class="home-course-item" onclick="app.selectCourse('${course.id}')">
+                <div class="course-info">
+                    <h4>${course.title}</h4>
+                    <p>${course.desc}</p>
+                </div>
+                <div class="course-action">${course.locked ? '🔒' : '🚀 Start'}</div>
+            </div>
+        `).join('');
     },
 
-    renderCourseMap() {
-        const grid = document.getElementById('course-grid');
+    renderProfileCourses() {
+        const grid = document.getElementById('profile-course-grid');
         if (!grid) return;
 
         grid.innerHTML = this.userData.courses.map(course => `
