@@ -3,27 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI School with Bobik</title>
+    <title>Bloop AI School</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <header>
-            <div class="logo">BOBIK AI SCHOOL</div>
-            <nav>
-                <button class="nav-btn" onclick="app.changeSection('home')">Home</button>
-                <button class="nav-btn" onclick="app.changeSection('map')">Learning Map</button>
-                <button class="nav-btn" onclick="app.changeSection('profile')">My Bobik</button>
-            </nav>
-        </header>
+        <!-- Floating List Menu -->
+        <nav class="main-menu">
+            <div class="menu-item active" onclick="app.changeSection('home')">
+                <span class="menu-icon">🏠</span>
+                <span class="menu-text">Home</span>
+            </div>
+            <div class="menu-item" onclick="app.changeSection('map')">
+                <span class="menu-icon">🗺️</span>
+                <span class="menu-text">Courses</span>
+            </div>
+            <div class="menu-item" onclick="app.changeSection('profile')">
+                <span class="menu-icon">👤</span>
+                <span class="menu-text">Profile</span>
+            </div>
+            <div class="menu-item" onclick="app.changeSection('help')">
+                <span class="menu-icon">❓</span>
+                <span class="menu-text">Help</span>
+            </div>
+        </nav>
 
         <main id="main-content">
             <!-- Home Section -->
             <section id="home" class="section active">
                 <div class="hero">
-                    <div id="bobik-container" class="bobik-widget"></div>
+                    <div id="bloop-container" class="bloop-widget"></div>
                     <div class="hero-text">
-                        <h1>Explore AI with Bobik!</h1>
+                        <h1>Explore AI with Bloop!</h1>
                         <p>Learn the future of technology through games and experiments.</p>
                         <button id="start-btn" class="cta-button" onclick="app.startAdventure()">Start Adventure</button>
                     </div>
@@ -33,34 +47,49 @@
             <!-- Map Section -->
             <section id="map" class="section">
                 <div class="map-container">
-                    <h2>Your Learning Path</h2>
-                    <div class="path">
-                        <div class="level active" data-level="1" onclick="app.selectLevel(1)">
-                            <div class="level-icon">1</div>
-                            <span>Intro to AI</span>
-                        </div>
-                        <div class="level" data-level="2" onclick="app.selectLevel(2)">
-                            <div class="level-icon">2</div>
-                            <span>Prompt Magic</span>
-                        </div>
-                        <div class="level" data-level="3" onclick="app.selectLevel(3)">
-                            <div class="level-icon">3</div>
-                            <span>AI Art</span>
-                        </div>
+                    <h2>Your Learning Journey</h2>
+                    <div id="course-grid" class="course-grid">
+                        <!-- Courses injected by JS -->
                     </div>
                 </div>
             </section>
 
-            <!-- Profile Section -->
+            <!-- Profile Section (Personal Cabinet) -->
             <section id="profile" class="section">
                 <div class="profile-container">
-                    <h2>Customize Your Bobik</h2>
-                    <div id="bobik-profile" class="bobik-widget large"></div>
+                    <div class="profile-header">
+                        <div id="bloop-profile" class="bloop-widget large"></div>
+                        <div class="user-info">
+                            <h2 id="user-name">Student Name</h2>
+                            <div class="progress-wrapper">
+                                <div class="progress-bar">
+                                    <div id="progress-fill" class="progress-fill"></div>
+                                </div>
+                                <span id="progress-text">0% Complete</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="palette-picker">
                         <button class="palette-btn mint" onclick="app.setPalette('mint')">Mint</button>
                         <button class="palette-btn sky" onclick="app.setPalette('sky')">Sky</button>
                         <button class="palette-btn lav" onclick="app.setPalette('lav')">Lavender</button>
                         <button class="palette-btn peach" onclick="app.setPalette('peach')">Peach</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Help Section -->
+            <section id="help" class="section">
+                <div class="help-container">
+                    <h2>Need Help?</h2>
+                    <p>Bloop is here to guide you! Just ask a question or check the guide.</p>
+                    <div class="help-card">
+                        <h3>Common Questions</h3>
+                        <ul>
+                            <li>How do I unlock courses?</li>
+                            <li>Where are my rewards?</li>
+                            <li>How does AI work?</li>
+                        </ul>
                     </div>
                 </div>
             </section>
