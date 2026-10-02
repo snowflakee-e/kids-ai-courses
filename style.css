@@ -793,142 +793,30 @@ button { font: inherit; color: inherit; }
 .faq details[open] summary::after { transform: rotate(45deg); background: var(--sun); }
 .faq details p { padding: 0 24px 22px; color: var(--ink-soft); }
 
-/* ---------- Личный кабинет ---------- */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-}
-.stat {
-    padding: 22px;
-    border-radius: var(--radius);
-    background: #fff;
-    box-shadow: var(--shadow);
-}
-.stat__icon { font-size: 30px; }
-.stat__value {
-    display: block;
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 36px;
-    line-height: 1.1;
-    margin-top: 6px;
-}
-.stat__label { color: var(--ink-soft); font-weight: 700; }
-
-.my-courses { display: grid; gap: 16px; }
-.my-course {
-    display: grid;
-    grid-template-columns: 96px 1fr auto;
+/* ---------- Прогресс из кабинета на главной ---------- */
+.welcome-back {
+    display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 16px 20px 16px 16px;
-    border-radius: var(--radius);
+    gap: 24px;
+    margin-top: 32px;
+    padding: 20px 28px;
+    border-radius: 32px;
     background: #fff;
-    box-shadow: var(--shadow);
+    box-shadow: 0 0 0 3px var(--sun), var(--shadow);
 }
-.my-course.is-locked { opacity: .6; }
-.my-course__thumb {
-    display: grid;
-    place-items: center;
-    width: 96px;
-    height: 96px;
-    border-radius: 22px;
-    background: var(--thumb);
+.welcome-back__bot { flex-shrink: 0; width: 110px; animation: float 4s ease-in-out infinite; }
+.welcome-back__bot svg { display: block; width: 100%; }
+.welcome-back__text { flex: 1; min-width: 0; }
+.welcome-back h2 { font-size: clamp(24px, 2.8vw, 32px); overflow-wrap: anywhere; }
+.welcome-back__stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.welcome-back__stats li {
+    padding: 6px 12px;
+    border-radius: 14px;
+    background: var(--page);
+    font-weight: 700;
+    color: var(--ink-soft);
 }
-.my-course__thumb svg { width: 80px; display: block; }
-.my-course h3 { font-size: 20px; }
-.my-course__meta { color: var(--ink-soft); font-size: 15px; font-weight: 700; margin-top: 2px; }
-
-.progress {
-    height: 14px;
-    margin-top: 10px;
-    border-radius: 999px;
-    background: #E8EFF8;
-    overflow: hidden;
-}
-.progress__fill {
-    height: 100%;
-    width: 0;
-    border-radius: inherit;
-    background: repeating-linear-gradient(-45deg, var(--mint) 0 10px, #92DDCD 10px 20px);
-    transition: width 1s cubic-bezier(.34, 1.56, .64, 1);
-}
-
-.badges {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 14px;
-}
-.badge {
-    padding: 20px 10px;
-    border-radius: var(--radius);
-    background: #fff;
-    box-shadow: var(--shadow);
-    text-align: center;
-}
-.badge__icon {
-    display: grid;
-    place-items: center;
-    width: 72px;
-    height: 72px;
-    margin: 0 auto 10px;
-    border-radius: 50%;
-    background: var(--sun);
-    font-size: 36px;
-    box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .08);
-}
-.badge h3 { font-size: 16px; }
-.badge.is-locked .badge__icon { background: #E8EFF8; filter: grayscale(1); opacity: .6; }
-.badge.is-locked h3 { color: var(--ink-soft); }
-
-/* Кабинет на компьютере: основная колонка + боковая панель профиля */
-.cabinet {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
-    gap: 32px;
-    align-items: start;
-    margin-bottom: 72px;
-}
-.cabinet__main .section-head:first-of-type { margin-top: 48px; }
-.cabinet__side {
-    position: sticky;
-    top: 110px;
-    display: grid;
-    gap: 20px;
-}
-
-.panel {
-    padding: 28px 24px;
-    border-radius: var(--radius);
-    background: #fff;
-    box-shadow: var(--shadow);
-    text-align: center;
-}
-.panel h2 { font-size: 24px; }
-.panel p { color: var(--ink-soft); margin-top: 4px; }
-
-.profile { background: linear-gradient(180deg, var(--sky-soft) 0%, #fff 70%); }
-.profile__bot { width: 150px; margin: 0 auto 8px; animation: float 4s ease-in-out infinite; }
-.profile__bot svg { display: block; width: 100%; }
-.profile p { font-weight: 700; }
-
-.palette-picker { display: flex; justify-content: center; gap: 12px; margin-top: 18px; }
-.swatch {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 5px solid #fff;
-    box-shadow: 0 0 0 2px #E1EAF5, 0 6px 14px rgba(47, 62, 107, .12);
-    cursor: pointer;
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-.swatch:hover { transform: scale(1.12); }
-.swatch[aria-checked="true"] { box-shadow: 0 0 0 4px var(--ink), 0 6px 14px rgba(47, 62, 107, .2); }
-.swatch--mint { background: #7AD3C1; }
-.swatch--sky { background: #8EC5FF; }
-.swatch--lav { background: #B7A6F2; }
-.swatch--peach { background: #FFB28E; }
+.welcome-back__stats b { font-family: var(--font-display); color: var(--ink); }
 
 /* ---------- Подвал ---------- */
 .footer {
@@ -1054,7 +942,7 @@ button { font: inherit; color: inherit; }
 
 /* На тач-экранах hover «залипает» после нажатия: отключаем подъём карточек */
 @media (hover: none) {
-    .feature:hover, .course:hover, .swatch:hover, .btn:hover { transform: none; }
+    .feature:hover, .course:hover, .btn:hover { transform: none; }
     .course:hover { box-shadow: var(--shadow); }
     .btn:hover { box-shadow: 0 5px 0 var(--btn-edge); filter: none; }
     .course:hover .course__bot { transform: none; }
@@ -1076,12 +964,8 @@ button { font: inherit; color: inherit; }
 }
 
 @media (max-width: 1024px) {
-    .features, .path, .stats, .course-grid { grid-template-columns: repeat(2, 1fr); }
+    .features, .path, .course-grid { grid-template-columns: repeat(2, 1fr); }
     .formats { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; }
-    .cabinet { grid-template-columns: 1fr; }
-    .badges { grid-template-columns: repeat(3, 1fr); }
-    .cabinet__side { position: static; grid-template-columns: 1fr 1fr; }
-    .cabinet__side .btn { grid-column: 1 / -1; }
 }
 
 /* Планшет в ландшафте и маленькие ноутбуки: меню в одну строку без эмодзи */
@@ -1093,11 +977,8 @@ button { font: inherit; color: inherit; }
     .btn--login { max-width: 170px; }
 }
 
-/* Планшет: 4 плитки статистики в ряд, одинокая последняя карточка курса — на всю ширину */
+/* Планшет: одинокая последняя карточка курса — на всю ширину */
 @media (min-width: 601px) and (max-width: 1024px) {
-    .stats { grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .stat { padding: 18px 16px; }
-    .stat__value { font-size: 30px; }
     .course-grid .course:last-child:nth-child(odd) { grid-column: 1 / -1; flex-direction: row; }
     .course-grid .course:last-child:nth-child(odd) .course__thumb { width: 42%; height: auto; flex-shrink: 0; }
 }
@@ -1145,6 +1026,9 @@ button { font: inherit; color: inherit; }
 
     .steps { grid-template-columns: 1fr; }
     .cta-band { flex-direction: column; text-align: center; padding: 32px 24px; }
+    .welcome-back { flex-direction: column; text-align: center; padding: 22px 20px; }
+    .welcome-back__stats { justify-content: center; }
+    .welcome-back .btn { width: 100%; }
 }
 
 @media (max-width: 600px) {
@@ -1168,11 +1052,7 @@ button { font: inherit; color: inherit; }
     }
     .feature__icon { grid-row: span 2; width: 56px; height: 56px; font-size: 28px; border-radius: 18px; }
     .feature h3 { margin: 0; font-size: 19px; }
-    .stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .stat { padding: 16px; }
-    .stat__value { font-size: 28px; }
-    .course-grid, .cabinet__side { grid-template-columns: 1fr; }
-    .badges { grid-template-columns: repeat(2, 1fr); }
+    .course-grid { grid-template-columns: 1fr; }
     .toolbar { flex-direction: column; align-items: stretch; gap: 4px; }
     .chips { margin: 0 -16px; padding: 8px 16px 12px; }
     .hero__kicker { font-size: 14px; }
@@ -1182,9 +1062,5 @@ button { font: inherit; color: inherit; }
     .modal__box h2 { font-size: 24px; }
     .field input, .field select { padding: 12px 14px; }
     .steps-band, .skills { padding: 32px 20px; border-radius: 28px; }
-    .my-course { grid-template-columns: 72px 1fr; gap: 14px; }
-    .my-course__thumb { width: 72px; height: 72px; border-radius: 18px; }
-    .my-course__thumb svg { width: 60px; }
-    .my-course .btn { grid-column: 1 / -1; }
-    .panel { padding: 24px 16px; }
+    .welcome-back__bot { width: 90px; }
 }

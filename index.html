@@ -102,6 +102,16 @@
         <!-- HOME -->
         <section class="page" data-page="home">
             <div class="wrap">
+                <!-- Прогресс из личного кабинета: показывается, если ребёнок уже вошёл -->
+                <div class="welcome-back" id="welcome-back" hidden>
+                    <div class="welcome-back__bot" id="welcome-bobik"></div>
+                    <div class="welcome-back__text">
+                        <h2 id="welcome-title">Welcome back!</h2>
+                        <ul class="welcome-back__stats" id="welcome-stats"></ul>
+                    </div>
+                    <a class="btn btn--primary btn--lg" href="../kids-ai-cabinet/" data-cabinet-link id="welcome-cta">Continue learning →</a>
+                </div>
+
                 <div class="section-head">
                     <h2>Why kids love it here</h2>
                     <p>No boring lectures: just games, creativity and a small discovery every lesson.</p>
@@ -254,46 +264,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- PERSONAL CABINET -->
-        <section class="page" data-page="cabinet" hidden>
-            <div class="wrap cabinet">
-                <div class="cabinet__main">
-                    <div class="stats" id="stats"></div>
-
-                    <div class="section-head section-head--row">
-                        <h2>My courses</h2>
-                    </div>
-                    <div class="my-courses" id="my-courses"></div>
-
-                    <div class="section-head">
-                        <h2>My badges</h2>
-                    </div>
-                    <div class="badges" id="badges"></div>
-                </div>
-
-                <aside class="cabinet__side">
-                    <div class="panel profile">
-                        <div class="profile__bot" id="profile-bobik"></div>
-                        <h2 id="profile-name">Explorer</h2>
-                        <p id="profile-age"></p>
-                    </div>
-
-                    <div class="panel">
-                        <h2>Bobik's color</h2>
-                        <p>Choose what your Bobik looks like.</p>
-                        <div class="palette-picker" id="palette-picker" role="radiogroup" aria-label="Bobik's color">
-                            <button type="button" role="radio" class="swatch swatch--mint" data-palette="mint" aria-label="Mint"></button>
-                            <button type="button" role="radio" class="swatch swatch--sky" data-palette="sky" aria-label="Sky"></button>
-                            <button type="button" role="radio" class="swatch swatch--lav" data-palette="lav" aria-label="Lavender"></button>
-                            <button type="button" role="radio" class="swatch swatch--peach" data-palette="peach" aria-label="Peach"></button>
-                        </div>
-                    </div>
-
-                    <button class="btn btn--white btn--block" type="button" id="logout-btn">Log out</button>
-                </aside>
-            </div>
-        </section>
     </main>
 
     <footer class="footer">
@@ -310,7 +280,7 @@
                 <a href="#/courses">Courses</a>
                 <a href="#/method">How we learn</a>
                 <a href="#/parents">For parents</a>
-                <a href="#/cabinet">My cabinet</a>
+                <a href="../kids-ai-cabinet/" data-cabinet-link>My cabinet</a>
             </nav>
             <p class="footer__copy">© <span id="year"></span> Bloop AI School</p>
         </div>
@@ -322,7 +292,7 @@
             <button class="modal__close" type="button" data-close aria-label="Close">✕</button>
             <div class="modal__bot" id="login-bobik"></div>
             <h2 id="login-title">Log in to your cabinet</h2>
-            <p>Type your name and Bobik will show your progress.</p>
+            <p>Type your name and Bobik will take you to your lessons, stars and badges.</p>
             <label class="field">
                 <span>What's your name?</span>
                 <input name="name" type="text" autocomplete="given-name" maxlength="24" required placeholder="For example, Emma">

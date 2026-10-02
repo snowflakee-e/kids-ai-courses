@@ -4,22 +4,29 @@
 const CONFIG = {
     // Webhook для заявок на бесплатный урок (например, Make.com Custom Webhook).
     // Пока пусто — заявки не отправляются, форма работает в демо-режиме.
-    leadWebhook: ''
+    leadWebhook: '',
+
+    // Личный кабинет — отдельный репозиторий kids-ai-cabinet.
+    // На GitHub Pages оба сайта живут на одном домене, поэтому относительный путь
+    // и общее хранилище браузера работают и там, и при локальном запуске из папки Code.
+    cabinetUrl: '../kids-ai-cabinet/',
+    cabinetKey: 'bloop-cabinet-v1'
 };
 
 const COURSES = [
+    // playable: курс уже есть в кабинете, кнопка ведёт сразу в урок
     { id: 'hello-ai', title: 'Hello, AI!', age: '6-8', lessons: 8, minutes: 30, level: 'Starter',
       desc: 'Meet artificial intelligence through games and fun experiments.',
-      palette: 'mint', pose: 'hello', thumb: '#DDF6EF' },
+      palette: 'mint', pose: 'hello', thumb: '#DDF6EF', playable: true },
     { id: 'ai-tales', title: 'Fairy Tales with AI', age: '6-8', lessons: 6, minutes: 30, level: 'Starter',
       desc: 'Invent heroes and write magical stories together with AI.',
       palette: 'peach', pose: 'delight', thumb: '#FFEADF' },
     { id: 'prompts', title: 'Magic Prompts', age: '9-11', lessons: 10, minutes: 45, level: 'Beginner',
       desc: 'Learn to talk to AI so it understands you right away.',
-      palette: 'sky', pose: 'idea', thumb: '#E1F0FF' },
+      palette: 'sky', pose: 'idea', thumb: '#E1F0FF', playable: true },
     { id: 'ai-art', title: 'AI Artist', age: '9-11', lessons: 8, minutes: 45, level: 'Beginner',
       desc: 'Create pictures, comics and greeting cards with AI tools.',
-      palette: 'lav', pose: 'wink', thumb: '#EEE9FF' },
+      palette: 'lav', pose: 'wink', thumb: '#EEE9FF', playable: true },
     { id: 'my-bot', title: 'Build Your Robot Helper', age: '12-14', lessons: 12, minutes: 60, level: 'Intermediate',
       desc: 'Build your own chatbot and teach it to help with everyday tasks.',
       palette: 'sky', pose: 'victory', thumb: '#FFF1C9' },
@@ -55,26 +62,11 @@ const ROUTES = {
         title: 'For parents',
         lead: 'Lesson formats, safety and answers to common questions.',
         pose: 'wink', bubble: "I'll tell you everything 😉"
-    },
-    cabinet: {
-        kicker: 'My cabinet',
-        title: 'Hi!',
-        lead: 'Here are your courses, stars and badges.',
-        pose: 'joy', bubble: "Yay, you're here! 🎉"
     }
 };
 
-const BADGES = [
-    { icon: '👋', title: 'First lesson' },
-    { icon: '⭐', title: '10 stars' },
-    { icon: '🔥', title: '3-day streak' },
-    { icon: '🎨', title: 'First picture' },
-    { icon: '🤖', title: 'Own bot' },
-    { icon: '🏆', title: 'Course complete' }
-];
-
 const HAPPY_STATES = ['joy', 'surprise', 'delight', 'wink', 'victory'];
-const STORAGE_KEY = 'bloop-user';
+const OLD_USER_KEY = 'bloop-user'; // ключ старого демо-кабинета на сайте
 
 // plural(3, 'star') → 'stars'
 const plural = (n, one, many = one + 's') => (n === 1 ? one : many);
@@ -98,23 +90,66 @@ const app = {
         this.bindEvents();
         this.updateAuthButton();
         this.drawStaticBobiks();
+        this.renderWelcomeBack();
         this.onRoute();
     },
 
-    // ---------- Хранилище ----------
+    // ---------- Общее с кабинетом хранилище ----------
+    // Сайт только читает прогресс и создаёт профиль при входе; XP, звёзды и награды считает кабинет.
     loadUser() {
         try {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY));
-        } catch (e) {
-            return null;
-        }
+            const saved = JSON.parse(localStorage.getItem(CONFIG.cabinetKey));
+            if (saved) return saved;
+
+            // Перенос имени из старого демо-кабинета сайта
+            const old = JSON.parse(localStorage.getItem(OLD_USER_KEY));
+            localStorage.removeItem(OLD_USER_KEY);
+            if (old && old.name) {
+                const migrated = { version: 1, name: old.name, age: old.age, palette: old.palette || 'mint' };
+                localStorage.setItem(CONFIG.cabinetKey, JSON.stringify(migrated));
+                return migrated;
+            }
+        } catch (e) { /* хранилище недоступно — работаем как гость */ }
+        return null;
     },
 
-    saveUser() {
-        try {
-            if (this.user) localStorage.setItem(STORAGE_KEY, JSON.stringify(this.user));
-            else localStorage.removeItem(STORAGE_KEY);
-        } catch (e) { /* хранилище недоступно — работаем без него */ }
+    cabinetLink(courseId) {
+        return CONFIG.cabinetUrl + (courseId ? '?start=' + encodeURIComponent(courseId) : '');
+    },
+
+    // Сводка прогресса для главной: считается из данных кабинета
+    progressSummary(u) {
+        const lessons = Object.values(u.lessons || {});
+        const today = new Date();
+        const key = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+        const streakAlive = u.lastActive === key(today) || u.lastActive === key(yesterday);
+        return {
+            xp: u.xp || 0,
+            stars: lessons.reduce((sum, l) => sum + (l.stars || 0), 0),
+            lessons: lessons.filter(l => l.stars > 0).length,
+            badges: Object.keys(u.achievements || {}).length,
+            streak: streakAlive ? (u.streak || 0) : 0
+        };
+    },
+
+    renderWelcomeBack() {
+        const box = $('#welcome-back');
+        if (!this.user) { box.hidden = true; return; }
+        const s = this.progressSummary(this.user);
+        box.hidden = false;
+        $('#welcome-title').textContent = `Welcome back, ${this.user.name}!`;
+        $('#welcome-bobik').innerHTML = this.bobik(s.lessons ? 'joy' : 'hello');
+        $('#welcome-cta').textContent = s.lessons ? 'Continue learning →' : 'Start learning →';
+        $('#welcome-stats').innerHTML = s.lessons
+            ? [
+                ['💎', s.xp, 'XP'],
+                ['⭐', s.stars, plural(s.stars, 'star')],
+                ['📚', s.lessons, plural(s.lessons, 'lesson') + ' passed'],
+                ['🔥', s.streak, plural(s.streak, 'day') + ' streak'],
+                ['🏆', s.badges, plural(s.badges, 'badge')]
+            ].map(([icon, value, label]) => `<li><span aria-hidden="true">${icon}</span> <b>${value}</b> ${label}</li>`).join('')
+            : '<li>Your first lesson is waiting. Let’s earn some stars! ⭐</li>';
     },
 
     // ---------- Бобик ----------
@@ -141,14 +176,15 @@ const app = {
     // ---------- Навигация ----------
     onRoute() {
         const name = (location.hash.replace(/^#\/?/, '') || 'home').split('?')[0];
-        let route = ROUTES[name] ? name : 'home';
 
-        if (route === 'cabinet' && !this.user) {
-            route = this.route === 'cabinet' ? 'home' : this.route;
-            history.replaceState(null, '', route === 'home' ? '#/' : '#/' + route);
+        // Старые ссылки на кабинет внутри сайта ведут в настоящий кабинет
+        if (name === 'cabinet') {
+            history.replaceState(null, '', '#/');
+            if (this.user) { location.href = this.cabinetLink(); return; }
             this.openModal('login');
         }
 
+        const route = ROUTES[name] ? name : 'home';
         const changed = route !== this.route;
         this.route = route;
 
@@ -158,7 +194,6 @@ const app = {
             else a.removeAttribute('aria-current');
         });
 
-        if (route === 'cabinet') this.renderCabinet();
         this.renderHero(route);
         this.closeMenu();
 
@@ -173,12 +208,7 @@ const app = {
         $('#hero-kicker').textContent = r.kicker;
         $('#hero-lead').textContent = r.lead;
 
-        const title = $('#hero-title');
-        if (route === 'cabinet' && this.user) {
-            title.textContent = `Hi, ${this.user.name}!`;
-        } else {
-            title.innerHTML = r.title;
-        }
+        $('#hero-title').innerHTML = r.title;
 
         const bubble = $('#bubble');
         bubble.textContent = r.bubble;
@@ -217,8 +247,11 @@ const app = {
                         <li>${c.level}</li>
                     </ul>
                     <div class="course__foot">
-                        <span class="course__free">First lesson free</span>
-                        <button class="btn" type="button" data-open="lead" data-course="${c.id}">Start</button>
+                        ${c.playable
+                            ? `<span class="course__free">Try it right now</span>
+                               <a class="btn" href="${this.cabinetLink(c.id)}">Play now ▶</a>`
+                            : `<span class="course__free">First lesson free</span>
+                               <button class="btn" type="button" data-open="lead" data-course="${c.id}">Start</button>`}
                     </div>
                 </div>
             </article>`;
@@ -239,82 +272,6 @@ const app = {
         });
     },
 
-    // ---------- Кабинет ----------
-    newUser(name, age) {
-        // Демо-прогресс, пока нет бэкенда
-        const mine = COURSES.filter(c => c.age === age);
-        const progress = {};
-        mine.forEach((c, i) => { progress[c.id] = i === 0 ? 60 : 0; });
-        return { name, age, palette: this.palette, stars: 12, streak: 3, progress };
-    },
-
-    renderCabinet() {
-        const u = this.user;
-        const mine = COURSES.filter(c => u.progress[c.id] !== undefined);
-        const done = mine.reduce((sum, c) => sum + Math.round(c.lessons * u.progress[c.id] / 100), 0);
-        const earned = 3;
-
-        $('#stats').innerHTML = [
-            ['⭐', u.stars, plural(u.stars, 'star')],
-            ['🔥', u.streak, plural(u.streak, 'day') + ' in a row'],
-            ['📚', done, plural(done, 'lesson') + ' done'],
-            ['🏆', earned, plural(earned, 'badge')]
-        ].map(([icon, value, label]) => `
-            <div class="stat">
-                <span class="stat__icon" aria-hidden="true">${icon}</span>
-                <span class="stat__value">${value}</span>
-                <span class="stat__label">${label}</span>
-            </div>`).join('');
-
-        $('#my-courses').innerHTML = mine.map((c, i) => {
-            const p = u.progress[c.id];
-            const locked = i > 0 && u.progress[mine[i - 1].id] < 100 && p === 0;
-            return `
-                <article class="my-course${locked ? ' is-locked' : ''}">
-                    <div class="my-course__thumb" style="--thumb:${c.thumb}">${this.bobik(locked ? 'sleep' : c.pose, c.palette)}</div>
-                    <div>
-                        <h3>${c.title}</h3>
-                        <p class="my-course__meta">${locked ? '🔒 Unlocks after the previous course' : `${p}% · ${c.lessons} ${plural(c.lessons, 'lesson')}`}</p>
-                        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}" aria-label="${c.title} progress">
-                            <div class="progress__fill" data-value="${p}"></div>
-                        </div>
-                    </div>
-                    ${locked ? '' : `<button class="btn" type="button" data-continue="${c.id}">${p > 0 ? 'Continue' : 'Start'}</button>`}
-                </article>`;
-        }).join('');
-
-        $('#profile-bobik').innerHTML = this.bobik('delight');
-        $('#profile-name').textContent = u.name;
-        $('#profile-age').textContent = `${AGE_LABEL[u.age]} · Level ${1 + Math.floor(u.stars / 10)}`;
-
-        requestAnimationFrame(() => {
-            $$('#my-courses .progress__fill').forEach(f => { f.style.width = f.dataset.value + '%'; });
-        });
-
-        $('#badges').innerHTML = BADGES.map((b, i) => `
-            <div class="badge${i < earned ? '' : ' is-locked'}">
-                <span class="badge__icon" aria-hidden="true">${b.icon}</span>
-                <h3>${b.title}</h3>
-            </div>`).join('');
-
-        $$('#palette-picker .swatch').forEach(s => {
-            s.setAttribute('aria-checked', String(s.dataset.palette === this.palette));
-        });
-    },
-
-    setPalette(name) {
-        this.palette = name;
-        if (this.user) {
-            this.user.palette = name;
-            this.saveUser();
-        }
-        this.drawStaticBobiks();
-        this.renderCabinet();
-        this.setHeroBobik('surprise');
-        clearTimeout(this.paletteTimer);
-        this.paletteTimer = setTimeout(() => this.setHeroBobik(this.pose), 1200);
-    },
-
     // ---------- Авторизация ----------
     updateAuthButton() {
         const btn = $('#auth-btn');
@@ -329,23 +286,16 @@ const app = {
         }
     },
 
+    // Создаёт профиль в общем хранилище и открывает кабинет (выход — в самом кабинете)
     login(form) {
         const data = new FormData(form);
         const name = String(data.get('name')).trim();
         if (!name) return;
-        this.user = this.newUser(name, data.get('age'));
-        this.saveUser();
-        this.updateAuthButton();
-        this.closeModal('login');
-        form.reset();
-        location.hash = '#/cabinet';
-    },
-
-    logout() {
-        this.user = null;
-        this.saveUser();
-        this.updateAuthButton();
-        location.hash = '#/';
+        this.user = { version: 1, name, age: data.get('age'), palette: this.palette };
+        try {
+            localStorage.setItem(CONFIG.cabinetKey, JSON.stringify(this.user));
+        } catch (e) { /* без хранилища кабинет спросит имя ещё раз */ }
+        location.href = this.cabinetLink(form.dataset.course);
     },
 
     // ---------- Заявка ----------
@@ -400,36 +350,39 @@ const app = {
             if (!e.target.closest('#nav')) this.closeMenu();
         });
 
+        // Вошёл — сразу в кабинет, гость — сначала знакомство
         $('#auth-btn').addEventListener('click', () => {
-            if (this.user) location.hash = '#/cabinet';
+            if (this.user) location.href = this.cabinetLink();
             else this.openModal('login');
         });
-        $('#logout-btn').addEventListener('click', () => this.logout());
+        $$('[data-cabinet-link]').forEach(a => {
+            a.href = this.cabinetLink();
+            a.addEventListener('click', e => {
+                if (this.user) return;
+                e.preventDefault();
+                this.openModal('login');
+            });
+        });
 
         $('#age-filter').addEventListener('click', e => {
             const chip = e.target.closest('.chip');
             if (chip) this.filterCourses(chip.dataset.age);
         });
 
-        $('#palette-picker').addEventListener('click', e => {
-            const sw = e.target.closest('.swatch');
-            if (sw) this.setPalette(sw.dataset.palette);
-        });
-
-        // Кнопки, открывающие модалки, и «Продолжить» в кабинете
+        // Кнопки, открывающие модалки
         document.addEventListener('click', e => {
             const opener = e.target.closest('[data-open]');
             if (opener) this.openModal(opener.dataset.open, opener.dataset.course);
 
-            const cont = e.target.closest('[data-continue]');
-            if (cont) {
-                const c = COURSES.find(x => x.id === cont.dataset.continue);
-                this.setHeroBobik('run');
-                $('#bubble').textContent = `Off to "${c.title}"!`;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-
             if (e.target.closest('[data-close]')) e.target.closest('dialog').close();
+        });
+
+        // Вернулись на сайт из кабинета кнопкой «назад» — обновляем прогресс
+        window.addEventListener('pageshow', e => {
+            if (!e.persisted) return;
+            this.user = this.loadUser();
+            this.updateAuthButton();
+            this.renderWelcomeBack();
         });
 
         // Закрытие модалки по клику на фон
