@@ -454,6 +454,8 @@ button { font: inherit; color: inherit; }
 }
 
 .link-more {
+    display: inline-block;
+    padding: 10px 0;
     font-family: var(--font-display);
     font-weight: 700;
     color: var(--blue);
@@ -949,7 +951,7 @@ button { font: inherit; color: inherit; }
 }
 .footer__brand p { margin-top: 8px; color: var(--ink-soft); max-width: 22em; }
 .footer__nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
-.footer__nav a { font-weight: 800; text-decoration: none; color: var(--ink-soft); }
+.footer__nav a { display: inline-block; padding: 10px 0; font-weight: 800; text-decoration: none; color: var(--ink-soft); }
 .footer__nav a:hover { color: var(--ink); text-decoration: underline; }
 .footer__copy { width: 100%; color: var(--ink-soft); font-size: 15px; }
 
@@ -959,8 +961,10 @@ button { font: inherit; color: inherit; }
     padding: 0;
     border: 0;
     border-radius: 32px;
+    max-height: calc(100dvh - 16px);
     background: transparent;
-    overflow: visible;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     color: var(--ink);
 }
 .modal::backdrop { background: rgba(47, 62, 107, .45); backdrop-filter: blur(4px); }
@@ -969,7 +973,7 @@ button { font: inherit; color: inherit; }
 .modal__box {
     position: relative;
     padding: 70px 28px 28px;
-    margin-top: 70px;
+    margin-top: 82px;
     border-radius: 32px;
     background: #fff;
     text-align: center;
@@ -1043,6 +1047,15 @@ button { font: inherit; color: inherit; }
 @keyframes drop {
     from { transform: translateY(-20px); opacity: 0; }
     to { transform: none; opacity: 1; }
+}
+
+/* На тач-экранах hover «залипает» после нажатия: отключаем подъём карточек */
+@media (hover: none) {
+    .feature:hover, .course:hover, .swatch:hover, .btn:hover { transform: none; }
+    .course:hover { box-shadow: var(--shadow); }
+    .btn:hover { box-shadow: 0 5px 0 var(--btn-edge); filter: none; }
+    .course:hover .course__bot { transform: none; }
+    .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--btn-edge); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1139,7 +1152,14 @@ button { font: inherit; color: inherit; }
     .stat__value { font-size: 28px; }
     .course-grid, .cabinet__side { grid-template-columns: 1fr; }
     .badges { grid-template-columns: repeat(2, 1fr); }
-    .toolbar { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .toolbar { flex-direction: column; align-items: stretch; gap: 4px; }
+    .chips { margin: 0 -16px; padding: 8px 16px 12px; }
+    .hero__kicker { font-size: 14px; }
+    .footer__nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; width: 100%; }
+    .modal__box { padding: 56px 18px 20px; margin-top: 66px; }
+    .modal__bot { width: 120px; top: -66px; }
+    .modal__box h2 { font-size: 24px; }
+    .field input, .field select { padding: 12px 14px; }
     .steps-band, .skills { padding: 32px 20px; border-radius: 28px; }
     .my-course { grid-template-columns: 72px 1fr; gap: 14px; }
     .my-course__thumb { width: 72px; height: 72px; border-radius: 18px; }
