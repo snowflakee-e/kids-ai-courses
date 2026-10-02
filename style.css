@@ -127,6 +127,8 @@ button { font: inherit; color: inherit; }
 .btn--white { --btn-bg: #fff; --btn-edge: #C9DDF2; }
 .btn--login { --btn-bg: var(--blue); --btn-edge: var(--blue-deep); color: #fff; }
 .btn--login .btn__icon { font-size: 18px; }
+.btn--login { max-width: 220px; }
+.btn--login .auth-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- Шапка: небо ---------- */
 .sky {
@@ -257,6 +259,7 @@ button { font: inherit; color: inherit; }
     display: flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
     padding: 10px 16px;
     border-radius: 16px;
     font-weight: 800;
@@ -1079,6 +1082,24 @@ button { font: inherit; color: inherit; }
     .badges { grid-template-columns: repeat(3, 1fr); }
     .cabinet__side { position: static; grid-template-columns: 1fr 1fr; }
     .cabinet__side .btn { grid-column: 1 / -1; }
+}
+
+/* Планшет в ландшафте и маленькие ноутбуки: меню в одну строку без эмодзи */
+@media (min-width: 901px) and (max-width: 1180px) {
+    .nav { gap: 14px; }
+    .nav__menu a { padding: 10px 11px; font-size: 16px; }
+    .nav__menu a > span { display: none; }
+    .logo__text { font-size: 19px; }
+    .btn--login { max-width: 170px; }
+}
+
+/* Планшет: 4 плитки статистики в ряд, одинокая последняя карточка курса — на всю ширину */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .stats { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .stat { padding: 18px 16px; }
+    .stat__value { font-size: 30px; }
+    .course-grid .course:last-child:nth-child(odd) { grid-column: 1 / -1; flex-direction: row; }
+    .course-grid .course:last-child:nth-child(odd) .course__thumb { width: 42%; height: auto; flex-shrink: 0; }
 }
 
 @media (max-width: 900px) {
