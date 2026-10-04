@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Тропа ИИ</title>
+    <meta name="description" content="Курс по ИИ для подростков 14–15 лет: лесная тропа из коротких уроков, роликов, практики и тестов вместе с Блупом.">
+    <meta name="theme-color" content="#C9EBA6">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Rubik:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- КАРТА -->
+    <header class="topbar" id="topbar">
+        <button class="brand" id="brand" type="button" aria-label="Тропа ИИ: к карте">
+            <span class="brand__bot" id="brand-blup" aria-hidden="true"></span>
+            <span class="brand__name">Тропа <b>ИИ</b></span>
+        </button>
+        <ul class="pills" aria-label="Твой прогресс">
+            <li class="pill pill--fire" title="Дней подряд"><span aria-hidden="true">🔥</span> <b id="stat-streak">0</b><span class="sr-only"> дней подряд</span></li>
+            <li class="pill pill--star" title="Звёзды"><span aria-hidden="true">⭐</span> <b id="stat-stars">0</b><span class="sr-only"> звёзд</span></li>
+            <li class="pill pill--xp" title="Опыт"><span aria-hidden="true">💎</span> <b id="stat-xp">0</b><span class="sr-only"> XP</span></li>
+        </ul>
+        <button class="icon-btn" id="sound-btn" type="button" aria-label="Выключить звук">🔊</button>
+        <button class="icon-btn" id="settings-btn" type="button" aria-label="Настройки">⚙️</button>
+    </header>
+
+    <main class="screen" id="map-screen">
+        <section class="hello-card" aria-labelledby="hello-title">
+            <div class="hello-card__text">
+                <p class="eyebrow" id="hello-kicker">Блок 1 · Опушка</p>
+                <h1 id="hello-title">Привет!</h1>
+                <div class="level">
+                    <div class="level__row">
+                        <span id="level-name">Уровень 1 · Новичок тропы</span>
+                        <span class="level__xp" id="level-xp">0 / 60 XP</span>
+                    </div>
+                    <div class="bar" role="progressbar" aria-label="Опыт до следующего уровня" aria-valuemin="0" aria-valuemax="100" id="level-bar"><span id="level-fill"></span></div>
+                </div>
+            </div>
+            <button class="btn btn--go btn--lg" id="continue-btn" type="button">Продолжить</button>
+        </section>
+
+        <div class="map" id="map" aria-label="Карта курса"></div>
+
+        <p class="map-note">Прогресс сохраняется в этом браузере.</p>
+    </main>
+
+    <!-- УРОК -->
+    <section class="lesson" id="lesson" hidden aria-label="Урок">
+        <div class="lesson__top">
+            <button class="icon-btn" id="lesson-close" type="button" aria-label="Выйти на карту">✕</button>
+            <div class="steps" id="steps" aria-hidden="true"></div>
+            <span class="combo" id="combo" hidden>🔥 <b>0</b></span>
+        </div>
+        <div class="lesson__body">
+            <div class="task" id="task"></div>
+        </div>
+        <div class="lesson__foot">
+            <div class="feedback" id="feedback" hidden role="status" aria-live="polite">
+                <div class="feedback__bot" id="feedback-blup" aria-hidden="true"></div>
+                <div class="feedback__text">
+                    <b id="feedback-title"></b>
+                    <p id="feedback-text"></p>
+                </div>
+                <span class="xp-pop" id="xp-pop" aria-hidden="true"></span>
+            </div>
+            <div class="foot-row">
+                <button class="link-btn" id="skip-btn" type="button" hidden>Пропустить</button>
+                <button class="btn btn--go btn--lg btn--block" id="next-btn" type="button">Дальше</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ИТОГ УРОКА -->
+    <section class="result" id="result" hidden aria-labelledby="result-title">
+        <div class="result__box">
+            <div class="result__bot" id="result-blup" aria-hidden="true"></div>
+            <p class="eyebrow" id="result-kicker"></p>
+            <h1 id="result-title"></h1>
+            <div class="result__stars" id="result-stars"></div>
+            <p class="result__lead" id="result-lead"></p>
+            <ul class="result__stats" id="result-stats"></ul>
+            <ul class="result__extra" id="result-extra"></ul>
+            <div class="result__actions">
+                <button class="btn btn--go btn--lg btn--block" id="result-map" type="button">На карту →</button>
+                <button class="link-btn" id="result-retry" type="button">Пройти ещё раз</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Знакомство -->
+    <dialog class="sheet" id="hello-sheet" aria-labelledby="hello-sheet-title">
+        <form class="sheet__box" id="hello-form" method="dialog">
+            <div class="sheet__bot" id="hello-blup" aria-hidden="true"></div>
+            <h2 id="hello-sheet-title">Привет! Я Блуп</h2>
+            <p>Проведу тебя по Тропе ИИ: короткие уроки, ролики, практика и тесты. За каждую станцию — звёзды и опыт.</p>
+            <label class="field">
+                <span>Как тебя зовут?</span>
+                <input id="hello-name" name="name" type="text" autocomplete="given-name" maxlength="24" required placeholder="Например, Аня">
+            </label>
+            <button class="btn btn--go btn--lg btn--block" type="submit">Погнали 🚀</button>
+        </form>
+    </dialog>
+
+    <!-- Станция -->
+    <dialog class="sheet" id="station-sheet" aria-labelledby="station-title">
+        <div class="sheet__box">
+            <button class="sheet__close icon-btn" type="button" data-close aria-label="Закрыть">✕</button>
+            <div class="station-head">
+                <span class="station-head__icon" id="station-icon" aria-hidden="true"></span>
+                <div>
+                    <p class="eyebrow" id="station-kicker"></p>
+                    <h2 id="station-title"></h2>
+                </div>
+            </div>
+            <p id="station-goal"></p>
+            <ul class="chips" id="station-chips"></ul>
+            <p class="station-best" id="station-best"></p>
+            <button class="btn btn--go btn--lg btn--block" id="station-start" type="button">Начать</button>
+            <button class="link-btn" id="station-restart" type="button" hidden>Начать заново</button>
+        </div>
+    </dialog>
+
+    <!-- Настройки -->
+    <dialog class="sheet" id="settings-sheet" aria-labelledby="settings-title">
+        <form class="sheet__box" id="settings-form" method="dialog">
+            <button class="sheet__close icon-btn" type="button" data-close aria-label="Закрыть">✕</button>
+            <h2 id="settings-title">Настройки</h2>
+            <label class="field">
+                <span>Имя</span>
+                <input id="settings-name" name="name" type="text" maxlength="24" required>
+            </label>
+            <label class="switch">
+                <input id="settings-sound" type="checkbox">
+                <span>Звуки</span>
+            </label>
+            <label class="switch">
+                <input id="settings-unlock" type="checkbox">
+                <span>Режим автора: открыть все станции</span>
+            </label>
+            <div class="badges" id="badges"></div>
+            <div class="danger" id="reset-box">
+                <button class="link-btn link-btn--danger" id="reset-btn" type="button">Сбросить прогресс</button>
+                <div class="danger__confirm" id="reset-confirm" hidden>
+                    <p>Сотрём опыт, звёзды и награды в этом браузере. Точно?</p>
+                    <div class="danger__row">
+                        <button class="btn btn--bad" id="reset-yes" type="button">Да, сбросить</button>
+                        <button class="btn btn--white" id="reset-no" type="button">Отмена</button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn--go btn--block" type="submit">Сохранить</button>
+        </form>
+    </dialog>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+    <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+
+    <script src="../bobik.js"></script>
+    <script src="course.js"></script>
+    <script src="game.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

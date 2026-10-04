@@ -1,0 +1,78 @@
+# ТЗ на ролики «Тропа ИИ»
+
+Файл собирается из `course.js` командой `node tools/video-tz.js > VIDEO_TZ.md`. Сцены правь в `course.js`, не здесь: из них же играет раскадровка-заглушка в уроке.
+
+## Формат
+
+- Аудитория: 14–15 лет. Тон «старший брат или сестра»: быстро, с юмором, без сюсюканья.
+- Длина 30–40 секунд, одна идея на ролик. Хук — в первые 3 секунды.
+- 16:9, 1920×1080 для урока. Из того же материала — нарезка 9:16 для Reels и TikTok (реклама курса).
+- Субтитры вшиты: подростки часто смотрят без звука. Текст из колонки «Экран» — крупно, 3–6 слов.
+- Блуп — состояние из `bobik.js` (колонка «Блуп»), палитра `peach`.
+
+## Как снимать
+
+| Вариант | Как | Когда брать |
+|---|---|---|
+| Блуп-анимация | PNG Блупа в нужной позе из `bobik.js` → Kling image-to-video по колонке «Визуал» → озвучка колонки «Голос» (голос HeyGen или ElevenLabs) → сборка в CapCut | Основной вариант для теории |
+| Ведущий HeyGen | Аватар-ведущий 20–25 лет читает «Голос», Блуп — стикер-реакция в углу | Если тесты покажут, что робот для 14–15 лет выглядит детским |
+| Скринкаст | Запись реального чата: плохой промпт → хороший | Уроки «Как правильно спросить» и «ИИ тоже ошибается»: дешевле и убедительнее анимации |
+
+Проверь до массового запуска: аватар HeyGen по фото может не распознать лицо у робота с экраном вместо лица. Сделай одну сцену и посмотри на синхрон губ.
+
+## Как подключить готовый ролик
+
+Положи файл в `ai-trail/videos/` и в `course.js` у задания `video` заполни `src: 'videos/l1.mp4'` (или `youtube: 'ID'`). Раскадровка отключится сама, а кнопка «Дальше» откроется после 90% просмотра.
+
+## Автоматизация
+
+`node tools/video-tz.js --json` отдаёт те же сцены в JSON. Сценарий для Make.com: JSON → итерация по сценам → генерация (HeyGen: голос и аватар, Kling: визуал) → ожидание готовности → склейка → загрузка файла → путь в `src`.
+
+## 1. Что такое ИИ: «Как ИИ научился узнавать котиков»
+
+32 сек · 16:9 · файл `videos/l1.mp4`
+
+| # | Сек | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|
+| 1 | 4 | hello | Как ИИ отличает кота от собаки? | Как ИИ понимает, что на фото кот, а не собака? Покажу за 30 секунд. | Cute flat-style robot mascot waves at camera in a sunny cartoon forest clearing, photos of a cat and a dog float beside it |
+| 2 | 6 | think | Правила не работают | Можно написать правила: уши треугольные, есть усы. Но у собак тоже бывают усы, а кот может прижать уши. Правила ломаются. | Checklist with "triangle ears" and "whiskers" crossing out one by one, confused dog with whiskers, flat 2D motion graphics |
+| 3 | 6 | point | 1 000 000 примеров | Поэтому ИИ просто показывают миллион фото: вот кот, вот не кот. Сначала он постоянно ошибается. | Endless wall of small cat and dog photos with labels scrolling fast, robot watching, flat colorful style |
+| 4 | 6 | surprise | Ошибка → поправка → ещё раз | После каждой ошибки ИИ чуть-чуть подкручивает свои настройки. И так миллионы раз. | Robot turning many small knobs on a control panel, red cross turns into green check, fast loop |
+| 5 | 5 | joy | Обучение = примеры + ошибки | В итоге он узнаёт котов даже на фото, которых никогда не видел. Это и называют обучением. | New cat photo appears, robot highlights it with a green frame and the label "cat", confetti |
+| 6 | 5 | wink | ИИ знает только то, на чём учился | Но если показывать ИИ только рыжих котов, чёрного он может и не узнать. | Row of ginger cats, then a black cat appears with a question mark above it, robot shrugs |
+
+## 2. Зачем тебе ИИ: «ИИ на домашке: как можно и как нельзя»
+
+27 сек · 16:9 · файл `videos/l2.mp4`
+
+| # | Сек | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|
+| 1 | 4 | hello | ИИ на домашке: можно или нельзя? | ИИ на домашке — это читерство или нормально? Зависит от того, как ты им пользуешься. | Robot mascot next to a school desk with notebook and phone, big question mark, flat cartoon style |
+| 2 | 6 | sad | ❌ «Напиши сочинение» | Плохой способ: «напиши сочинение про осень». Сдал, получил оценку, но ничему не научился. И учителя такие тексты замечают. | Phone chat with a long generated essay, teacher character raises an eyebrow, red cross stamp |
+| 3 | 6 | idea | ✅ «Объясни, как будто мне 10» | Хороший способ: «объясни дроби так, будто мне 10 лет». Ты понял тему и дальше решаешь сам. | Pizza sliced into fractions 1/2, 1/4, 1/8 appears from the chat, light bulb above a teen head |
+| 4 | 6 | point | ✅ «Найди ошибки в моём тексте» | Или: «вот моё сочинение, найди ошибки и объясни их». Текст твой, а ИИ работает как репетитор. | Handwritten text with a few words highlighted in yellow and short notes on the margin |
+| 5 | 5 | joy | ИИ = репетитор 24/7 | Пользуйся ИИ как репетитором, который не устаёт от вопросов. Вот это и есть суперсила. | Robot mascot in a tiny graduation cap gives a thumbs up, clock showing 24/7, green check |
+
+## 3. Как правильно спросить: «Один вопрос — два ответа»
+
+28 сек · 16:9 · файл `videos/l3.mp4`
+
+| # | Сек | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|
+| 1 | 4 | hello | Почему ИИ отвечает «не то»? | Бывает, спрашиваешь ИИ, а он отвечает совсем не то. Давай разберёмся почему. | Teen looks at a phone with a confused face, chat bubble with a long useless answer, flat cartoon |
+| 2 | 6 | sad | «Помоги с докладом» | Вот запрос: «помоги с докладом». ИИ не знает тему, твой возраст и сколько у тебя времени. Он гадает. | Robot blindfolded throwing darts at a target, darts miss, playful flat animation |
+| 3 | 7 | point | Роль + Задача + Контекст + Формат | А теперь так: «Ты учитель биологии. Составь план доклада про пчёл. Мне 14, выступление на 3 минуты. Дай план из 5 пунктов». | Four colorful puzzle pieces labeled Role, Task, Context, Format snap together into one prompt |
+| 4 | 6 | delight | Ответ в точку | И ответ уже в точку: понятный план нужной длины. ИИ тот же, просто задание стало понятным. | Dart hits the bullseye, a neat 5-point plan about bees appears on the phone, bees fly around |
+| 5 | 5 | wink | Не зашло? Уточни! | Если ответ не зашёл, не начинай заново. Просто уточни: «короче», «проще», «добавь пример». | Chat with short follow-up messages "shorter", "simpler", "add an example", answer shrinks and gets clearer |
+
+## 4. ИИ тоже ошибается: «Почему ИИ ошибается с уверенным видом»
+
+27 сек · 16:9 · файл `videos/l4.mp4`
+
+| # | Сек | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|
+| 1 | 4 | hello | ИИ может ошибаться? | Спойлер: да, и ещё как. Причём с очень уверенным видом. | Robot mascot in sunglasses looking overconfident, cartoon forest background |
+| 2 | 6 | think | Слово за словом | Чат-бот пишет ответ по одному слову и каждый раз выбирает самое вероятное продолжение. С учебником он не сверяется. | Words appear one by one on a chat bubble, each with a small probability bar above it |
+| 3 | 6 | surprise | Звучит правдоподобно ≠ правда | Поэтому он может выдумать дату, цитату или даже целую книгу. Просто потому, что это звучит похоже на правду. | Book with a made-up title appears, then a magnifying glass reveals the cover is empty |
+| 4 | 6 | point | Проверь в 2 источниках | Твоя суперсила — проверка. Важный факт сверяй минимум в двух надёжных источниках: учебник, энциклопедия, официальный сайт. | Two trusted sources (textbook and encyclopedia website) side by side with green checkmarks |
+| 5 | 5 | victory | Решаешь ты, а не ИИ | ИИ — помощник. А решаешь, чему верить, всегда ты. | Teen holds a phone confidently, robot jumps with joy next to them, sunny forest |
