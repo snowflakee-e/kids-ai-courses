@@ -24,6 +24,9 @@
     --peach: #FFB28E;
     --sky: #8EC5FF;
     --lav: #B7A6F2;
+    --lav-soft: #EEE9FF;       /* ответвления: необязательные и более сложные станции */
+    --lav-deep: #8C78D8;
+    --lav-ink: #5B47A8;
     --pink: #F59DB0;
 
     /* Лес на карте */
@@ -76,6 +79,7 @@
         --cap: #C9554B; --dot: #F0E6D8; --flower: #D9CF7E;
         --fog: #0E1B24; --fog-op: .6; --ff-op: 1;
         --sign: #8A6141; --sign-deep: #6C4A31; --sign-ink: #FFF1DC;
+        --lav-soft: #2C2848; --lav-deep: #7E6CC9; --lav-ink: #D9D0FF;
         --shadow: 0 10px 30px rgba(0, 0, 0, .35);
         color-scheme: dark;
     }
@@ -92,6 +96,7 @@
     --cap: #C9554B; --dot: #F0E6D8; --flower: #D9CF7E;
     --fog: #0E1B24; --fog-op: .6; --ff-op: 1;
     --sign: #8A6141; --sign-deep: #6C4A31; --sign-ink: #FFF1DC;
+    --lav-soft: #2C2848; --lav-deep: #7E6CC9; --lav-ink: #D9D0FF;
     --shadow: 0 10px 30px rgba(0, 0, 0, .35);
     color-scheme: dark;
 }
@@ -330,8 +335,61 @@ button { font: inherit; color: inherit; }
     background: var(--zone-1);
     box-shadow: var(--shadow);
 }
+.map__inner { position: relative; }
 .map__svg { display: block; width: 100%; height: auto; }
 .map__layer { position: absolute; inset: 0; }
+
+/* Широкий экран: тропа слева направо, карта — лента, которая листается вбок по блокам */
+.map--h, .map--book {
+    max-width: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--tree-2) transparent;
+}
+.map--h { height: clamp(400px, calc(100vh - 310px), 600px); height: clamp(400px, calc(100dvh - 310px), 600px); }
+/* Планшет стоя: карта — высокая книжная страница, у неё корешок и обрез страниц снизу */
+.map--book {
+    height: clamp(540px, calc(100vh - 320px), 900px);
+    height: clamp(540px, calc(100dvh - 320px), 900px);
+    border-radius: 14px 32px 32px 14px;
+    border-left: 12px solid var(--sign-deep);
+    box-shadow: 0 5px 0 var(--surface), 0 9px 0 var(--line), 0 14px 0 var(--surface), var(--shadow);
+}
+.map--h .map__inner, .map--book .map__inner { height: 100%; }
+.map--h .map__svg, .map--book .map__svg { height: 100%; }
+.map--h .gate, .map--book .gate { width: 236px; }
+
+.map-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto 12px;
+}
+.map-nav[hidden] { display: none; }
+.map-nav__mid { flex: 1; min-width: 0; text-align: center; }
+.map-nav__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.map-nav__dots { display: flex; justify-content: center; gap: 8px; margin-top: 6px; }
+.map-nav__dots button {
+    width: 28px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--line);
+    cursor: pointer;
+}
+.map-nav__dots button.is-on { background: var(--go); }
+.map-nav .icon-btn { font-size: 28px; line-height: 1; }
+.map-nav .icon-btn:disabled { opacity: .4; cursor: default; }
 
 .map-note {
     margin-top: 14px;
@@ -359,6 +417,14 @@ button { font: inherit; color: inherit; }
 .trail { stroke: var(--trail); stroke-width: 26; }
 .trail-steps { stroke: var(--trail-edge); stroke-width: 4; stroke-dasharray: 1 14; }
 .trail-done { stroke: var(--trail-done); stroke-width: 8; }
+
+/* Ответвление: узкая тропка с пунктиром, золотая после прохождения */
+.branch__edge, .branch__path, .branch__dash { fill: none; stroke-linecap: round; }
+.branch__edge { stroke: var(--trail-edge); stroke-width: 20; }
+.branch__path { stroke: var(--trail); stroke-width: 14; }
+.branch__dash { stroke: var(--lav-deep); stroke-width: 4; stroke-dasharray: 6 12; }
+.branch.is-done .branch__dash { stroke: var(--trail-done); stroke-dasharray: none; }
+.branch.is-locked { opacity: .5; }
 
 .fireflies { opacity: var(--ff-op); }
 .fireflies circle { fill: var(--firefly); animation: twinkle 3.2s ease-in-out infinite; }
@@ -437,6 +503,15 @@ button { font: inherit; color: inherit; }
 .node--open { background: var(--surface); box-shadow: 0 6px 0 var(--line); }
 .node--locked, .node--soon { filter: saturate(.2); }
 .node--soon { opacity: .75; font-family: var(--font-display); font-weight: 800; color: var(--surface); }
+.node--extra { width: 54px; height: 54px; font-size: 24px; }
+.node--extra::before {
+    content: '';
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
+    border: 3px dashed var(--lav-deep);
+}
+.node--extra.node--open { background: var(--lav-soft); box-shadow: 0 6px 0 var(--lav-deep); }
 .node.is-shake { animation: shake .4s ease; }
 .node.is-pop { animation: pop .6s cubic-bezier(.2, 1.6, .4, 1); }
 
@@ -457,6 +532,21 @@ button { font: inherit; color: inherit; }
     cursor: pointer;
 }
 .label--left { text-align: right; align-items: flex-end; }
+.label--below, .label--above { width: max-content; max-width: 50%; align-items: center; text-align: center; }
+.label--below { transform: translate(-50%, 0); }
+.label--above { transform: translate(-50%, -100%); }
+.label--extra { box-shadow: 0 4px 0 var(--lav-deep); }
+.label__tag {
+    margin: 2px 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--lav-soft);
+    color: var(--lav-ink);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
 .label__kicker { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
 .label__title { font-family: var(--font-display); font-size: 16px; font-weight: 700; line-height: 1.2; }
 .label__meta { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
@@ -969,6 +1059,50 @@ button { font: inherit; color: inherit; }
 }
 .mission__prompt .btn { position: absolute; right: 10px; bottom: 10px; min-height: 40px; padding: 8px 14px; font-size: 15px; }
 .mission__note { font-size: 14px; color: var(--ink-soft); }
+.mission__steps { display: grid; gap: 6px; margin: 0 0 14px; padding-left: 24px; font-weight: 700; }
+
+/* Порядок шагов */
+.order__done { display: grid; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; counter-reset: step; }
+.order__step {
+    counter-increment: step;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--good-soft);
+    box-shadow: inset 0 0 0 2px var(--go);
+    font-weight: 700;
+    animation: rise .3s ease;
+}
+.order__step::before {
+    content: counter(step);
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--go);
+    color: #FFFFFF;
+    font-family: var(--font-display);
+    font-size: 14px;
+}
+.order__hint { margin-bottom: 10px; font-weight: 700; color: var(--ink-soft); }
+.order__pool { display: grid; gap: 8px; }
+.order__item {
+    width: 100%;
+    padding: 12px 14px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: 0 4px 0 var(--line), inset 0 0 0 2px var(--line);
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+.order__item:active { transform: translateY(3px); }
+.order__item.is-wrong { background: var(--bad-soft); box-shadow: inset 0 0 0 2px var(--bad); animation: shake .4s ease; }
 
 /* Блуп-помощник: чат в задании и в окне разбора ошибки */
 .chat-log { display: grid; gap: 8px; }
@@ -1100,6 +1234,7 @@ button { font: inherit; color: inherit; }
     font-size: 28px;
 }
 .station-best { font-weight: 700; color: var(--ink-soft); }
+.chips .chip--extra { background: var(--lav-soft); box-shadow: inset 0 0 0 2px var(--lav-deep); color: var(--lav-ink); }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .chips li {
@@ -1199,6 +1334,14 @@ button { font: inherit; color: inherit; }
         animation-iteration-count: 1 !important;
         transition-duration: .01ms !important;
     }
+}
+
+/* ---------- Ширина страницы под раскладку карты (как mapMode в app.js) ---------- */
+@media (min-width: 600px) and (orientation: landscape) {
+    .screen { max-width: 1240px; }
+}
+@media (min-width: 600px) and (orientation: portrait) {
+    .screen { max-width: 920px; }
 }
 
 /* ---------- Узкие экраны ---------- */

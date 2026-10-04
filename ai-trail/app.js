@@ -83,8 +83,16 @@ const UI = {
         btn: {
             next: 'Дальше', gotIt: 'Понятно!', watch: 'Досмотри ролик', choose: 'Выбери ответ',
             sortAll: 'Разложи все карточки', build: 'Собери промпт', tapSentence: 'Нажми на предложение',
-            pickWord: 'Выбери слово', tried: 'Я попробовал(а) ✓'
+            pickWord: 'Выбери слово', tried: 'Я попробовал(а) ✓', order: 'Расставь все шаги'
         },
+        sideQuest: 'Ответвление',
+        extraTag: 'по желанию · сложнее',
+        extraChip: '🧭 Ответвление: по желанию, сложнее',
+        pages: 'Блоки тропы', prevPage: 'Предыдущий блок', nextPage: 'Следующий блок',
+        orderHint: 'Нажимай шаги по порядку: какой первый?',
+        orderPerfect: 'Идеальный порядок!',
+        orderScore: (c, n) => `${c} из ${n} с первого раза`,
+        orderText: 'Порядок шагов решает.',
         combo: n => `Серия ×${n}! 🔥`,
         practice: '🧩 Практика', experiment: '🧩 Эксперимент', mission: '🚀 Миссия',
         video: sec => `🎬 Ролик · ${sec} сек`,
@@ -154,7 +162,7 @@ const UI = {
         helloKicker: (n, title, done, total) => `Block ${n} · ${title} · ${done} of ${total} stations`,
         level: (n, title) => `Level ${n} · ${title}`,
         resume: title => `Continue: ${title}`,
-        blockDone: 'Block complete 🌳',
+        blockDone: 'Trail complete 🏆',
         next: title => `Next: ${title}`,
         start: title => `Start: ${title}`,
         block: n => `Block ${n}`,
@@ -181,8 +189,16 @@ const UI = {
         btn: {
             next: 'Next', gotIt: 'Got it!', watch: 'Finish the video', choose: 'Pick an answer',
             sortAll: 'Sort all the cards', build: 'Build the prompt', tapSentence: 'Tap a sentence',
-            pickWord: 'Pick a word', tried: 'I tried it ✓'
+            pickWord: 'Pick a word', tried: 'I tried it ✓', order: 'Put every step in order'
         },
+        sideQuest: 'Side quest',
+        extraTag: 'optional · harder',
+        extraChip: '🧭 Side quest: optional and harder',
+        pages: 'Trail blocks', prevPage: 'Previous block', nextPage: 'Next block',
+        orderHint: 'Tap the steps in order: which one comes first?',
+        orderPerfect: 'Perfect order!',
+        orderScore: (c, n) => `${c} of ${n} on the first try`,
+        orderText: 'The order of the steps is what makes it work.',
         combo: n => `${n} in a row! 🔥`,
         practice: '🧩 Practice', experiment: '🧩 Experiment', mission: '🚀 Mission',
         video: sec => `🎬 Video · ${sec} sec`,
@@ -427,82 +443,177 @@ const Forest = {
 };
 
 // ---------- Геометрия карты ----------
-const MAP = { W: 360, GATE_GAP: 110, STEP: 140, XS: [100, 260] };
+// Три раскладки. v — телефон: тропа сверху вниз. h — компьютер и планшет лёжа: слева направо.
+// book — планшет стоя (книжная ориентация): тоже слева направо, но страница выше, блоки листаются как главы.
+// Главная тропа идёт через все обязательные станции. Ответвление (урок с extra) отходит от своей станции
+// узкой пунктирной тропкой и обратно не возвращается: его можно пропустить.
+const MAPS = {
+    v: { dir: 'v', W: 360, GATE_GAP: 110, STEP: 140, XS: [100, 260] },
+    h: { dir: 'h', H: 540, GATE_GAP: 200, STEP: 190, Y: 330, WAVE: 26, EXTRA_Y: 150 },
+    book: { dir: 'h', H: 760, GATE_GAP: 200, STEP: 180, Y: 450, WAVE: 34, EXTRA_Y: 230 }
+};
 
-function cubicPoint(a, b, t) {
+function mapMode() {
+    if (window.matchMedia('(max-width: 599px)').matches) return 'v';
+    return window.matchMedia('(orientation: portrait)').matches ? 'book' : 'h';
+}
+
+// Контрольные точки кривой: в раскладке v тропа выходит из станции вниз, в h — вправо
+function bend(a, b, dir) {
+    if (dir === 'h') {
+        const dx = (b.x - a.x) / 2;
+        return [{ x: a.x + dx, y: a.y }, { x: b.x - dx, y: b.y }];
+    }
     const dy = (b.y - a.y) / 2;
-    const p = [a, { x: a.x, y: a.y + dy }, { x: b.x, y: b.y - dy }, b];
+    return [{ x: a.x, y: a.y + dy }, { x: b.x, y: b.y - dy }];
+}
+
+function cubicPoint(a, b, t, dir) {
+    const [c1, c2] = bend(a, b, dir);
     const u = 1 - t;
     return {
-        x: u * u * u * p[0].x + 3 * u * u * t * p[1].x + 3 * u * t * t * p[2].x + t * t * t * p[3].x,
-        y: u * u * u * p[0].y + 3 * u * u * t * p[1].y + 3 * u * t * t * p[2].y + t * t * t * p[3].y
+        x: u * u * u * a.x + 3 * u * u * t * c1.x + 3 * u * t * t * c2.x + t * t * t * b.x,
+        y: u * u * u * a.y + 3 * u * u * t * c1.y + 3 * u * t * t * c2.y + t * t * t * b.y
     };
 }
 
-function segmentD(a, b) {
-    const dy = (b.y - a.y) / 2;
-    return ` C${a.x} ${a.y + dy} ${b.x} ${b.y - dy} ${b.x} ${b.y}`;
+function segmentD(a, b, dir) {
+    const [c1, c2] = bend(a, b, dir);
+    return ` C${c1.x} ${c1.y} ${c2.x} ${c2.y} ${b.x} ${b.y}`;
 }
 
-function buildLayout() {
-    const pts = [{ x: 180, y: 0 }];
-    const gates = [], nodes = [], zones = [];
-    let y = 80, k = 0, playable = 0;
+// Общие поля станции: номер в общем списке, номер на главной тропе блока, тип
+function nodeBase(block, bi, lesson, li) {
+    const st = block.soon ? null : Game.findStation(lesson.id);
+    const num = block.lessons.slice(0, li + 1).filter(l => !l.extra && !l.test).length;
+    return {
+        block, bi, lesson, li, num,
+        soon: !!block.soon, big: !!lesson.test, extra: !!lesson.extra,
+        index: st ? st.index : -1
+    };
+}
+
+const around = (n, r) => ({ x1: n.x - r, x2: n.x + r, y1: n.y - r, y2: n.y + r + 4 });
+
+function layoutV(M) {
+    const W = M.W, mid = W / 2;
+    const L = { mode: 'v', dir: 'v', W, pts: [{ x: mid, y: 0 }], gates: [], nodes: [], zones: [], branches: [], boxes: [] };
+    let y = 80, k = 0;
 
     COURSE.blocks.forEach((block, bi) => {
-        gates.push({ x: 180, y, block, bi, pt: pts.length });
-        zones.push({ bi, top: bi === 0 ? 0 : y - 70, soon: !!block.soon });
-        pts.push({ x: 180, y });
+        L.gates.push({ x: mid, y, block, bi });
+        L.zones.push({ bi, from: bi === 0 ? 0 : y - 70, soon: !!block.soon });
+        L.boxes.push({ x1: 40, x2: W - 40, y1: y - 52, y2: y + 52 });
+        L.pts.push({ x: mid, y });
+        let first = true, last = null, hold = null, afterExtra = false;
+
         block.lessons.forEach((lesson, li) => {
-            y += li === 0 ? MAP.GATE_GAP : MAP.STEP;
-            const node = {
-                x: MAP.XS[k % 2], y, block, bi, lesson, li,
-                soon: !!block.soon, big: !!lesson.test,
-                index: block.soon ? -1 : playable++, pt: pts.length
-            };
-            nodes.push(node);
-            pts.push({ x: node.x, y });
-            k++;
+            const base = nodeBase(block, bi, lesson, li);
+            if (base.extra && last) {
+                // Ответвление уходит на другую сторону карты, подпись под ним; главная тропа идёт прямо вниз
+                const node = { ...base, x: last.x < mid ? W - 98 : 98, y: last.y + M.STEP, parent: last, label: 'below' };
+                L.nodes.push(node);
+                L.branches.push({ a: last, b: node });
+                L.boxes.push(around(node, 40), { x1: node.x - 92, x2: node.x + 92, y1: node.y + 30, y2: node.y + 134 });
+                y = node.y;
+                hold = last.x;
+                afterExtra = true;
+                return;
+            }
+            y += first ? M.GATE_GAP : M.STEP + (afterExtra ? 52 : 0);
+            first = false;
+            const x = hold !== null ? hold : M.XS[k++ % 2];
+            hold = null;
+            afterExtra = false;
+            const node = { ...base, x, y, pt: L.pts.length, label: x > mid ? 'left' : 'right' };
+            L.pts.push({ x, y });
+            L.nodes.push(node);
+            last = node;
+            const left = x > mid;
+            L.boxes.push({ x1: left ? 6 : x + 36, x2: left ? x - 36 : W - 6, y1: y - 40, y2: y + 40 }, around(node, 46));
         });
-        y += MAP.GATE_GAP;
+        y += M.GATE_GAP + (afterExtra ? 70 : 0);
     });
 
-    const end = { x: 180, y: y + 10 };
-    pts.push(end);
-    const H = end.y + 70;
-    zones.forEach((z, i) => { z.bottom = i + 1 < zones.length ? zones[i + 1].top + 14 : H; });
+    L.end = { x: mid, y: y + 10 };
+    L.pts.push(L.end);
+    L.H = L.end.y + 70;
+    L.zones.forEach((z, i) => { z.to = i + 1 < L.zones.length ? L.zones[i + 1].from + 14 : L.H; });
+    return L;
+}
 
-    let d = `M${pts[0].x} ${pts[0].y}`;
-    for (let i = 1; i < pts.length; i++) d += segmentD(pts[i - 1], pts[i]);
+function layoutH(M, mode) {
+    const H = M.H;
+    const L = { mode, dir: 'h', H, STEP: M.STEP, pts: [{ x: 0, y: M.Y }], gates: [], nodes: [], zones: [], branches: [], boxes: [] };
+    let x = 150, k = 0;
 
-    return { W: MAP.W, H, pts, gates, nodes, zones, end, d };
+    COURSE.blocks.forEach((block, bi) => {
+        if (bi > 0) x += M.GATE_GAP;
+        L.gates.push({ x, y: M.Y, block, bi });
+        L.zones.push({ bi, from: bi === 0 ? 0 : x - 110, soon: !!block.soon });
+        L.boxes.push({ x1: x - 124, x2: x + 124, y1: M.Y - 74, y2: M.Y + 74 });
+        L.pts.push({ x, y: M.Y });
+        let first = true, last = null;
+
+        block.lessons.forEach((lesson, li) => {
+            const base = nodeBase(block, bi, lesson, li);
+            if (base.extra && last) {
+                // Ответвление поднимается над тропой между своей станцией и следующей, подпись над ним
+                const node = { ...base, x: last.x + M.STEP / 2, y: M.EXTRA_Y, parent: last, label: 'above' };
+                L.nodes.push(node);
+                L.branches.push({ a: last, b: node });
+                L.boxes.push(around(node, 40), { x1: node.x - M.STEP / 2, x2: node.x + M.STEP / 2, y1: node.y - 120, y2: node.y - 28 });
+                return;
+            }
+            x += first ? M.GATE_GAP : M.STEP;
+            first = false;
+            const y = M.Y + (k++ % 2 ? M.WAVE : -M.WAVE);
+            const node = { ...base, x, y, pt: L.pts.length, label: 'below' };
+            L.pts.push({ x, y });
+            L.nodes.push(node);
+            last = node;
+            L.boxes.push(around(node, 46), { x1: x - M.STEP / 2 + 8, x2: x + M.STEP / 2 - 8, y1: y + 30, y2: y + 124 });
+        });
+    });
+
+    L.end = { x: x + 130, y: M.Y };
+    L.pts.push(L.end);
+    L.W = L.end.x + 90;
+    L.zones.forEach((z, i) => { z.to = i + 1 < L.zones.length ? L.zones[i + 1].from + 14 : L.W; });
+    return L;
+}
+
+function buildLayout(mode) {
+    const M = MAPS[mode];
+    const L = M.dir === 'v' ? layoutV(M) : layoutH(M, mode);
+    let d = `M${L.pts[0].x} ${L.pts[0].y}`;
+    for (let i = 1; i < L.pts.length; i++) d += segmentD(L.pts[i - 1], L.pts[i], L.dir);
+    L.d = d;
+    // Тропка ответвления всегда изгибается по вертикали: вниз на телефоне, вверх на широком экране
+    L.branches.forEach(br => { br.d = `M${br.a.x} ${br.a.y}` + segmentD(br.a, br.b, 'v'); });
+    return L;
 }
 
 // Деревья вокруг тропы: не на тропе, не под подписями и воротами
 function scatterTrees(L) {
     const r = Forest.rng(20261004);
     const samples = [];
-    for (let i = 1; i < L.pts.length; i++) {
-        for (let t = 0; t <= 1; t += .08) samples.push(cubicPoint(L.pts[i - 1], L.pts[i], t));
-    }
-    const boxes = [];
-    L.nodes.forEach(n => {
-        const left = n.x > 180;
-        boxes.push({ x1: left ? 6 : n.x + 36, x2: left ? n.x - 36 : 354, y1: n.y - 40, y2: n.y + 40 });
-        boxes.push({ x1: n.x - 46, x2: n.x + 46, y1: n.y - 46, y2: n.y + 50 });
-    });
-    L.gates.forEach(g => boxes.push({ x1: 40, x2: 320, y1: g.y - 52, y2: g.y + 52 }));
+    const sample = (a, b, dir) => { for (let t = 0; t <= 1; t += .08) samples.push(cubicPoint(a, b, t, dir)); };
+    for (let i = 1; i < L.pts.length; i++) sample(L.pts[i - 1], L.pts[i], L.dir);
+    L.branches.forEach(br => sample(br.a, br.b, 'v'));
 
+    const target = L.W * L.H / 3240;
     const trees = [];
-    for (let i = 0; i < 1400 && trees.length < L.H / 9; i++) {
+    for (let i = 0; i < target * 5 && trees.length < target; i++) {
         const x = 8 + r() * (L.W - 16);
         const y = 30 + r() * (L.H - 40);
-        const zone = L.zones.find(z => y >= z.top && y < z.bottom) || L.zones[0];
+        const at = L.dir === 'v' ? y : x;
+        const zone = L.zones.find(z => at >= z.from && at < z.to) || L.zones[0];
         const [type, , min, max] = Forest.pickType(Forest.MIX[zone.bi % Forest.MIX.length], r);
         const s = min + r() * (max - min);
         const reach = Math.max(14, s * .45);
         if (samples.some(p => Math.hypot(p.x - x, p.y - y) < 22 + reach)) continue;
-        if (boxes.some(b => x + reach > b.x1 && x - reach < b.x2 && y > b.y1 && y - s < b.y2)) continue;
+        if (L.boxes.some(b => x + reach > b.x1 && x - reach < b.x2 && y > b.y1 && y - s < b.y2)) continue;
         if (trees.some(t => Math.hypot(t.x - x, t.y - y) < (t.s + s) * .35)) continue;
         trees.push({ type, x: Math.round(x), y: Math.round(y), s });
     }
@@ -511,25 +622,39 @@ function scatterTrees(L) {
 
 function mapSvg(L) {
     const { W, H } = L;
-    const wave = top => {
-        let d = `M0 ${top + 12}`;
-        for (let x = 0; x < W; x += 60) d += ` Q${x + 30} ${top - 6} ${x + 60} ${top + 12}`;
+    // Волнистая граница зоны: по горизонтали на телефоне, по вертикали на широком экране
+    const edge = from => {
+        let d;
+        if (L.dir === 'v') {
+            d = `M0 ${from + 12}`;
+            for (let x = 0; x < W; x += 60) d += ` Q${x + 30} ${from - 6} ${x + 60} ${from + 12}`;
+            return d;
+        }
+        d = `M${from + 12} 0`;
+        for (let y = 0; y < H; y += 60) d += ` Q${from - 6} ${y + 30} ${from + 12} ${y + 60}`;
         return d;
     };
+    const band = z => (L.dir === 'v' ? `${edge(z.from)} V${z.to} H0 Z` : `${edge(z.from)} H${z.to} V0 Z`);
     const grounds = L.zones.map(z => z.bi === 0
-        ? `<rect class="z1" x="0" y="0" width="${W}" height="${z.bottom}"/>`
-        : `<path class="z${(z.bi % 3) + 1}" d="${wave(z.top)} V${z.bottom} H0 Z"/>`).join('');
+        ? (L.dir === 'v'
+            ? `<rect class="z1" x="0" y="0" width="${W}" height="${z.to}"/>`
+            : `<rect class="z1" x="0" y="0" width="${z.to}" height="${H}"/>`)
+        : `<path class="z${(z.bi % 3) + 1}" d="${band(z)}"/>`).join('');
     const trees = scatterTrees(L).map(t => Forest[t.type](t.x, t.y, t.s)).join('');
-    const fog = L.zones.filter(z => z.soon).map(z => `<path class="fog" d="${wave(z.top)} V${z.bottom} H0 Z"/>`).join('');
+    const fog = L.zones.filter(z => z.soon).map(z => `<path class="fog" d="${band(z)}"/>`).join('');
+    const branches = L.branches.map((br, i) => `<g class="branch" id="branch-${i}">
+            <path class="branch__edge" d="${br.d}"/><path class="branch__path" d="${br.d}"/><path class="branch__dash" d="${br.d}"/>
+        </g>`).join('');
 
     const r = Forest.rng(7);
     let flies = '';
-    for (let i = 0; i < Math.round(H / 60); i++) {
+    for (let i = 0; i < Math.round(W * H / 21600); i++) {
         flies += `<circle cx="${Math.round(10 + r() * (W - 20))}" cy="${Math.round(20 + r() * (H - 40))}" r="2.2" style="animation-delay:${(r() * 3).toFixed(2)}s"/>`;
     }
 
     return `<svg class="map__svg" viewBox="0 0 ${W} ${H}" aria-hidden="true">
         ${grounds}
+        ${branches}
         <path class="trail-edge" d="${L.d}"/>
         <path class="trail" id="trail" d="${L.d}"/>
         <path class="trail-steps" d="${L.d}"/>
@@ -539,7 +664,7 @@ function mapSvg(L) {
     </svg>`;
 }
 
-const KIND = { cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', poll: 'practice', mission: 'practice', talk: 'ai' };
+const KIND = { cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', order: 'practice', poll: 'practice', mission: 'practice', talk: 'ai' };
 
 // ---------- Приложение ----------
 const app = {
@@ -555,6 +680,7 @@ const app = {
         Sound.on = this.state.sound;
         $('#brand-blup').innerHTML = blup('neutral');
         this.mountTutor();
+        this.mountNav();
         this.bind();
         this.renderAll();
         this.scrollToCurrent(false);
@@ -609,13 +735,12 @@ const app = {
     renderHello() {
         const s = this.state;
         const lv = Game.levelFor(s.xp);
-        const list = Game.stations();
-        const st = list[Game.currentIndex(s)];
+        const st = Game.stations()[Game.currentIndex(s)];
         const t = Game.totals(s);
         const resume = s.current && Game.findStation(s.current.lessonId);
 
         $('#hello-title').textContent = UI.hi(s.name);
-        $('#hello-kicker').textContent = UI.helloKicker(st.blockIndex + 1, st.block.title, t.lessonsDone, list.length);
+        $('#hello-kicker').textContent = UI.helloKicker(st.blockIndex + 1, st.block.title, t.lessonsDone, t.mainTotal);
         $('#level-name').textContent = UI.level(lv.level, lv.title);
         $('#level-xp').textContent = lv.to ? `${s.xp} / ${lv.to} XP` : `${s.xp} XP`;
         $('#level-fill').style.width = Math.round(lv.progress * 100) + '%';
@@ -623,20 +748,23 @@ const app = {
 
         const btn = $('#continue-btn');
         if (resume) btn.textContent = UI.resume(resume.lesson.title);
-        else if (t.lessonsDone === list.length) btn.textContent = UI.blockDone;
+        else if (t.lessonsDone === t.mainTotal) btn.textContent = UI.blockDone;
         else btn.textContent = (t.lessonsDone ? UI.next : UI.start)(st.lesson.title);
     },
 
     renderMap() {
-        const L = this.layout = buildLayout();
+        const mode = this.mode = mapMode();
+        const L = this.layout = buildLayout(mode);
         const s = this.state;
         const cur = Game.currentIndex(s);
         const pct = (v, total) => (v / total * 100).toFixed(3) + '%';
+        const X = v => pct(v, L.W), Y = v => pct(v, L.H);
 
         const gates = L.gates.map(g => {
-            const done = g.block.soon ? 0 : g.block.lessons.filter(l => Game.passed(s, l.id)).length;
-            const kicker = `${UI.block(g.bi + 1)} · ${g.block.soon ? UI.soon : `${done}/${g.block.lessons.length}`}`;
-            return `<div class="gate${g.block.soon ? ' gate--soon' : ''}" style="left:${pct(g.x, L.W)};top:${pct(g.y, L.H)}">
+            const main = g.block.lessons.filter(l => !l.extra);
+            const done = g.block.soon ? 0 : main.filter(l => Game.passed(s, l.id)).length;
+            const kicker = `${UI.block(g.bi + 1)} · ${g.block.soon ? UI.soon : `${done}/${main.length}`}`;
+            return `<div class="gate${g.block.soon ? ' gate--soon' : ''}" style="left:${X(g.x)};top:${Y(g.y)}">
                 <div class="gate__plank">
                     <p class="gate__kicker">${kicker}</p>
                     <h2 class="gate__title">${esc(g.block.title)}</h2>
@@ -649,36 +777,110 @@ const app = {
             const status = this.nodeStatus(n, cur);
             const rec = n.index >= 0 ? s.lessons[n.lesson.id] : null;
             const resume = s.current && s.current.lessonId === n.lesson.id;
-            const left = n.x > 180;
-            const off = n.big ? 50 : 44;
-            const side = left ? `right:${pct(L.W - n.x + off, L.W)}` : `left:${pct(n.x + off, L.W)}`;
-            const kicker = n.lesson.test ? UI.finale : UI.station(n.li + 1);
+            const kicker = this.kicker(n);
             let meta;
             if (status === 'soon') meta = UI.soon;
             else if (status === 'locked') meta = UI.locked;
             else if (status === 'done') meta = `<span class="label__stars">${'★'.repeat(rec.stars)}${'☆'.repeat(3 - rec.stars)}</span> · ${UI.passed}`;
             else meta = resume ? UI.resumeShort : `▶ ${UI.minutes(n.lesson.minutes)} · ${UI.tasks(n.lesson.tasks.length)}`;
             const icon = status === 'soon' ? '?' : n.lesson.icon;
-            const name = `${kicker}: ${n.lesson.title}`;
-            return `<button class="node node--${status}${n.big ? ' node--big' : ''}" type="button" data-node="${i}"
-                    style="left:${pct(n.x, L.W)};top:${pct(n.y, L.H)}" aria-label="${esc(name)}">${icon}</button>
-                <button class="label label--${status}${left ? ' label--left' : ''}" type="button" data-node="${i}" tabindex="-1"
-                    style="${side};top:${pct(n.y, L.H)}" aria-hidden="true">
+            const name = `${kicker}: ${n.lesson.title}${n.extra ? ` (${UI.extraTag})` : ''}`;
+
+            // Подпись: сбоку от станции на телефоне, под станцией на широком экране, над ответвлением
+            const off = n.big ? 50 : n.extra ? 38 : 44;
+            let place;
+            if (n.label === 'right') place = `left:${X(n.x + off)};top:${Y(n.y)}`;
+            else if (n.label === 'left') place = `right:${X(L.W - n.x + off)};top:${Y(n.y)}`;
+            else if (n.label === 'below') place = `left:${X(n.x)};top:${Y(n.y + off - 4)}`;
+            else place = `left:${X(n.x)};top:${Y(n.y - off + 4)}`;
+            if (L.dir === 'h') place += `;max-width:${X(L.STEP - 20)}`;
+
+            return `<button class="node node--${status}${n.big ? ' node--big' : ''}${n.extra ? ' node--extra' : ''}" type="button" data-node="${i}"
+                    style="left:${X(n.x)};top:${Y(n.y)}" aria-label="${esc(name)}">${icon}</button>
+                <button class="label label--${status} label--${n.label}${n.extra ? ' label--extra' : ''}" type="button" data-node="${i}" tabindex="-1"
+                    style="${place}" aria-hidden="true">
                     <span class="label__kicker">${kicker}</span>
                     <span class="label__title">${esc(n.lesson.title)}</span>
+                    ${n.extra ? `<span class="label__tag">${UI.extraTag}</span>` : ''}
                     <span class="label__meta">${meta}</span>
                 </button>`;
         }).join('');
 
-        $('#map').innerHTML = mapSvg(L) + `<div class="map__layer">${gates}${nodes}
-            <span class="finish" style="left:${pct(L.end.x, L.W)};top:${pct(L.end.y, L.H)}" aria-hidden="true">🏆</span>
+        const map = $('#map');
+        map.className = `map map--${mode}`;
+        map.innerHTML = `<div class="map__inner">${mapSvg(L)}<div class="map__layer">${gates}${nodes}
+            <span class="finish" style="left:${X(L.end.x)};top:${Y(L.end.y)}" aria-hidden="true">🏆</span>
             <div class="blup" id="blup"><div class="blup__body" id="blup-body"></div><span class="blup__bubble" id="blup-bubble" hidden></span></div>
-        </div>`;
+        </div></div>`;
+        this.fitMap();
+
+        L.branches.forEach((br, i) => {
+            const g = $(`#branch-${i}`);
+            g.classList.toggle('is-done', Game.passed(s, br.b.lesson.id));
+            g.classList.toggle('is-locked', !Game.isUnlocked(s, br.b.index));
+        });
 
         this.measureTrail();
-        const at = Math.min(s.blupAt || 0, cur);
-        this.placeBlup(this.nodeByIndex(at), 'hello');
-        this.setTrailDone(this.lenAt[this.nodeByIndex(at).pt]);
+        let at = this.nodeByIndex(Math.min(s.blupAt || 0, cur));
+        if (!at || at.extra) at = this.nodeByIndex(cur);
+        this.placeBlup(at, 'hello');
+        this.setTrailDone(this.lenAt[at.pt]);
+        this.renderNav();
+    },
+
+    // Подпись станции: номер на главной тропе, «ответвление» или «финал блока»
+    kicker(n) {
+        if (n.lesson.test) return UI.finale;
+        if (n.extra) return UI.sideQuest;
+        return UI.station(n.num);
+    },
+
+    // На широком экране карта — лента нужной высоты, ширина считается из пропорций тропы
+    fitMap() {
+        const L = this.layout;
+        const inner = $('#map .map__inner');
+        if (L.dir !== 'h') { inner.style.width = ''; return; }
+        inner.style.width = Math.round($('#map').clientHeight * L.W / L.H) + 'px';
+    },
+
+    // Листание по блокам: на широком экране блок — как глава книги
+    renderNav() {
+        const nav = $('#map-nav');
+        const L = this.layout;
+        nav.hidden = L.dir !== 'h';
+        if (nav.hidden) return;
+        $('.map-nav__dots', nav).innerHTML = L.gates.map(g =>
+            `<button type="button" data-page="${g.bi}" aria-label="${esc(UI.block(g.bi + 1) + ': ' + g.block.title)}"></button>`).join('');
+        this.syncNav();
+    },
+
+    // Какой блок сейчас на экране: последние ворота, левее трети ширины
+    pageNow() {
+        const map = $('#map'), L = this.layout;
+        const scale = map.scrollWidth / L.W;
+        const edge = map.scrollLeft + map.clientWidth / 3;
+        let page = 0;
+        L.gates.forEach(g => { if (g.x * scale - 130 * scale <= edge) page = g.bi; });
+        return page;
+    },
+
+    syncNav() {
+        const nav = $('#map-nav');
+        if (!nav || nav.hidden) return;
+        const map = $('#map'), L = this.layout;
+        const page = this.pageNow();
+        const g = L.gates[page];
+        $('.map-nav__title', nav).textContent = `${UI.block(page + 1)} · ${g.block.title}`;
+        $$('.map-nav__dots button', nav).forEach((b, i) => b.classList.toggle('is-on', i === page));
+        $('[data-dir="-1"]', nav).disabled = map.scrollLeft < 4;
+        $('[data-dir="1"]', nav).disabled = map.scrollLeft + map.clientWidth >= map.scrollWidth - 4;
+    },
+
+    goPage(page) {
+        const map = $('#map'), L = this.layout;
+        const g = L.gates[Math.max(0, Math.min(L.gates.length - 1, page))];
+        const scale = map.scrollWidth / L.W;
+        map.scrollTo({ left: Math.max(0, (g.x - 140) * scale), behavior: REDUCED ? 'auto' : 'smooth' });
     },
 
     nodeStatus(n, cur) {
@@ -700,7 +902,7 @@ const app = {
         this.lenAt = [0];
         let d = `M${L.pts[0].x} ${L.pts[0].y}`;
         for (let i = 1; i < L.pts.length; i++) {
-            d += segmentD(L.pts[i - 1], L.pts[i]);
+            d += segmentD(L.pts[i - 1], L.pts[i], L.dir);
             probe.setAttribute('d', d);
             this.lenAt.push(probe.getTotalLength());
         }
@@ -712,13 +914,18 @@ const app = {
         $('#trail-done').style.strokeDasharray = `${len} ${this.trailTotal + 10}`;
     },
 
-    // Блуп стоит сбоку от станции, со стороны края карты
+    // Блуп стоит на тропе: на телефоне — сбоку от станции, со стороны края карты; на широком экране — перед станцией
     placeBlup(node, pose, bubble) {
-        const outward = node.x < 180 ? -1 : 1;
-        this.moveBlup(node.x + outward * (node.big ? 60 : 54), node.y + 6);
         const el = $('#blup');
-        el.classList.toggle('is-left', outward > 0);
-        el.classList.toggle('is-edge-right', outward > 0);
+        if (this.layout.dir === 'h') {
+            this.moveBlup(node.x - (node.big ? 62 : 56), node.y + 6);
+            el.classList.remove('is-left', 'is-edge-right');
+        } else {
+            const outward = node.x < 180 ? -1 : 1;
+            this.moveBlup(node.x + outward * (node.big ? 60 : 54), node.y + 6);
+            el.classList.toggle('is-left', outward > 0);
+            el.classList.toggle('is-edge-right', outward > 0);
+        }
         $('#blup-body').innerHTML = blup(pose);
         $('#blup-bubble').hidden = !bubble;
         $('#blup-bubble').textContent = bubble || '';
@@ -730,10 +937,24 @@ const app = {
         el.style.top = (y / this.layout.H * 100) + '%';
     },
 
+    // Показать станцию: на телефоне прокручиваем страницу, на широком экране — ленту карты
+    reveal(el, smooth) {
+        const behavior = smooth && !REDUCED ? 'smooth' : 'auto';
+        if (this.layout.dir === 'h') {
+            const map = $('#map');
+            const box = el.getBoundingClientRect(), frame = map.getBoundingClientRect();
+            map.scrollTo({ left: map.scrollLeft + box.left - frame.left - (frame.width - box.width) / 2, behavior });
+            const top = frame.top, bottom = frame.bottom;
+            if (top < 60 || bottom > window.innerHeight) map.scrollIntoView({ block: 'nearest', behavior });
+        } else {
+            el.scrollIntoView({ block: 'center', behavior });
+        }
+    },
+
     async walk(fromIndex, toIndex) {
         const a = this.nodeByIndex(fromIndex), b = this.nodeByIndex(toIndex);
         const target = $(`.node[data-node="${this.layout.nodes.indexOf(b)}"]`);
-        target.scrollIntoView({ block: 'center', behavior: REDUCED ? 'auto' : 'smooth' });
+        this.reveal(target, true);
         const La = this.lenAt[a.pt], Lb = this.lenAt[b.pt];
 
         if (!REDUCED) {
@@ -777,9 +998,18 @@ const app = {
     scrollToCurrent(smooth) {
         const node = this.nodeByIndex(Game.currentIndex(this.state));
         const el = $(`.node[data-node="${this.layout.nodes.indexOf(node)}"]`);
-        if (el && el.getBoundingClientRect().bottom > window.innerHeight - 40) {
-            el.scrollIntoView({ block: 'center', behavior: smooth && !REDUCED ? 'smooth' : 'auto' });
+        if (!el) return;
+        if (this.layout.dir === 'h') {
+            // Открываем блок текущей станции с начала, как страницу; если станция дальше экрана — ставим её на треть ширины
+            const map = $('#map'), L = this.layout;
+            const scale = map.scrollWidth / L.W;
+            const start = (L.gates[node.bi].x - 140) * scale;
+            const at = node.x * scale;
+            const left = at - start < map.clientWidth - 160 ? start : at - map.clientWidth / 3;
+            map.scrollTo({ left: Math.max(0, left), behavior: smooth && !REDUCED ? 'smooth' : 'auto' });
+            return;
         }
+        if (el.getBoundingClientRect().bottom > window.innerHeight - 40) this.reveal(el, smooth);
     },
 
     onNodeClick(n) {
@@ -789,7 +1019,8 @@ const app = {
             return;
         }
         if (!Game.isUnlocked(this.state, n.index)) {
-            const prev = Game.stations()[n.index - 1].lesson;
+            const st = Game.stations()[n.index];
+            const prev = Game.stations()[st.extra ? st.parent : st.prevMain].lesson;
             const el = $(`.node[data-node="${this.layout.nodes.indexOf(n)}"]`);
             el.classList.remove('is-shake');
             void el.offsetWidth;
@@ -807,13 +1038,15 @@ const app = {
         const resume = cur && cur.lessonId === lesson.id && cur.step > 0;
 
         $('#station-icon').textContent = lesson.icon;
-        $('#station-kicker').textContent = `${UI.block(n.bi + 1)} · ${lesson.test ? UI.finale : UI.station(n.li + 1)}`;
+        $('#station-kicker').textContent = `${UI.block(n.bi + 1)} · ${this.kicker(n)}`;
         $('#station-title').textContent = lesson.title;
         $('#station-goal').textContent = lesson.goal;
+        $('#station-sheet').classList.toggle('is-extra', n.extra);
 
         const counts = {};
         lesson.tasks.forEach(t => { const k = KIND[t.type]; counts[k] = (counts[k] || 0) + 1; });
-        $('#station-chips').innerHTML = ['theory', 'video', 'practice', 'ai', 'test'].filter(k => counts[k]).map(k =>
+        $('#station-chips').innerHTML = (n.extra ? `<li class="chip--extra">${UI.extraChip}</li>` : '') +
+            ['theory', 'video', 'practice', 'ai', 'test'].filter(k => counts[k]).map(k =>
             `<li>${UI.kind[k]}${k === 'test' ? ` · ${UI.questions(counts[k])}` : ''}</li>`).join('') +
             `<li>⏱ ${UI.minutes(lesson.minutes)}</li>`;
 
@@ -1301,7 +1534,7 @@ const app = {
                 }
                 this.answered(score, {
                     title: score === 1 ? UI.buildPerfect : UI.buildScore(clean, slots.length),
-                    text: UI.buildText
+                    text: t.done || UI.buildText
                 });
             };
         },
@@ -1326,6 +1559,53 @@ const app = {
                     };
                 }
                 this.answered(ok ? 1 : 0, { title: ok ? pick(UI.good) : pick(UI.bad), text: t.explain });
+            }));
+        },
+
+        // Расставить шаги по порядку: нажимаешь следующий шаг, ошибка — карточка трясётся.
+        // Балл — доля шагов, угаданных с первой попытки.
+        order(t, box) {
+            const items = shuffle(t.items.map((text, i) => ({ text, i })));
+            const misses = [];
+            let k = 0, clean = 0, missed = false;
+            box.innerHTML = this.head(UI.practice, t.title, t.text) + `<ol class="order__done"></ol>
+                <p class="order__hint" aria-live="polite">${UI.orderHint}</p>
+                <div class="order__pool">${items.map((it, j) =>
+                    `<button class="order__item" type="button" data-j="${j}">${esc(it.text)}</button>`).join('')}</div>`;
+            const done = $('.order__done', box);
+            this.setNext(UI.btn.order, false);
+            $$('.order__item', box).forEach(btn => btn.addEventListener('click', () => {
+                const it = items[+btn.dataset.j];
+                if (it.i !== k) {
+                    if (!missed) misses.push({ step: k, picked: it.text });
+                    missed = true;
+                    btn.classList.remove('is-wrong');
+                    void btn.offsetWidth;
+                    btn.classList.add('is-wrong');
+                    Sound.play('bad');
+                    return;
+                }
+                if (!missed) clean++;
+                missed = false;
+                k++;
+                btn.remove();
+                done.insertAdjacentHTML('beforeend', `<li class="order__step">${esc(it.text)}</li>`);
+                Sound.play('pop');
+                if (k < items.length) return;
+                $('.order__hint', box).hidden = true;
+                const score = clean / items.length;
+                if (misses.length) {
+                    this.run.mistake = {
+                        question: `${t.title}. ${t.text || ''}`,
+                        answer: misses.map(m => `${m.step + 1}. ${m.picked}`).join('; '),
+                        correct: t.items.map((x, i) => `${i + 1}. ${x}`).join('; '),
+                        explain: t.explain || ''
+                    };
+                }
+                this.answered(score, {
+                    title: score === 1 ? UI.orderPerfect : UI.orderScore(clean, items.length),
+                    text: t.explain || UI.orderText
+                });
             }));
         },
 
@@ -1356,12 +1636,12 @@ const app = {
 
         // Ответ своими словами. С помощником его проверяет нейросеть, без него — сравнение с примером.
         talk(t, box, token) {
-            box.innerHTML = this.head(UI.talkKicker, t.title) + `
+            box.innerHTML = this.head(t.kicker || UI.talkKicker, t.title) + `
                 <div class="chat-log">
                     <p class="bubble bubble--ai"><span class="bubble__who">${UI.bloop}</span>${esc(t.question)}</p>
                 </div>
                 <p class="chat-note">${Tutor.enabled ? UI.talkHint : UI.talkOffline}</p>
-                ${chatForm(UI.talkPlaceholder)}
+                ${chatForm(t.placeholder || UI.talkPlaceholder)}
                 <button class="link-btn talk-show" type="button" hidden>${UI.talkShow}</button>
                 <div class="talk-sample" hidden>
                     <p class="eyebrow">${UI.talkPoints}</p>
@@ -1416,7 +1696,8 @@ const app = {
         },
 
         mission(t, box) {
-            box.innerHTML = this.head(UI.mission, t.title, t.text) + `<div class="mission__prompt">
+            box.innerHTML = this.head(UI.mission, t.title, t.text) +
+                (t.steps ? `<ol class="mission__steps">${t.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : '') + `<div class="mission__prompt">
                 <p id="mission-text">${esc(t.prompt)}</p>
                 <button class="btn btn--white" type="button">${UI.copy}</button>
             </div>
@@ -1439,6 +1720,15 @@ const app = {
             skip.hidden = false;
             this.run.onNext = () => { this.run.scores[this.run.step] = null; this.nextTask(); };
         }
+    },
+
+    // Листание карты по блокам на широком экране
+    mountNav() {
+        $('#map').insertAdjacentHTML('beforebegin', `<nav class="map-nav" id="map-nav" hidden aria-label="${esc(UI.pages)}">
+            <button class="icon-btn" type="button" data-dir="-1" aria-label="${esc(UI.prevPage)}">‹</button>
+            <div class="map-nav__mid"><p class="map-nav__title"></p><div class="map-nav__dots"></div></div>
+            <button class="icon-btn" type="button" data-dir="1" aria-label="${esc(UI.nextPage)}">›</button>
+        </nav>`);
     },
 
     mountTutor() {
@@ -1521,7 +1811,7 @@ const app = {
         $('#result').scrollTop = 0;
 
         $('#result-blup').innerHTML = blup(!res.passed ? 'sad' : res.stars === 3 ? 'victory' : 'joy');
-        $('#result-kicker').textContent = lesson.test ? UI.finale : UI.station(r.st.block.lessons.indexOf(lesson) + 1);
+        $('#result-kicker').textContent = this.kicker(this.layout.nodes.find(n => n.lesson === lesson));
         $('#result-title').textContent = !res.passed ? UI.almost : res.stars === 3 ? UI.perfect : UI.stationDone;
         $('#result-lead').textContent = !res.passed
             ? UI.leadFail
@@ -1665,6 +1955,38 @@ const app = {
         $('#map').addEventListener('click', e => {
             const el = e.target.closest('[data-node]');
             if (el) this.onNodeClick(this.layout.nodes[+el.dataset.node]);
+        });
+
+        $('#map-nav').addEventListener('click', e => {
+            const dir = e.target.closest('[data-dir]');
+            if (dir) { Sound.play('tap'); this.goPage(this.pageNow() + Number(dir.dataset.dir)); return; }
+            const dot = e.target.closest('[data-page]');
+            if (dot) { Sound.play('tap'); this.goPage(Number(dot.dataset.page)); }
+        });
+        $('#map').addEventListener('scroll', () => this.syncNav(), { passive: true });
+        // Колесо мыши листает ленту карты вбок, пока есть куда; у края снова прокручивается страница
+        $('#map').addEventListener('wheel', e => {
+            if (this.layout.dir !== 'h' || Math.abs(e.deltaX) >= Math.abs(e.deltaY)) return;
+            const map = e.currentTarget;
+            const dy = e.deltaY * (e.deltaMode === 1 ? 40 : 1);
+            const max = map.scrollWidth - map.clientWidth;
+            if ((dy < 0 && map.scrollLeft <= 0) || (dy > 0 && map.scrollLeft >= max - 1)) return;
+            e.preventDefault();
+            map.scrollLeft += dy;
+        }, { passive: false });
+        // Повернули планшет или сузили окно — перестраиваем карту под новую раскладку
+        let frame = 0;
+        window.addEventListener('resize', () => {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(() => {
+                if (mapMode() !== this.mode) {
+                    this.renderMap();
+                    this.scrollToCurrent(false);
+                } else {
+                    this.fitMap();
+                    this.syncNav();
+                }
+            });
         });
 
         $('#continue-btn').addEventListener('click', () => {

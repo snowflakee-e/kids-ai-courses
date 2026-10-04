@@ -1,10 +1,10 @@
 # ТЗ на английские ролики «AI Trail»
 
-Файл собирается из `course.en.js` командой `node tools/video-tz.js --lang en > VIDEO_TZ.en.md`. Сцены правь в `course.en.js`, не здесь. Длительность сцен общая с русской версией: если меняешь `sec`, поменяй и в `course.js`, иначе упадёт тест.
+Файл собирается из `course.en.js` командой `node tools/video-tz.js --lang en > VIDEO_TZ.en.md`. Сцены правь в `course.en.js`, не здесь. Английская версия — основная: русская (`course.js`) пока на прежнем контенте, её ролики в `VIDEO_TZ.md`.
 
 ## Формат
 
-- Аудитория: англоязычные подростки 14–15 лет. Тон «старший брат или сестра»: быстро, с юмором, без сюсюканья.
+- Аудитория: англоязычные подростки 14–18 лет. Тон «старший брат или сестра»: быстро, с юмором, без сюсюканья.
 - Голос: носитель английского, темп около 150 слов в минуту. Выбери один акцент на весь курс, американский или британский, и не смешивай.
 - Субтитры и текст на экране — на английском. Маскот — Bloop (русский Блуп).
 - Уже есть русские ролики с живым ведущим? В HeyGen есть перевод видео с синхроном губ. Для анимации Блупа проще переозвучить по колонке «Голос».
@@ -19,7 +19,7 @@
 | Вариант | Как | Когда брать |
 |---|---|---|
 | Блуп-анимация | PNG Блупа в нужной позе из `bobik.js` → Kling image-to-video по колонке «Визуал» → озвучка колонки «Голос» (голос HeyGen или ElevenLabs) → сборка в CapCut | Основной вариант для теории |
-| Ведущий HeyGen | Аватар-ведущий 20–25 лет читает «Голос», Блуп — стикер-реакция в углу | Если тесты покажут, что робот для 14–15 лет выглядит детским |
+| Ведущий HeyGen | Аватар-ведущий 20–25 лет читает «Голос», Блуп — стикер-реакция в углу | Если тесты покажут, что робот для 14–18 лет выглядит детским |
 | Скринкаст | Запись реального чата: плохой промпт → хороший | Уроки про промпты и ошибки ИИ: дешевле и убедительнее анимации |
 
 Проверь до массового запуска: аватар HeyGen по фото может не распознать лицо у робота с экраном вместо лица. Сделай одну сцену и посмотри на синхрон губ.
@@ -32,51 +32,62 @@
 
 `node tools/video-tz.js --lang en --json` отдаёт те же сцены в JSON. Сценарий для Make.com: JSON → итерация по сценам → генерация (HeyGen: голос и аватар, Kling: визуал) → ожидание готовности → склейка → загрузка файла → путь в `src`.
 
-## 1. What is AI: «How AI learned to spot cats»
+## 1. Meet your AI: «What’s going on inside a chatbot»
 
-46 сек по раскадровке · голос ≈ 42 сек · 16:9 · файл `ai-trail/en/videos/l1.mp4`
-
-| # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
-|---|---|---|---|---|---|---|
-| 1 | 7 | 6.5 | hello | How does AI tell a cat from a dog? | How does AI know a photo shows a cat and not a dog? Let me show you. | Cute flat-style robot mascot waves at camera in a sunny cartoon forest clearing, photos of a cat and a dog float beside it |
-| 2 | 10 | 8.8 | think | Rules don’t work | You could write rules: pointy ears, whiskers. But dogs can have whiskers too, and a cat can flatten its ears. The rules break. | Checklist with "triangle ears" and "whiskers" crossing out one by one, confused dog with whiskers, flat 2D motion graphics |
-| 3 | 9 | 8.8 | point | 1,000,000 examples | So instead, AI is shown a million photos: this is a cat, this isn’t. At first it gets it wrong all the time. | Endless wall of small cat and dog photos with labels scrolling fast, robot watching, flat colorful style |
-| 4 | 6 | 5 | surprise | Mistake → adjust → try again | After every mistake, AI tweaks its settings a tiny bit. Millions of times. | Robot turning many small knobs on a control panel, red cross turns into green check, fast loop |
-| 5 | 8 | 6.9 | joy | Learning = examples + mistakes | In the end, it recognizes cats even in photos it has never seen. That’s what we call learning. | New cat photo appears, robot highlights it with a green frame and the label "cat", confetti |
-| 6 | 6 | 5.8 | wink | AI only knows what it learned from | But if you only show AI ginger cats, it might not recognize a black one. | Row of ginger cats, then a black cat appears with a question mark above it, robot shrugs |
-
-## 2. Why you need AI: «AI and homework: the right way and the wrong way»
-
-41 сек по раскадровке · голос ≈ 37 сек · 16:9 · файл `ai-trail/en/videos/l2.mp4`
+42 сек по раскадровке · голос ≈ 35 сек · 16:9 · файл `ai-trail/en/videos/l1.mp4`
 
 | # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
 |---|---|---|---|---|---|---|
-| 1 | 7 | 5.8 | hello | AI for homework: allowed or not? | Is using AI for homework cheating or fine? It depends on how you use it. | Robot mascot next to a school desk with notebook and phone, big question mark, flat cartoon style |
-| 2 | 10 | 9.2 | sad | ❌ “Write my essay” | The wrong way: “write an essay about autumn”. You hand it in, get a grade and learn nothing. And teachers notice texts like that. | Phone chat with a long generated essay, teacher character raises an eyebrow, red cross stamp |
-| 3 | 9 | 8.1 | idea | ✅ “Explain it like I’m 10” | The right way: “explain fractions like I’m 10 years old”. You get the topic, and then you solve the problems yourself. | Pizza sliced into fractions 1/2, 1/4, 1/8 appears from the chat, light bulb above a teen head |
-| 4 | 8 | 7.7 | point | ✅ “Find the mistakes in my text” | Or: “here’s my essay, find the mistakes and explain them”. The text is yours, and AI works as your tutor. | Handwritten text with a few words highlighted in yellow and short notes on the margin |
-| 5 | 7 | 5.8 | joy | AI = a 24/7 tutor | Use AI like a tutor that never gets tired of questions. That’s the real superpower. | Robot mascot in a tiny graduation cap gives a thumbs up, clock showing 24/7, green check |
+| 1 | 7 | 6.2 | hello | How does a chatbot answer? | You type a question, and a chatbot answers in seconds. What’s actually going on in there? | Cute flat-style robot mascot waves at camera next to a giant phone with a chat on screen, cartoon forest clearing |
+| 2 | 10 | 8.8 | think | It read a giant library | Before you ever met it, the model read a huge amount of text: books, websites, articles. It learned which words usually go together. | Robot flying through an endless library, pages of text streaming into its antenna, flat 2D motion graphics |
+| 3 | 9 | 6.9 | point | Next word, next word, next word | Then it writes your answer one word at a time, each time picking a word that fits best. | Chat bubble filling in word by word, each new word pops out of a small slot machine, playful flat animation |
+| 4 | 9 | 7.7 | surprise | Sounds right ≠ is right | That’s why it sounds so smooth. But it doesn’t check facts as it goes, so it can be confidently wrong. | Robot in sunglasses confidently presenting a chart with an obvious mistake, a small red question mark appears |
+| 5 | 7 | 5.8 | wink | Your job: steer and check | So you steer it with good questions and check what matters. That’s the whole skill. | Teen holding a phone like a steering wheel, robot gives a thumbs up, green check marks pop up |
 
-## 3. How to ask the right way: «One question, two answers»
+## 2. Your first real prompt: «One question, two answers»
 
-42 сек по раскадровке · голос ≈ 39 сек · 16:9 · файл `ai-trail/en/videos/l3.mp4`
-
-| # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
-|---|---|---|---|---|---|---|
-| 1 | 6 | 5.8 | hello | Why does AI give the “wrong” answer? | Sometimes you ask AI something and it answers something totally different. Let’s figure out why. | Teen looks at a phone with a confused face, chat bubble with a long useless answer, flat cartoon |
-| 2 | 9 | 8.5 | sad | “Help with my report” | Here’s a request: “help with my report”. AI doesn’t know the topic, your age or how much time you have. It’s guessing. | Robot blindfolded throwing darts at a target, darts miss, playful flat animation |
-| 3 | 11 | 10.4 | point | Role + Task + Context + Format | Now try this: “You’re a biology teacher. Make an outline for a report on bees. I’m 14, the talk is 3 minutes. Give me a 5-point outline.” | Four colorful puzzle pieces labeled Role, Task, Context, Format snap together into one prompt |
-| 4 | 9 | 8.1 | delight | Spot-on answer | And now the answer hits the target: a clear outline of the right length. Same AI, the task just got clear. | Dart hits the bullseye, a neat 5-point plan about bees appears on the phone, bees fly around |
-| 5 | 7 | 6.2 | wink | Not quite? Clarify! | If you don’t like the answer, don’t start over. Just clarify: “shorter”, “simpler”, “add an example”. | Chat with short follow-up messages "shorter", "simpler", "add an example", answer shrinks and gets clearer |
-
-## 4. AI makes mistakes too: «Why AI makes mistakes with a straight face»
-
-36 сек по раскадровке · голос ≈ 33 сек · 16:9 · файл `ai-trail/en/videos/l4.mp4`
+42 сек по раскадровке · голос ≈ 33 сек · 16:9 · файл `ai-trail/en/videos/l2.mp4`
 
 | # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
 |---|---|---|---|---|---|---|
-| 1 | 5 | 3.8 | hello | Can AI be wrong? | Spoiler: yes, and how. And with a very confident face. | Robot mascot in sunglasses looking overconfident, cartoon forest background |
-| 2 | 9 | 8.8 | think | Word by word | A chatbot writes its answer one word at a time, each time picking the most likely next word. It doesn’t check a textbook. | Words appear one by one on a chat bubble, each with a small probability bar above it |
-| 3 | 9 | 8.1 | surprise | Sounds true ≠ is true | So it can make up a date, a quote or even a whole book, just because it sounds like the truth. | Book with a made-up title appears, then a magnifying glass reveals the cover is empty |
-| 4 | 8 | 7.7 | point | Check 2 sources | Your superpower is checking. Verify important facts in at least two reliable sources: a textbook, an encyclopedia, an official website. | Two trusted sources (textbook and encyclopedia website) side by side with green checkmarks |
-| 5 | 5 | 4.2 | victory | You decide, not AI | AI is a helper. But you always decide what to believe. | Teen holds a phone confidently, robot jumps with joy next to them, sunny forest |
+| 1 | 6 | 5.4 | hello | Why does AI miss the point? | Ever asked AI something and got a useless wall of text? Let’s fix that. | Teen looks at a phone with a confused face, a huge chat bubble of text scrolls endlessly, flat cartoon |
+| 2 | 9 | 7.7 | sad | “Help with my report” | “Help with my report.” AI doesn’t know the topic, your level, or how much time you have. So it guesses. | Robot blindfolded throwing darts at a target, darts miss, playful flat animation |
+| 3 | 11 | 8.5 | point | Role + Task + Context + Format | Now try: “You’re a biology teacher. Outline my report on bees. It’s a three-minute talk for tenth grade. Give me five points.” | Four colorful puzzle pieces labeled Role, Task, Context, Format snap together into one prompt |
+| 4 | 9 | 6.2 | delight | Same AI, better answer | Same AI, but now the answer fits: the right length, the right level, ready to use. | Dart hits the bullseye, a neat 5-point outline about bees appears on the phone, bees fly around |
+| 5 | 7 | 5 | wink | Not quite? Follow up! | Still not right? Don’t start over. Follow up: shorter, simpler, add an example. | Chat with short follow-up messages “shorter”, “simpler”, “add an example”, the answer shrinks and gets clearer |
+
+## 3. Check it, protect yourself: «Why AI makes mistakes with a straight face»
+
+36 сек по раскадровке · голос ≈ 28 сек · 16:9 · файл `ai-trail/en/videos/l4.mp4`
+
+| # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|---|
+| 1 | 5 | 3.1 | hello | Can AI be wrong? | Spoiler: yes. And with a very confident face. | Robot mascot in sunglasses looking overconfident, cartoon forest background |
+| 2 | 9 | 8.5 | think | Word by word | A chatbot writes its answer one word at a time, each time picking a likely next word. It doesn’t open a textbook. | Words appear one by one on a chat bubble, each with a small probability bar above it |
+| 3 | 9 | 6.9 | surprise | Sounds true ≠ is true | So it can make up a date, a quote, even a whole book, just because it sounds right. | Book with a made-up title appears, then a magnifying glass reveals the cover is empty |
+| 4 | 8 | 5.8 | point | Check 2 sources | Your superpower is checking. Verify important facts in two reliable sources before you use them. | Two trusted sources (textbook and encyclopedia website) side by side with green checkmarks |
+| 5 | 5 | 3.5 | victory | You decide, not AI | AI is a helper. You decide what to believe. | Teen holds a phone confidently, robot jumps with joy next to them, sunny forest |
+
+## 4. AI as your tutor: «Answer machine or tutor?»
+
+41 сек по раскадровке · голос ≈ 32 сек · 16:9 · файл `ai-trail/en/videos/l5.mp4`
+
+| # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|---|
+| 1 | 7 | 6.5 | hello | Answer machine or tutor? | AI can do your homework for you. Or it can make you better at it. Your call. | Robot mascot standing between two doors labeled ANSWERS and TUTOR, flat cartoon forest |
+| 2 | 9 | 7.7 | sad | ❌ “Solve this for me” | Ask it to solve everything, and you get answers today. Then you freeze on the test, where there’s no AI. | Teen at an exam desk staring at a blank sheet, a phone locked in a box nearby, sweat drop, flat style |
+| 3 | 10 | 6.9 | idea | ✅ “Give me a hint” | Ask for a hint instead: “Don’t solve it. What’s the first step?” Now your brain does the work. | Chat bubble with a small glowing hint, a light bulb switches on above the teen’s head |
+| 4 | 9 | 6.5 | point | ✅ “Check my work” | Or solve it yourself and ask: “Where did I go wrong?” A personal tutor, even at midnight. | Notebook with a solution, one line highlighted in yellow with a short note, moon in the window |
+| 5 | 6 | 4.6 | joy | Try first, then ask | Try first, then ask. That’s how AI makes you smarter, not lazier. | Robot in a tiny graduation cap high-fives the teen, confetti, green check |
+
+## 5. From idea to plan: «AI as your project partner»
+
+40 сек по раскадровке · голос ≈ 30 сек · 16:9 · файл `ai-trail/en/videos/l8.mp4`
+
+| # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|---|
+| 1 | 6 | 5.4 | hello | Got a project? Get a partner | A project feels huge at the start. AI can be your partner. Here’s how. | Teen facing a giant mountain labeled PROJECT, robot mascot appears with a backpack and a map, flat cartoon |
+| 2 | 9 | 6.9 | idea | Step 1: lots of ideas | Ask for fifteen ideas, not one. AI is fast at quantity. Then you pick what actually excites you. | Dozens of idea cards fly out of a phone and land on a table, the teen picks one glowing card |
+| 3 | 9 | 6.5 | point | Step 2: a real plan | Ask it to break your idea into steps with deadlines. A huge project becomes a to-do list. | The mountain turns into a staircase of small steps with dates, checkboxes appear next to each step |
+| 4 | 9 | 5.8 | think | Step 3: you make, AI reviews | You do the actual work. AI gives feedback: what’s unclear, what’s missing, what to cut. | Teen building a cardboard model, robot holds a magnifying glass and points at one part with a sticky note |
+| 5 | 7 | 5.4 | victory | Your project, your call | AI helps. But the ideas you choose and the work you do are yours. | Teen stands on top of the mountain with a flag, robot cheers below, sunrise |
