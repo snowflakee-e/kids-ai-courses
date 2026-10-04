@@ -109,3 +109,25 @@ test('finishing a lesson clears its saved progress', () => {
   const r = G.applyLesson(s, 'l1', scores(lesson('l1')), '2026-10-01');
   assert.equal(r.state.current, null);
 });
+
+test('English content mirrors the Russian one', () => {
+  const en = require('../course.en.js');
+  const shape = c => c.blocks.map(b => ({
+    id: b.id, soon: !!b.soon, lessons: b.lessons.map(l => ({
+      id: l.id, test: !!l.test, minutes: l.minutes,
+      tasks: (l.tasks || []).map(t => ({
+        type: t.type,
+        cards: t.cards && t.cards.length,
+        options: t.options && t.options.length,
+        buckets: t.items && t.items.map(i => i.b),
+        slots: t.slots && t.slots.map(s => s.options.length),
+        wrong: t.wrong,
+        scenes: t.scenes && t.scenes.map(s => s.sec + s.pose)
+      }))
+    }))
+  }));
+  assert.deepEqual(shape(en.COURSE), shape(COURSE));
+  assert.deepEqual(en.XP_RULES, XP_RULES);
+  assert.deepEqual(en.LEVELS.map(l => l.xp), require('../course.js').LEVELS.map(l => l.xp));
+  assert.deepEqual(en.BADGES.map(b => b.id), require('../course.js').BADGES.map(b => b.id));
+});

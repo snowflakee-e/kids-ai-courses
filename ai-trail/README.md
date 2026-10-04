@@ -8,10 +8,11 @@
 
 ```bash
 python3 -m http.server 8000
-# открыть http://localhost:8000/ai-trail/
+# открыть http://localhost:8000/ai-trail/      — русская версия
+#         http://localhost:8000/ai-trail/en/   — английская версия
 ```
 
-На GitHub Pages: `https://snowflakee-e.github.io/kids-ai-courses/ai-trail/` (после мержа в ветку, с которой публикуется сайт).
+На GitHub Pages: `https://snowflakee-e.github.io/kids-ai-courses/ai-trail/` и `…/ai-trail/en/`. Внизу карты есть ссылка на другую версию.
 
 Тесты логики: `node --test tests/game.test.js`.
 
@@ -33,9 +34,11 @@ python3 -m http.server 8000
 ## Файлы
 
 ```
-course.js         контент: блоки, уроки, задания, сцены роликов, XP, уровни, награды
+course.js         контент на русском: блоки, уроки, задания, сцены роликов, XP, уровни, награды
+course.en.js      тот же контент на английском (тест проверяет, что структура совпадает)
+en/index.html     английская страница: тексты разметки, подключает course.en.js
 game.js           логика без интерфейса: открытие станций, звёзды, XP, серии
-app.js            интерфейс: карта, урок, итоги, звуки, конфетти
+app.js            интерфейс: карта, урок, итоги, звуки, конфетти; тексты интерфейса на двух языках в словаре UI
 style.css         стили, светлая тема «день» и тёмная «ночной лес»
 tools/video-tz.js сборка VIDEO_TZ.md и JSON сцен для автоматизации
 VIDEO_TZ.md       ТЗ на ролики
@@ -48,6 +51,10 @@ VIDEO_TZ.md       ТЗ на ролики
 - Урок можно закрыть на любом задании: при следующем входе продолжится с того же места.
 
 Чтобы видеть результаты детей, создай в Make.com сценарий Custom Webhook → Google Sheets и вставь адрес в `CONFIG.resultsWebhook` в `app.js`. После каждого урока придёт форма с полями `name, course, block, lesson, lessonTitle, stars, scorePct, xpEarned, xpTotal, level, plays, durationSec, scores, finishedAt`.
+
+## Языки
+
+Язык страницы берётся из `<html lang>`: `en` — английский, иначе русский. Прогресс у версий раздельный (`bloop-trail-v1` и `bloop-trail-en-v1`). Чтобы поменять текст урока, правь `course.js` и `course.en.js`; кнопки и подсказки — словарь `UI` в `app.js`; надписи разметки — `index.html` и `en/index.html`.
 
 ## Ограничения прототипа
 
