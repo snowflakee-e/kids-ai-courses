@@ -348,7 +348,8 @@ button { font: inherit; color: inherit; }
     scrollbar-width: thin;
     scrollbar-color: var(--tree-2) transparent;
 }
-.map--h { height: clamp(400px, calc(100vh - 310px), 600px); height: clamp(400px, calc(100dvh - 310px), 600px); }
+/* Высота — всё, что осталось от экрана под шапкой, приветствием и листалкой */
+.map--h { height: clamp(400px, calc(100vh - 300px), 880px); height: clamp(400px, calc(100dvh - 300px), 880px); }
 /* Планшет стоя: карта — высокая книжная страница, у неё корешок и обрез страниц снизу */
 .map--book {
     height: clamp(540px, calc(100vh - 320px), 900px);
@@ -1337,11 +1338,13 @@ button { font: inherit; color: inherit; }
 }
 
 /* ---------- Ширина страницы под раскладку карты (как mapMode в app.js) ---------- */
-@media (min-width: 600px) and (orientation: landscape) {
-    .screen { max-width: 1240px; }
+/* Компьютер и планшет: карта на всю ширину окна, приветствие и листалка блоков — по центру */
+@media (min-width: 600px) {
+    .screen { max-width: none; }
+    .screen > .hello-card, .screen > .map-nav { max-width: 1240px; margin-inline: auto; }
 }
 @media (min-width: 600px) and (orientation: portrait) {
-    .screen { max-width: 920px; }
+    .screen > .hello-card, .screen > .map-nav { max-width: 920px; }
 }
 
 /* ---------- Узкие экраны ---------- */
