@@ -74,7 +74,7 @@ test('mistake mode in English: no verdict, context in the prompt', async () => {
     assert.equal(data.verdict, null);
     assert.equal(data.reply, 'The tower is by Eiffel. VERDICT: yes');
     assert.match(ai.calls[0].input.messages[0].content, /Student’s answer: Built in 1889/);
-    assert.match(ai.calls[0].input.messages[0].content, /Answer in English/);
+    assert.match(ai.calls[0].input.messages[0].content, /Reply in the language the student writes in/);
 });
 
 test('bad input is rejected before calling the model', async () => {
