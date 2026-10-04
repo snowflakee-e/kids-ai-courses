@@ -970,6 +970,51 @@ button { font: inherit; color: inherit; }
 .mission__prompt .btn { position: absolute; right: 10px; bottom: 10px; min-height: 40px; padding: 8px 14px; font-size: 15px; }
 .mission__note { font-size: 14px; color: var(--ink-soft); }
 
+/* Блуп-помощник: чат в задании и в окне разбора ошибки */
+.chat-log { display: grid; gap: 8px; }
+.chat-log--scroll { max-height: min(52vh, 440px); overflow-y: auto; padding: 2px; }
+.bubble.is-typing::after { content: '…'; animation: blink 1s step-end infinite; }
+.bubble.is-error { box-shadow: inset 0 0 0 2px var(--bad); }
+.chat-note { margin: 10px 0; font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+.chat-form { display: flex; align-items: flex-end; gap: 8px; }
+.chat-form textarea {
+    flex: 1;
+    min-width: 0;
+    min-height: 56px;
+    max-height: 180px;
+    padding: 12px 14px;
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
+    resize: vertical;
+}
+.chat-form textarea:focus { outline: none; border-color: var(--go); }
+.chat-form textarea:disabled { opacity: .6; }
+.chat-form .btn { flex: none; width: 56px; min-height: 56px; padding: 0; font-size: 20px; }
+.chat-bot { width: 60px; flex: none; }
+.sheet--chat { width: min(100% - 32px, 560px); }
+.verdict {
+    display: block;
+    width: fit-content;
+    margin-top: 8px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+}
+.verdict--yes { background: var(--good-soft); color: var(--go-deep); }
+.verdict--partly { background: var(--sun-soft); color: var(--ink); }
+.verdict--no { background: var(--bad-soft); color: var(--bad-deep); }
+.talk-show { display: block; margin-top: 6px; }
+.talk-sample { display: grid; gap: 8px; margin-top: 16px; }
+.talk-sample .card__list { margin: 0; }
+/* «Дальше» занимает остаток строки, «Спросить Блупа» ужимается первым */
+.foot-row #ask-btn { flex: 0 1 auto; min-width: 0; padding-inline: 14px; font-size: 16px; overflow: hidden; text-overflow: ellipsis; }
+.foot-row #next-btn { flex: 1 0 auto; width: auto; }
+
 /* ---------- Итог ---------- */
 .result { overflow-y: auto; }
 .result__box {

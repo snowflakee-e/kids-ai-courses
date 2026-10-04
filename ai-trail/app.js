@@ -8,6 +8,9 @@ const CONFIG = {
     // Webhook для результатов уроков (Make.com → Custom Webhook → Google Sheets).
     // Пусто — результаты никуда не отправляются, прогресс живёт только в браузере.
     resultsWebhook: '',
+    // Адрес Блупа-помощника (Cloudflare Worker из папки worker/), например https://bloop-tutor.имя.workers.dev
+    // Пусто — помощник выключен: кнопки «Спросить Блупа» нет, «Объясни Блупу» работает как самопроверка.
+    tutorUrl: '',
     storageKey: LANG === 'en' ? 'bloop-trail-en-v1' : 'bloop-trail-v1',
     // Профиль из кабинета школы (тот же домен на GitHub Pages): берём оттуда имя
     cabinetKey: 'bloop-cabinet-v1'
@@ -69,7 +72,7 @@ const UI = {
         newStation: 'Новая станция!',
         soonToast: title => `«${title}» скоро откроется 🌱`,
         firstPass: title => `Сначала пройди «${title}»`,
-        kind: { theory: '📖 Теория', video: '🎬 Ролик', practice: '🧩 Практика', test: '✅ Тест' },
+        kind: { theory: '📖 Теория', video: '🎬 Ролик', practice: '🧩 Практика', ai: '🤖 Проверка с Блупом', test: '✅ Тест' },
         best: (stars, pct) => `Лучший результат: ${stars} · ${pct}%`,
         rule: n => `${n} ${plural(n, 'задание', 'задания', 'заданий')}. От 50% верных — станция пройдена.`,
         resumeFrom: n => `Продолжить с задания ${n}`,
@@ -118,7 +121,29 @@ const UI = {
         badgeHave: ', получена', badgeMissing: ', ещё не получена',
         welcome: name => `Приятно познакомиться, ${name}! Жми на первую станцию`,
         savedSettings: 'Сохранено',
-        resetDone: 'Прогресс сброшен. Начинаем тропу заново'
+        resetDone: 'Прогресс сброшен. Начинаем тропу заново',
+        close: 'Закрыть',
+        tutorAsk: 'Спросить Блупа 💬',
+        tutorKicker: 'Разбор ошибки',
+        tutorTitle: 'Спроси Блупа',
+        tutorStart: 'Почему мой ответ неправильный?',
+        tutorPlaceholder: 'Напиши вопрос…',
+        tutorNote: 'Блуп отвечает только про уроки курса. Не пиши личные данные.',
+        tutorSend: 'Отправить',
+        tutorThinking: 'Блуп думает',
+        tutorError: 'Блуп сейчас не на связи. Попробуй чуть позже.',
+        tutorTired: 'Блуп устал на сегодня. Возвращайся завтра!',
+        tutorLimit: 'На это задание вопросов хватит, жми «Дальше»',
+        you: 'Ты', bloop: 'Блуп',
+        talkKicker: '🤖 Проверка с Блупом',
+        talkPlaceholder: 'Напиши ответ своими словами…',
+        talkHint: 'Блуп прочитает ответ и подскажет, чего не хватает.',
+        talkOffline: 'Напиши ответ своими словами, а потом сравни с примером.',
+        talkShow: 'Показать пример ответа',
+        talkPoints: 'В хорошем ответе есть:',
+        talkSample: 'Пример ответа:',
+        talkWait: 'Сначала ответь Блупу',
+        verdict: { yes: '✓ Засчитано', partly: '≈ Почти', no: '✗ Пока нет' }
     },
     en: {
         good: ['Correct!', 'Bullseye!', 'Nailed it!', 'Nice one!', 'Big brain move!', 'Keep it up!'],
@@ -145,7 +170,7 @@ const UI = {
         newStation: 'New station!',
         soonToast: title => `“${title}” is coming soon 🌱`,
         firstPass: title => `Finish “${title}” first`,
-        kind: { theory: '📖 Theory', video: '🎬 Video', practice: '🧩 Practice', test: '✅ Test' },
+        kind: { theory: '📖 Theory', video: '🎬 Video', practice: '🧩 Practice', ai: '🤖 Check with Bloop', test: '✅ Test' },
         best: (stars, pct) => `Best result: ${stars} · ${pct}%`,
         rule: n => `${n} ${n === 1 ? 'task' : 'tasks'}. Get 50% right to pass the station.`,
         resumeFrom: n => `Continue from task ${n}`,
@@ -194,7 +219,29 @@ const UI = {
         badgeHave: ', earned', badgeMissing: ', not earned yet',
         welcome: name => `Nice to meet you, ${name}! Tap the first station`,
         savedSettings: 'Saved',
-        resetDone: 'Progress reset. Starting the trail over'
+        resetDone: 'Progress reset. Starting the trail over',
+        close: 'Close',
+        tutorAsk: 'Ask Bloop 💬',
+        tutorKicker: 'Mistake review',
+        tutorTitle: 'Ask Bloop',
+        tutorStart: 'Why is my answer wrong?',
+        tutorPlaceholder: 'Type your question…',
+        tutorNote: 'Bloop only talks about the course lessons. Don’t share personal info.',
+        tutorSend: 'Send',
+        tutorThinking: 'Bloop is thinking',
+        tutorError: 'Bloop is offline right now. Try again a bit later.',
+        tutorTired: 'Bloop is tired for today. Come back tomorrow!',
+        tutorLimit: 'That’s enough questions for this task, tap Next',
+        you: 'You', bloop: 'Bloop',
+        talkKicker: '🤖 Check with Bloop',
+        talkPlaceholder: 'Write your answer in your own words…',
+        talkHint: 'Bloop will read your answer and tell you what’s missing.',
+        talkOffline: 'Write your answer in your own words, then compare it with the example.',
+        talkShow: 'Show an example answer',
+        talkPoints: 'A good answer covers:',
+        talkSample: 'Example answer:',
+        talkWait: 'Answer Bloop first',
+        verdict: { yes: '✓ Nailed it', partly: '≈ Almost', no: '✗ Not yet' }
     }
 }[LANG];
 
@@ -232,6 +279,88 @@ const Sound = {
         } catch (e) { /* звук недоступен — просто молчим */ }
     }
 };
+
+// ---------- Блуп-помощник: запросы к воркеру и чат ----------
+const Tutor = {
+    get enabled() { return !!CONFIG.tutorUrl; },
+
+    async ask(payload) {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 30000);
+        try {
+            const res = await fetch(CONFIG.tutorUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lang: LANG, ...payload }),
+                signal: ctrl.signal
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok || typeof data.reply !== 'string') throw new Error(data.error || 'http ' + res.status);
+            return data;
+        } finally {
+            clearTimeout(timer);
+        }
+    },
+
+    // Лента сообщений + форма. Вся переписка уходит в воркер, у ученика не больше maxTurns сообщений.
+    chat({ log, form, mode, lesson, context, maxTurns, onReply, onFail }) {
+        const input = $('textarea', form);
+        const sendBtn = $('button[type="submit"]', form);
+        const history = [];
+        let turns = 0, busy = false;
+
+        const add = (who, text, extra) => {
+            const p = document.createElement('p');
+            p.className = `bubble bubble--${who}${extra ? ' ' + extra : ''}`;
+            p.innerHTML = `<span class="bubble__who">${who === 'me' ? UI.you : UI.bloop}</span>`;
+            p.appendChild(document.createTextNode(text));
+            log.appendChild(p);
+            p.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
+            return p;
+        };
+        const lock = on => { input.disabled = sendBtn.disabled = on; };
+
+        const send = async text => {
+            text = String(text || '').trim().slice(0, 500);
+            if (!text || busy || turns >= maxTurns) return;
+            busy = true;
+            turns++;
+            lock(true);
+            input.value = '';
+            add('me', text);
+            history.push({ role: 'user', content: text });
+            const typing = add('ai', UI.tutorThinking, 'is-typing');
+            try {
+                const data = await Tutor.ask({ mode, lesson, context, messages: history });
+                typing.remove();
+                history.push({ role: 'assistant', content: data.reply });
+                const bubble = add('ai', data.reply);
+                if (onReply) onReply(data, bubble);
+            } catch (e) {
+                typing.remove();
+                history.pop();
+                turns--;
+                add('ai', e.message === 'quota' ? UI.tutorTired : UI.tutorError, 'is-error');
+                if (onFail) onFail(e);
+            } finally {
+                busy = false;
+                lock(turns >= maxTurns);
+                if (turns >= maxTurns) input.placeholder = UI.tutorLimit;
+            }
+        };
+
+        form.addEventListener('submit', e => { e.preventDefault(); send(input.value); });
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
+        });
+        return { send };
+    }
+};
+
+const chatForm = placeholder => `<form class="chat-form">
+    <textarea rows="2" maxlength="500" placeholder="${esc(placeholder)}" aria-label="${esc(placeholder)}"></textarea>
+    <button class="btn btn--go" type="submit" aria-label="${esc(UI.tutorSend)}">➤</button>
+</form>`;
 
 // ---------- Лес: плоские деревья в стиле Бобика, цвета из токенов ----------
 const Forest = {
@@ -407,7 +536,7 @@ function mapSvg(L) {
     </svg>`;
 }
 
-const KIND = { cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', poll: 'practice', mission: 'practice' };
+const KIND = { cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', poll: 'practice', mission: 'practice', talk: 'ai' };
 
 // ---------- Приложение ----------
 const app = {
@@ -422,6 +551,7 @@ const app = {
         this.state = this.load();
         Sound.on = this.state.sound;
         $('#brand-blup').innerHTML = blup('neutral');
+        this.mountTutor();
         this.bind();
         this.renderAll();
         this.scrollToCurrent(false);
@@ -680,7 +810,7 @@ const app = {
 
         const counts = {};
         lesson.tasks.forEach(t => { const k = KIND[t.type]; counts[k] = (counts[k] || 0) + 1; });
-        $('#station-chips').innerHTML = ['theory', 'video', 'practice', 'test'].filter(k => counts[k]).map(k =>
+        $('#station-chips').innerHTML = ['theory', 'video', 'practice', 'ai', 'test'].filter(k => counts[k]).map(k =>
             `<li>${UI.kind[k]}${k === 'test' ? ` · ${UI.questions(counts[k])}` : ''}</li>`).join('') +
             `<li>⏱ ${UI.minutes(lesson.minutes)}</li>`;
 
@@ -751,6 +881,9 @@ const app = {
         const t = r.lesson.tasks[r.step];
         r.token++;
         r.onNext = () => this.nextTask();
+        r.mistake = null;
+        $('#ask-btn').hidden = true;
+        if ($('#tutor-sheet').open) $('#tutor-sheet').close();
         $('#feedback').hidden = true;
         // иначе анимация «+XP» повторится, когда панель снова станет видимой
         $('#xp-pop').classList.remove('is-on');
@@ -804,6 +937,7 @@ const app = {
         }
         this.showFeedback(tone, title, text);
         this.setNext(UI.btn.next, true);
+        $('#ask-btn').hidden = !(Tutor.enabled && typeof score === 'number' && score < 1 && r.mistake);
     },
 
     showFeedback(tone, title, text) {
@@ -1012,7 +1146,10 @@ const app = {
                     if (opts[i].ok) b.classList.add('is-right');
                     else if (b !== btn) b.classList.add('is-dim');
                 });
-                if (!chosen.ok) btn.classList.add('is-wrong');
+                if (!chosen.ok) {
+                    btn.classList.add('is-wrong');
+                    this.run.mistake = { question: t.q, answer: chosen.text, correct: right.text, explain: t.explain };
+                }
                 this.answered(chosen.ok ? 1 : 0, {
                     title: chosen.ok ? pick(UI.good) : pick(UI.bad),
                     text: chosen.ok ? t.explain : UI.correctIs(right.text, t.explain)
@@ -1023,6 +1160,7 @@ const app = {
         sort(t, box, token) {
             const items = shuffle(t.items);
             const counts = t.buckets.map(() => 0);
+            const misses = [];
             let k = 0, right = 0, busy = false;
             box.innerHTML = this.head(UI.practice, t.title, t.text) + `<div class="sort">
                 <div class="sort__deck"></div>
@@ -1054,6 +1192,7 @@ const app = {
                 } else {
                     Sound.play('bad');
                     card.classList.add('is-wrong');
+                    misses.push({ item, picked: +btn.dataset.b });
                     await wait(1100);
                 }
                 if (this.run.token !== token) return;
@@ -1075,6 +1214,14 @@ const app = {
                 deck.innerHTML = `<div class="sort__card">${UI.sortDone(right, items.length)}</div>`;
                 buckets.forEach(b => { b.disabled = true; });
                 const score = right / items.length;
+                if (misses.length) {
+                    this.run.mistake = {
+                        question: `${t.title} ${t.text || ''}`,
+                        answer: misses.map(m => `«${m.item.t}» → ${t.buckets[m.picked]}`).join('; '),
+                        correct: misses.map(m => `«${m.item.t}» → ${t.buckets[m.item.b]}`).join('; '),
+                        explain: misses.map(m => m.item.why).join(' ')
+                    };
+                }
                 this.answered(score, {
                     title: score === 1 ? UI.perfect : UI.sortScore(right, items.length),
                     text: score === 1 ? UI.sortPerfectText : UI.sortHint
@@ -1101,6 +1248,7 @@ const app = {
                     const o = s.opts[+chip.dataset.o];
                     if (!o.ok) {
                         s.clean = false;
+                        (s.misses = s.misses || []).push(o.text);
                         chip.disabled = true;
                         chip.classList.add('is-wrong');
                         $('.slot__hint', el).hidden = false;
@@ -1139,6 +1287,15 @@ const app = {
                 }
                 const clean = slots.filter(s => s.clean).length;
                 const score = clean / slots.length;
+                const missed = slots.filter(s => !s.clean);
+                if (missed.length) {
+                    this.run.mistake = {
+                        question: t.goal,
+                        answer: missed.map(s => `${s.label}: ${s.misses.join(', ')}`).join('; '),
+                        correct: missed.map(s => `${s.label}: ${s.opts.find(o => o.ok).text}`).join('; '),
+                        explain: missed.map(s => s.hint).join(' ')
+                    };
+                }
                 this.answered(score, {
                     title: score === 1 ? UI.buildPerfect : UI.buildScore(clean, slots.length),
                     text: UI.buildText
@@ -1158,7 +1315,13 @@ const app = {
                 const ok = +btn.dataset.i === t.wrong;
                 buttons.forEach(b => { b.disabled = true; });
                 buttons[t.wrong].classList.add('is-right');
-                if (!ok) btn.classList.add('is-wrong');
+                if (!ok) {
+                    btn.classList.add('is-wrong');
+                    this.run.mistake = {
+                        question: `${t.title}. ${t.text}`, answer: t.sentences[+btn.dataset.i],
+                        correct: t.sentences[t.wrong], explain: t.explain
+                    };
+                }
                 this.answered(ok ? 1 : 0, { title: ok ? pick(UI.good) : pick(UI.bad), text: t.explain });
             }));
         },
@@ -1188,6 +1351,67 @@ const app = {
             }));
         },
 
+        // Ответ своими словами. С помощником его проверяет нейросеть, без него — сравнение с примером.
+        talk(t, box, token) {
+            box.innerHTML = this.head(UI.talkKicker, t.title) + `
+                <div class="chat-log">
+                    <p class="bubble bubble--ai"><span class="bubble__who">${UI.bloop}</span>${esc(t.question)}</p>
+                </div>
+                <p class="chat-note">${Tutor.enabled ? UI.talkHint : UI.talkOffline}</p>
+                ${chatForm(UI.talkPlaceholder)}
+                <button class="link-btn talk-show" type="button" hidden>${UI.talkShow}</button>
+                <div class="talk-sample" hidden>
+                    <p class="eyebrow">${UI.talkPoints}</p>
+                    <ul class="card__list">${t.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>
+                    <p class="eyebrow">${UI.talkSample}</p>
+                    <p class="bubble bubble--ai">${esc(t.sample)}</p>
+                </div>`;
+            const log = $('.chat-log', box), form = $('.chat-form', box);
+            const showBtn = $('.talk-show', box), sample = $('.talk-sample', box);
+            const alive = () => this.run && this.run.token === token;
+            const reveal = () => {
+                sample.hidden = false;
+                showBtn.hidden = true;
+                this.setNext(UI.btn.next, true);
+                Sound.play('pop');
+            };
+            showBtn.addEventListener('click', reveal);
+            this.setNext(UI.talkWait, false);
+
+            if (!Tutor.enabled) {
+                form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const text = $('textarea', form).value.trim().slice(0, 500);
+                    if (!text) return;
+                    log.insertAdjacentHTML('beforeend', `<p class="bubble bubble--me"><span class="bubble__who">${UI.you}</span>${esc(text)}</p>`);
+                    form.hidden = true;
+                    reveal();
+                });
+                $('textarea', form).addEventListener('keydown', e => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+                });
+                return;
+            }
+
+            Tutor.chat({
+                log, form, mode: 'check', lesson: this.run.lesson.title,
+                context: { question: t.question, points: t.points }, maxTurns: 4,
+                onReply: (data, bubble) => {
+                    if (!alive()) return;
+                    const v = UI.verdict[data.verdict] ? data.verdict : null;
+                    if (v) bubble.insertAdjacentHTML('beforeend', `<span class="verdict verdict--${v}">${UI.verdict[v]}</span>`);
+                    Sound.play(v === 'yes' ? 'good' : v === 'no' ? 'bad' : 'pop');
+                    if (sample.hidden) showBtn.hidden = false;
+                    this.setNext(UI.btn.next, true);
+                },
+                onFail: () => {
+                    if (!alive()) return;
+                    if (sample.hidden) showBtn.hidden = false;
+                    this.setNext(UI.btn.next, true);
+                }
+            });
+        },
+
         mission(t, box) {
             box.innerHTML = this.head(UI.mission, t.title, t.text) + `<div class="mission__prompt">
                 <p id="mission-text">${esc(t.prompt)}</p>
@@ -1212,6 +1436,46 @@ const app = {
             skip.hidden = false;
             this.run.onNext = () => { this.run.scores[this.run.step] = null; this.nextTask(); };
         }
+    },
+
+    mountTutor() {
+        $('.foot-row').insertAdjacentHTML('afterbegin', `<button class="btn btn--white" id="ask-btn" type="button" hidden>${UI.tutorAsk}</button>`);
+        document.body.insertAdjacentHTML('beforeend', `<dialog class="sheet sheet--chat" id="tutor-sheet" aria-labelledby="tutor-title">
+            <div class="sheet__box">
+                <button class="sheet__close icon-btn" type="button" data-close aria-label="${esc(UI.close)}">✕</button>
+                <div class="station-head">
+                    <span class="chat-bot" id="tutor-blup" aria-hidden="true"></span>
+                    <div>
+                        <p class="eyebrow">${UI.tutorKicker}</p>
+                        <h2 id="tutor-title">${UI.tutorTitle}</h2>
+                    </div>
+                </div>
+                <div class="chat-log chat-log--scroll" id="tutor-log" aria-live="polite"></div>
+                <div id="tutor-form-slot"></div>
+                <p class="chat-note">${UI.tutorNote}</p>
+            </div>
+        </dialog>`);
+        $('#ask-btn').addEventListener('click', () => this.openTutor());
+    },
+
+    // Один разговор на одну ошибку: повторное открытие показывает ту же переписку
+    openTutor() {
+        const r = this.run;
+        if (!r || !r.mistake || !Tutor.enabled) return;
+        const sheet = $('#tutor-sheet');
+        const key = r.token + ':' + r.step;
+        if (this.tutorKey === key) { sheet.showModal(); return; }
+        this.tutorKey = key;
+        $('#tutor-log').innerHTML = '';
+        $('#tutor-blup').innerHTML = blup('think');
+        $('#tutor-form-slot').innerHTML = chatForm(UI.tutorPlaceholder);
+        const chat = Tutor.chat({
+            log: $('#tutor-log'), form: $('#tutor-form-slot form'),
+            mode: 'mistake', lesson: r.lesson.title, context: r.mistake, maxTurns: 5,
+            onReply: () => { $('#tutor-blup').innerHTML = blup('wink'); }
+        });
+        sheet.showModal();
+        chat.send(UI.tutorStart);
     },
 
     finishLesson() {
