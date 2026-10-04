@@ -1,11 +1,14 @@
 'use strict';
 
+// Язык страницы: <html lang="en"> — английская версия, иначе русская
+const LANG = document.documentElement.lang === 'en' ? 'en' : 'ru';
+
 // Настройки
 const CONFIG = {
     // Webhook для результатов уроков (Make.com → Custom Webhook → Google Sheets).
     // Пусто — результаты никуда не отправляются, прогресс живёт только в браузере.
     resultsWebhook: '',
-    storageKey: 'bloop-trail-v1',
+    storageKey: LANG === 'en' ? 'bloop-trail-en-v1' : 'bloop-trail-v1',
     // Профиль из кабинета школы (тот же домен на GitHub Pages): берём оттуда имя
     cabinetKey: 'bloop-cabinet-v1'
 };
@@ -39,9 +42,161 @@ function plural(n, one, few, many) {
 // Блуп — это Бобик из bobik.js в палитре peach (переменные --rb-* в style.css)
 const blup = pose => bob(STATES[pose] || STATES.neutral).replace(/<title>[^<]*<\/title>/, '');
 
-const GOOD = ['Точно!', 'В яблочко!', 'Огонь!', 'Красиво!', 'Мозг на максималках!', 'Так держать!'];
-const BAD = ['Почти!', 'Не совсем', 'Мимо, но не страшно'];
-const LETTERS = 'АБВГД';
+// Тексты интерфейса. Контент уроков — в course.js (русский) и course.en.js (английский).
+const UI = {
+    ru: {
+        good: ['Точно!', 'В яблочко!', 'Огонь!', 'Красиво!', 'Мозг на максималках!', 'Так держать!'],
+        bad: ['Почти!', 'Не совсем', 'Мимо, но не страшно'],
+        letters: 'АБВГД',
+        soundOff: 'Выключить звук', soundOn: 'Включить звук',
+        hi: name => (name ? `Привет, ${name}!` : 'Привет!'),
+        helloKicker: (n, title, done, total) => `Блок ${n} · ${title} · ${done} из ${total} станций`,
+        level: (n, title) => `Уровень ${n} · ${title}`,
+        resume: title => `Продолжить: ${title}`,
+        blockDone: 'Блок пройден 🌳',
+        next: title => `Дальше: ${title}`,
+        start: title => `Начать: ${title}`,
+        block: n => `Блок ${n}`,
+        soon: 'скоро',
+        finale: 'Финал блока',
+        station: n => `Станция ${n}`,
+        locked: '🔒 закрыто',
+        passed: 'пройдено',
+        resumeShort: '▶ продолжить',
+        minutes: n => `${n} мин`,
+        tasks: n => `${n} ${plural(n, 'задание', 'задания', 'заданий')}`,
+        questions: n => `${n} ${plural(n, 'вопрос', 'вопроса', 'вопросов')}`,
+        newStation: 'Новая станция!',
+        soonToast: title => `«${title}» скоро откроется 🌱`,
+        firstPass: title => `Сначала пройди «${title}»`,
+        kind: { theory: '📖 Теория', video: '🎬 Ролик', practice: '🧩 Практика', test: '✅ Тест' },
+        best: (stars, pct) => `Лучший результат: ${stars} · ${pct}%`,
+        rule: n => `${n} ${plural(n, 'задание', 'задания', 'заданий')}. От 50% верных — станция пройдена.`,
+        resumeFrom: n => `Продолжить с задания ${n}`,
+        replay: 'Пройти ещё раз',
+        begin: 'Начать',
+        resumed: n => `Продолжаем с задания ${n}`,
+        saved: 'Прогресс сохранён, продолжишь с этого места',
+        btn: {
+            next: 'Дальше', gotIt: 'Понятно!', watch: 'Досмотри ролик', choose: 'Выбери ответ',
+            sortAll: 'Разложи все карточки', build: 'Собери промпт', tapSentence: 'Нажми на предложение',
+            pickWord: 'Выбери слово', tried: 'Я попробовал(а) ✓'
+        },
+        combo: n => `Серия ×${n}! 🔥`,
+        practice: '🧩 Практика', experiment: '🧩 Эксперимент', mission: '🚀 Миссия',
+        video: sec => `🎬 Ролик · ${sec} сек`,
+        quizKicker: (test, n, total) => `${test ? '🌳 Испытание' : '✅ Тест'} · вопрос ${n} из ${total}`,
+        prompt: 'Промпт', tap: 'Нажми',
+        storyboard: 'Раскадровка ролика', draft: 'Черновик ролика', play: 'Смотреть ролик',
+        playHint: 'Нажми ▶, чтобы смотреть. Тап по экрану — следующая сцена.',
+        pause: 'Пауза', replayVideo: 'Смотреть ещё раз', resumeVideo: 'Смотреть',
+        correctIs: (text, explain) => `Правильно: «${text}». ${explain}`,
+        sortAsk: 'Куда отнесёшь карточку?',
+        sortDone: (r, n) => `Готово: ${r} из ${n}`,
+        perfect: 'Идеально!',
+        sortScore: (r, n) => `${r} из ${n} верно`,
+        sortPerfectText: 'Все карточки на своих местах.',
+        sortHint: 'Пояснения под карточками помогут в следующий раз.',
+        yourPrompt: 'Твой промпт', ai: 'ИИ',
+        buildPerfect: 'Промпт мечты!',
+        buildScore: (c, n) => `${c} из ${n} с первого раза`,
+        buildText: 'Роль + Задача + Контекст + Формат — и ИИ отвечает в точку.',
+        aiAnswer: '🤖 Ответ ИИ',
+        pollMatch: 'Ты думаешь как нейросеть!', pollOther: 'Нейросеть выбрала бы другое',
+        copy: 'Скопировать', copied: 'Скопировано ✓', selected: 'Выделено — скопируй',
+        almost: 'Почти получилось', stationDone: 'Станция пройдена!',
+        leadFail: 'Нужно хотя бы 50% верных. Ещё одна попытка — и всё получится.',
+        leadReplay: 'Опыт за повтор не начисляется, если результат не лучше прошлого. Звёзды улучшать можно.',
+        leadDone: title => `«${title}» в копилке.`,
+        starsOf: n => `${n} из 3 звёзд`,
+        statXp: 'опыта', statAcc: 'точность', statRun: 'серия без ошибок',
+        blockCompleted: (title, xp) => `Блок «${title}» пройден! +${xp} XP`,
+        levelUp: (n, title) => `Новый уровень ${n}: ${title}`,
+        badge: (title, desc) => `Награда «${title}»: ${desc.toLowerCase()}`,
+        toMap: 'На карту →', again: 'Ещё раз', map: 'На карту',
+        nextBlock: title => `Дальше — «${title}». Блок скоро откроется 🌱`,
+        badgeHave: ', получена', badgeMissing: ', ещё не получена',
+        welcome: name => `Приятно познакомиться, ${name}! Жми на первую станцию`,
+        savedSettings: 'Сохранено',
+        resetDone: 'Прогресс сброшен. Начинаем тропу заново'
+    },
+    en: {
+        good: ['Correct!', 'Bullseye!', 'Nailed it!', 'Nice one!', 'Big brain move!', 'Keep it up!'],
+        bad: ['Almost!', 'Not quite', 'Missed, but that’s OK'],
+        letters: 'ABCDE',
+        soundOff: 'Turn sound off', soundOn: 'Turn sound on',
+        hi: name => (name ? `Hi, ${name}!` : 'Hi!'),
+        helloKicker: (n, title, done, total) => `Block ${n} · ${title} · ${done} of ${total} stations`,
+        level: (n, title) => `Level ${n} · ${title}`,
+        resume: title => `Continue: ${title}`,
+        blockDone: 'Block complete 🌳',
+        next: title => `Next: ${title}`,
+        start: title => `Start: ${title}`,
+        block: n => `Block ${n}`,
+        soon: 'coming soon',
+        finale: 'Block finale',
+        station: n => `Station ${n}`,
+        locked: '🔒 locked',
+        passed: 'done',
+        resumeShort: '▶ continue',
+        minutes: n => `${n} min`,
+        tasks: n => `${n} ${n === 1 ? 'task' : 'tasks'}`,
+        questions: n => `${n} ${n === 1 ? 'question' : 'questions'}`,
+        newStation: 'New station!',
+        soonToast: title => `“${title}” is coming soon 🌱`,
+        firstPass: title => `Finish “${title}” first`,
+        kind: { theory: '📖 Theory', video: '🎬 Video', practice: '🧩 Practice', test: '✅ Test' },
+        best: (stars, pct) => `Best result: ${stars} · ${pct}%`,
+        rule: n => `${n} ${n === 1 ? 'task' : 'tasks'}. Get 50% right to pass the station.`,
+        resumeFrom: n => `Continue from task ${n}`,
+        replay: 'Play again',
+        begin: 'Start',
+        resumed: n => `Picking up from task ${n}`,
+        saved: 'Progress saved, you’ll continue from here',
+        btn: {
+            next: 'Next', gotIt: 'Got it!', watch: 'Finish the video', choose: 'Pick an answer',
+            sortAll: 'Sort all the cards', build: 'Build the prompt', tapSentence: 'Tap a sentence',
+            pickWord: 'Pick a word', tried: 'I tried it ✓'
+        },
+        combo: n => `${n} in a row! 🔥`,
+        practice: '🧩 Practice', experiment: '🧩 Experiment', mission: '🚀 Mission',
+        video: sec => `🎬 Video · ${sec} sec`,
+        quizKicker: (test, n, total) => `${test ? '🌳 Challenge' : '✅ Test'} · question ${n} of ${total}`,
+        prompt: 'Prompt', tap: 'Tap',
+        storyboard: 'Video storyboard', draft: 'Draft video', play: 'Watch the video',
+        playHint: 'Press ▶ to watch. Tap the screen for the next scene.',
+        pause: 'Pause', replayVideo: 'Watch again', resumeVideo: 'Play',
+        correctIs: (text, explain) => `Correct answer: “${text}”. ${explain}`,
+        sortAsk: 'Where does this card go?',
+        sortDone: (r, n) => `Done: ${r} of ${n}`,
+        perfect: 'Perfect!',
+        sortScore: (r, n) => `${r} of ${n} correct`,
+        sortPerfectText: 'Every card is in the right place.',
+        sortHint: 'The notes under the cards will help next time.',
+        yourPrompt: 'Your prompt', ai: 'AI',
+        buildPerfect: 'Dream prompt!',
+        buildScore: (c, n) => `${c} of ${n} on the first try`,
+        buildText: 'Role + Task + Context + Format, and AI hits the target.',
+        aiAnswer: '🤖 AI’s answer',
+        pollMatch: 'You think like a neural network!', pollOther: 'A neural network would pick another word',
+        copy: 'Copy', copied: 'Copied ✓', selected: 'Selected, now copy it',
+        almost: 'So close', stationDone: 'Station complete!',
+        leadFail: 'You need at least 50% correct. One more try and you’ve got it.',
+        leadReplay: 'Replays give XP only if you beat your best result. You can still improve your stars.',
+        leadDone: title => `“${title}” is in the bag.`,
+        starsOf: n => `${n} of 3 stars`,
+        statXp: 'XP earned', statAcc: 'accuracy', statRun: 'best streak',
+        blockCompleted: (title, xp) => `Block “${title}” complete! +${xp} XP`,
+        levelUp: (n, title) => `New level ${n}: ${title}`,
+        badge: (title, desc) => `Badge “${title}”: ${desc.toLowerCase()}`,
+        toMap: 'To the map →', again: 'Try again', map: 'To the map',
+        nextBlock: title => `Next up: “${title}”. This block opens soon 🌱`,
+        badgeHave: ', earned', badgeMissing: ', not earned yet',
+        welcome: name => `Nice to meet you, ${name}! Tap the first station`,
+        savedSettings: 'Saved',
+        resetDone: 'Progress reset. Starting the trail over'
+    }
+}[LANG];
 
 // ---------- Звуки: короткие тоны WebAudio, без файлов ----------
 const Sound = {
@@ -253,7 +408,6 @@ function mapSvg(L) {
 }
 
 const KIND = { cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', poll: 'practice', mission: 'practice' };
-const KIND_LABEL = { theory: '📖 Теория', video: '🎬 Ролик', practice: '🧩 Практика', test: '✅ Тест' };
 
 // ---------- Приложение ----------
 const app = {
@@ -316,7 +470,7 @@ const app = {
         set('#stat-xp', this.state.xp);
         const btn = $('#sound-btn');
         btn.textContent = this.state.sound ? '🔊' : '🔇';
-        btn.setAttribute('aria-label', this.state.sound ? 'Выключить звук' : 'Включить звук');
+        btn.setAttribute('aria-label', this.state.sound ? UI.soundOff : UI.soundOn);
     },
 
     renderHello() {
@@ -327,17 +481,17 @@ const app = {
         const t = Game.totals(s);
         const resume = s.current && Game.findStation(s.current.lessonId);
 
-        $('#hello-title').textContent = s.name ? `Привет, ${s.name}!` : 'Привет!';
-        $('#hello-kicker').textContent = `Блок ${st.blockIndex + 1} · ${st.block.title} · ${t.lessonsDone} из ${list.length} станций`;
-        $('#level-name').textContent = `Уровень ${lv.level} · ${lv.title}`;
+        $('#hello-title').textContent = UI.hi(s.name);
+        $('#hello-kicker').textContent = UI.helloKicker(st.blockIndex + 1, st.block.title, t.lessonsDone, list.length);
+        $('#level-name').textContent = UI.level(lv.level, lv.title);
         $('#level-xp').textContent = lv.to ? `${s.xp} / ${lv.to} XP` : `${s.xp} XP`;
         $('#level-fill').style.width = Math.round(lv.progress * 100) + '%';
         $('#level-bar').setAttribute('aria-valuenow', String(Math.round(lv.progress * 100)));
 
         const btn = $('#continue-btn');
-        if (resume) btn.textContent = `Продолжить: ${resume.lesson.title}`;
-        else if (t.lessonsDone === list.length) btn.textContent = 'Блок пройден 🌳';
-        else btn.textContent = (t.lessonsDone ? 'Дальше: ' : 'Начать: ') + st.lesson.title;
+        if (resume) btn.textContent = UI.resume(resume.lesson.title);
+        else if (t.lessonsDone === list.length) btn.textContent = UI.blockDone;
+        else btn.textContent = (t.lessonsDone ? UI.next : UI.start)(st.lesson.title);
     },
 
     renderMap() {
@@ -348,7 +502,7 @@ const app = {
 
         const gates = L.gates.map(g => {
             const done = g.block.soon ? 0 : g.block.lessons.filter(l => Game.passed(s, l.id)).length;
-            const kicker = g.block.soon ? `Блок ${g.bi + 1} · скоро` : `Блок ${g.bi + 1} · ${done}/${g.block.lessons.length}`;
+            const kicker = `${UI.block(g.bi + 1)} · ${g.block.soon ? UI.soon : `${done}/${g.block.lessons.length}`}`;
             return `<div class="gate${g.block.soon ? ' gate--soon' : ''}" style="left:${pct(g.x, L.W)};top:${pct(g.y, L.H)}">
                 <div class="gate__plank">
                     <p class="gate__kicker">${kicker}</p>
@@ -365,12 +519,12 @@ const app = {
             const left = n.x > 180;
             const off = n.big ? 50 : 44;
             const side = left ? `right:${pct(L.W - n.x + off, L.W)}` : `left:${pct(n.x + off, L.W)}`;
-            const kicker = n.lesson.test ? 'Финал блока' : `Станция ${n.li + 1}`;
+            const kicker = n.lesson.test ? UI.finale : UI.station(n.li + 1);
             let meta;
-            if (status === 'soon') meta = 'скоро';
-            else if (status === 'locked') meta = '🔒 закрыто';
-            else if (status === 'done') meta = `<span class="label__stars">${'★'.repeat(rec.stars)}${'☆'.repeat(3 - rec.stars)}</span> · пройдено`;
-            else meta = resume ? '▶ продолжить' : `▶ ${n.lesson.minutes} мин · ${n.lesson.tasks.length} ${plural(n.lesson.tasks.length, 'задание', 'задания', 'заданий')}`;
+            if (status === 'soon') meta = UI.soon;
+            else if (status === 'locked') meta = UI.locked;
+            else if (status === 'done') meta = `<span class="label__stars">${'★'.repeat(rec.stars)}${'☆'.repeat(3 - rec.stars)}</span> · ${UI.passed}`;
+            else meta = resume ? UI.resumeShort : `▶ ${UI.minutes(n.lesson.minutes)} · ${UI.tasks(n.lesson.tasks.length)}`;
             const icon = status === 'soon' ? '?' : n.lesson.icon;
             const name = `${kicker}: ${n.lesson.title}`;
             return `<button class="node node--${status}${n.big ? ' node--big' : ''}" type="button" data-node="${i}"
@@ -481,7 +635,7 @@ const app = {
         }
 
         this.setTrailDone(Lb);
-        this.placeBlup(b, 'victory', 'Новая станция!');
+        this.placeBlup(b, 'victory', UI.newStation);
         target.classList.add('is-pop');
         Sound.play('pop');
         setTimeout(() => { if ($('#blup-body')) this.placeBlup(b, 'hello'); }, 1800);
@@ -498,7 +652,7 @@ const app = {
     onNodeClick(n) {
         Sound.play('tap');
         if (n.soon) {
-            this.toast(`«${n.block.title}» скоро откроется 🌱`);
+            this.toast(UI.soonToast(n.block.title));
             return;
         }
         if (!Game.isUnlocked(this.state, n.index)) {
@@ -507,7 +661,7 @@ const app = {
             el.classList.remove('is-shake');
             void el.offsetWidth;
             el.classList.add('is-shake');
-            this.toast(`Сначала пройди «${prev.title}»`);
+            this.toast(UI.firstPass(prev.title));
             return;
         }
         this.openStation(n);
@@ -520,22 +674,22 @@ const app = {
         const resume = cur && cur.lessonId === lesson.id && cur.step > 0;
 
         $('#station-icon').textContent = lesson.icon;
-        $('#station-kicker').textContent = `Блок ${n.bi + 1} · ${lesson.test ? 'Финал блока' : 'Станция ' + (n.li + 1)}`;
+        $('#station-kicker').textContent = `${UI.block(n.bi + 1)} · ${lesson.test ? UI.finale : UI.station(n.li + 1)}`;
         $('#station-title').textContent = lesson.title;
         $('#station-goal').textContent = lesson.goal;
 
         const counts = {};
         lesson.tasks.forEach(t => { const k = KIND[t.type]; counts[k] = (counts[k] || 0) + 1; });
         $('#station-chips').innerHTML = ['theory', 'video', 'practice', 'test'].filter(k => counts[k]).map(k =>
-            `<li>${KIND_LABEL[k]}${k === 'test' ? ` · ${counts[k]} ${plural(counts[k], 'вопрос', 'вопроса', 'вопросов')}` : ''}</li>`).join('') +
-            `<li>⏱ ${lesson.minutes} мин</li>`;
+            `<li>${UI.kind[k]}${k === 'test' ? ` · ${UI.questions(counts[k])}` : ''}</li>`).join('') +
+            `<li>⏱ ${UI.minutes(lesson.minutes)}</li>`;
 
         $('#station-best').textContent = rec
-            ? `Лучший результат: ${'★'.repeat(rec.stars)}${'☆'.repeat(3 - rec.stars)} · ${Math.round(rec.bestRatio * 100)}%`
-            : `${lesson.tasks.length} ${plural(lesson.tasks.length, 'задание', 'задания', 'заданий')}. От 50% верных — станция пройдена.`;
+            ? UI.best('★'.repeat(rec.stars) + '☆'.repeat(3 - rec.stars), Math.round(rec.bestRatio * 100))
+            : UI.rule(lesson.tasks.length);
 
         const start = $('#station-start');
-        start.textContent = resume ? `Продолжить с задания ${cur.step + 1}` : rec ? 'Пройти ещё раз' : 'Начать';
+        start.textContent = resume ? UI.resumeFrom(cur.step + 1) : rec ? UI.replay : UI.begin;
         start.onclick = () => this.startLesson(lesson.id);
         const restart = $('#station-restart');
         restart.hidden = !resume;
@@ -570,7 +724,7 @@ const app = {
         $('#combo').hidden = true;
         this.renderSteps();
         this.renderTask();
-        if (resume) this.toast(`Продолжаем с задания ${cur.step + 1}`);
+        if (resume) this.toast(UI.resumed(cur.step + 1));
     },
 
     closeLesson() {
@@ -578,7 +732,7 @@ const app = {
         $('#lesson').hidden = true;
         document.body.classList.remove('is-overlay');
         this.renderAll();
-        this.toast('Прогресс сохранён, продолжишь с этого места');
+        this.toast(UI.saved);
     },
 
     renderSteps() {
@@ -607,7 +761,7 @@ const app = {
         void box.offsetWidth;
         box.style.animation = '';
         $('.lesson__body').scrollTop = 0;
-        this.setNext('Дальше', true);
+        this.setNext(UI.btn.next, true);
         this.tasks[t.type].call(this, t, box, r.token);
     },
 
@@ -641,7 +795,7 @@ const app = {
             const xp = Math.round(XP_RULES.correct * score);
             if (xp > 0) this.xpPop(`+${xp} XP`);
             Sound.play(score === 1 ? 'good' : score >= .5 ? 'pop' : 'bad');
-            if (r.combo >= XP_RULES.comboFrom && score === 1) title = `Серия ×${r.combo}! 🔥`;
+            if (r.combo >= XP_RULES.comboFrom && score === 1) title = UI.combo(r.combo);
             const combo = $('#combo');
             combo.hidden = r.combo < 2;
             $('b', combo).textContent = r.combo;
@@ -649,7 +803,7 @@ const app = {
             Sound.play('pop');
         }
         this.showFeedback(tone, title, text);
-        this.setNext('Дальше', true);
+        this.setNext(UI.btn.next, true);
     },
 
     showFeedback(tone, title, text) {
@@ -689,11 +843,11 @@ const app = {
                         </div>
                     </div>
                     ${c.big ? `<p class="card__big">${esc(c.big)}</p>` : ''}
-                    ${c.chat ? `<div class="chat"><p class="bubble bubble--me"><span class="bubble__who">Промпт</span>${esc(c.chat)}</p></div>` : ''}
+                    ${c.chat ? `<div class="chat"><p class="bubble bubble--me"><span class="bubble__who">${UI.prompt}</span>${esc(c.chat)}</p></div>` : ''}
                     ${c.text ? `<p class="card__text">${esc(c.text)}</p>` : ''}
                     ${c.list ? `<ul class="card__list">${c.list.map(li => `<li>${esc(li)}</li>`).join('')}</ul>` : ''}
                     ${c.reveal ? `<div class="reveal">
-                        <button class="reveal__btn" type="button" aria-expanded="false">🤔 ${esc(c.reveal.q)} <u>Нажми</u></button>
+                        <button class="reveal__btn" type="button" aria-expanded="false">🤔 ${esc(c.reveal.q)} <u>${UI.tap}</u></button>
                         <p class="reveal__answer" hidden>${esc(c.reveal.a)}</p>
                     </div>` : ''}
                     ${t.cards.length > 1 ? `<div class="card__dots" aria-hidden="true">${t.cards.map((_, i) => `<span class="${i === k ? 'is-on' : ''}"></span>`).join('')}</div>` : ''}
@@ -704,7 +858,7 @@ const app = {
                     rb.setAttribute('aria-expanded', 'true');
                     Sound.play('pop');
                 });
-                this.setNext(k < t.cards.length - 1 ? 'Дальше' : 'Понятно!', true);
+                this.setNext(k < t.cards.length - 1 ? UI.btn.next : UI.btn.gotIt, true);
             };
             this.run.onNext = () => {
                 if (k < t.cards.length - 1) {
@@ -722,15 +876,15 @@ const app = {
 
         video(t, box, token) {
             const total = t.scenes.reduce((s, sc) => s + sc.sec, 0);
-            const head = this.head(`🎬 Ролик · ${total} сек`, t.title);
+            const head = this.head(UI.video(total), t.title);
 
             if (t.src) {
                 box.innerHTML = head + `<div class="player"><video controls playsinline preload="metadata" src="${esc(t.src)}"></video></div>`;
                 const v = $('video', box);
-                this.setNext('Досмотри ролик', false);
-                const unlock = () => { if (v.duration && v.currentTime / v.duration > .9) this.setNext('Дальше', true); };
+                this.setNext(UI.btn.watch, false);
+                const unlock = () => { if (v.duration && v.currentTime / v.duration > .9) this.setNext(UI.btn.next, true); };
                 v.addEventListener('timeupdate', unlock);
-                v.addEventListener('ended', () => this.setNext('Дальше', true));
+                v.addEventListener('ended', () => this.setNext(UI.btn.next, true));
                 return;
             }
             if (t.youtube) {
@@ -740,7 +894,7 @@ const app = {
 
             // Ролика ещё нет: играем раскадровку из сцен
             box.innerHTML = head + `<div class="player">
-                <div class="player__screen" aria-label="Раскадровка ролика">
+                <div class="player__screen" aria-label="${UI.storyboard}">
                     <svg class="player__bg" viewBox="0 0 320 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
                         <rect class="z1" width="320" height="200"/>
                         <circle class="fc" cx="276" cy="38" r="20"/>
@@ -750,12 +904,12 @@ const app = {
                     </svg>
                     <div class="player__bot" aria-hidden="true"></div>
                     <p class="player__caption" hidden></p>
-                    <span class="player__tag">Черновик ролика</span>
-                    <button class="player__play" type="button" aria-label="Смотреть ролик"><span>▶</span></button>
+                    <span class="player__tag">${UI.draft}</span>
+                    <button class="player__play" type="button" aria-label="${UI.play}"><span>▶</span></button>
                 </div>
-                <p class="player__subs" aria-live="polite">Нажми ▶, чтобы смотреть. Тап по экрану — следующая сцена.</p>
+                <p class="player__subs" aria-live="polite">${UI.playHint}</p>
                 <div class="player__ctrl">
-                    <button class="icon-btn" type="button" data-act="toggle" aria-label="Пауза">❚❚</button>
+                    <button class="icon-btn" type="button" data-act="toggle" aria-label="${UI.pause}">❚❚</button>
                     <div class="player__track">${t.scenes.map(() => '<span><i></i></span>').join('')}</div>
                     <span class="player__time">0:00</span>
                 </div>
@@ -790,11 +944,11 @@ const app = {
                 fills.forEach(f => { f.style.width = '100%'; });
                 playBtn.hidden = false;
                 $('span', playBtn).textContent = '↻';
-                playBtn.setAttribute('aria-label', 'Смотреть ещё раз');
+                playBtn.setAttribute('aria-label', UI.replayVideo);
                 toggle.textContent = '▶';
                 if (!watched) {
                     watched = true;
-                    this.setNext('Дальше', true);
+                    this.setNext(UI.btn.next, true);
                     Sound.play('pop');
                 }
             };
@@ -818,14 +972,14 @@ const app = {
                 playing = true;
                 playBtn.hidden = true;
                 toggle.textContent = '❚❚';
-                toggle.setAttribute('aria-label', 'Пауза');
+                toggle.setAttribute('aria-label', UI.pause);
                 last = performance.now();
                 requestAnimationFrame(tick);
             };
             const pause = () => {
                 playing = false;
                 toggle.textContent = '▶';
-                toggle.setAttribute('aria-label', 'Смотреть');
+                toggle.setAttribute('aria-label', UI.resumeVideo);
             };
 
             playBtn.addEventListener('click', e => { e.stopPropagation(); play(); });
@@ -835,7 +989,7 @@ const app = {
                 if (scene + 1 < t.scenes.length) show(scene + 1);
                 else finish();
             });
-            this.setNext('Досмотри ролик', false);
+            this.setNext(UI.btn.watch, false);
         },
 
         quiz(t, box) {
@@ -843,12 +997,12 @@ const app = {
             const quizzes = lesson.tasks.filter(x => x.type === 'quiz');
             const num = quizzes.indexOf(t) + 1;
             const opts = shuffle(t.options.map((text, i) => ({ text, ok: i === 0 })));
-            box.innerHTML = `<p class="eyebrow task__kicker">${lesson.test ? '🌳 Испытание' : '✅ Тест'} · вопрос ${num} из ${quizzes.length}</p>
+            box.innerHTML = `<p class="eyebrow task__kicker">${UI.quizKicker(lesson.test, num, quizzes.length)}</p>
                 <h2 class="question">${esc(t.q)}</h2>
                 <div class="options">${opts.map((o, i) =>
-                    `<button class="option" type="button" data-i="${i}"><span class="option__key">${LETTERS[i]}</span><span>${esc(o.text)}</span></button>`).join('')}
+                    `<button class="option" type="button" data-i="${i}"><span class="option__key">${UI.letters[i]}</span><span>${esc(o.text)}</span></button>`).join('')}
                 </div>`;
-            this.setNext('Выбери ответ', false);
+            this.setNext(UI.btn.choose, false);
             const buttons = $$('.option', box);
             buttons.forEach(btn => btn.addEventListener('click', () => {
                 const chosen = opts[+btn.dataset.i];
@@ -860,8 +1014,8 @@ const app = {
                 });
                 if (!chosen.ok) btn.classList.add('is-wrong');
                 this.answered(chosen.ok ? 1 : 0, {
-                    title: chosen.ok ? pick(GOOD) : pick(BAD),
-                    text: chosen.ok ? t.explain : `Правильно: «${right.text}». ${t.explain}`
+                    title: chosen.ok ? pick(UI.good) : pick(UI.bad),
+                    text: chosen.ok ? t.explain : UI.correctIs(right.text, t.explain)
                 });
             }));
         },
@@ -870,9 +1024,9 @@ const app = {
             const items = shuffle(t.items);
             const counts = t.buckets.map(() => 0);
             let k = 0, right = 0, busy = false;
-            box.innerHTML = this.head('🧩 Практика', t.title, t.text) + `<div class="sort">
+            box.innerHTML = this.head(UI.practice, t.title, t.text) + `<div class="sort">
                 <div class="sort__deck"></div>
-                <p class="sort__why" aria-live="polite">Куда отнесёшь карточку?</p>
+                <p class="sort__why" aria-live="polite">${UI.sortAsk}</p>
                 <div class="sort__buckets">${t.buckets.map((b, i) =>
                     `<button class="bucket" type="button" data-b="${i}"><span>${esc(b)}</span><b>0</b></button>`).join('')}
                 </div>
@@ -883,7 +1037,7 @@ const app = {
             const showCard = () => {
                 deck.innerHTML = `<div class="sort__card"><span class="sort__count">${k + 1}/${items.length}</span>${esc(items[k].t)}</div>`;
             };
-            this.setNext('Разложи все карточки', false);
+            this.setNext(UI.btn.sortAll, false);
             showCard();
 
             buckets.forEach(btn => btn.addEventListener('click', async () => {
@@ -918,19 +1072,19 @@ const app = {
                     showCard();
                     return;
                 }
-                deck.innerHTML = `<div class="sort__card">Готово: ${right} из ${items.length}</div>`;
+                deck.innerHTML = `<div class="sort__card">${UI.sortDone(right, items.length)}</div>`;
                 buckets.forEach(b => { b.disabled = true; });
                 const score = right / items.length;
                 this.answered(score, {
-                    title: score === 1 ? 'Идеально!' : `${right} из ${items.length} верно`,
-                    text: score === 1 ? 'Все карточки на своих местах.' : 'Пояснения под карточками помогут в следующий раз.'
+                    title: score === 1 ? UI.perfect : UI.sortScore(right, items.length),
+                    text: score === 1 ? UI.sortPerfectText : UI.sortHint
                 });
             }));
         },
 
         build(t, box, token) {
             const slots = t.slots.map(s => ({ ...s, opts: shuffle(s.options.map((text, i) => ({ text, ok: i === 0 }))), clean: true, done: false }));
-            box.innerHTML = this.head('🧩 Практика', t.title) + `<p class="goal">🎯 ${esc(t.goal)}</p>
+            box.innerHTML = this.head(UI.practice, t.title) + `<p class="goal">🎯 ${esc(t.goal)}</p>
                 <div class="slots">${slots.map((s, si) => `<div class="slot" data-s="${si}">
                     <p class="slot__label">${esc(s.label)}</p>
                     <div class="slot__options">${s.opts.map((o, oi) =>
@@ -938,7 +1092,7 @@ const app = {
                     <p class="slot__hint" hidden>${esc(s.hint)}</p>
                 </div>`).join('')}</div>
                 <div class="build-chat chat" hidden></div>`;
-            this.setNext('Собери промпт', false);
+            this.setNext(UI.btn.build, false);
 
             $$('.slot', box).forEach((el, si) => {
                 const s = slots[si];
@@ -967,8 +1121,8 @@ const app = {
                 const prompt = slots.map(s => s.opts.find(o => o.ok).text).join('. ') + '.';
                 const chat = $('.build-chat', box);
                 chat.hidden = false;
-                chat.innerHTML = `<p class="bubble bubble--me"><span class="bubble__who">Твой промпт</span>${esc(prompt)}</p>
-                    <p class="bubble bubble--ai"><span class="bubble__who">ИИ</span><span class="typing"></span></p>`;
+                chat.innerHTML = `<p class="bubble bubble--me"><span class="bubble__who">${UI.yourPrompt}</span>${esc(prompt)}</p>
+                    <p class="bubble bubble--ai"><span class="bubble__who">${UI.ai}</span><span class="typing"></span></p>`;
                 chat.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
                 const out = $('.typing', chat);
                 if (REDUCED) {
@@ -986,37 +1140,37 @@ const app = {
                 const clean = slots.filter(s => s.clean).length;
                 const score = clean / slots.length;
                 this.answered(score, {
-                    title: score === 1 ? 'Промпт мечты!' : `${clean} из ${slots.length} с первого раза`,
-                    text: 'Роль + Задача + Контекст + Формат — и ИИ отвечает в точку.'
+                    title: score === 1 ? UI.buildPerfect : UI.buildScore(clean, slots.length),
+                    text: UI.buildText
                 });
             };
         },
 
         spot(t, box) {
-            box.innerHTML = this.head('🧩 Практика', t.title, t.text) + `<div class="ai-answer">
-                <p class="eyebrow ai-answer__who">${esc(t.who || '🤖 Ответ ИИ')}</p>
+            box.innerHTML = this.head(UI.practice, t.title, t.text) + `<div class="ai-answer">
+                <p class="eyebrow ai-answer__who">${esc(t.who || UI.aiAnswer)}</p>
                 <div class="sentences">${t.sentences.map((s, i) =>
                     `<button class="sentence" type="button" data-i="${i}">${esc(s)}</button>`).join('')}</div>
             </div>`;
-            this.setNext('Нажми на предложение', false);
+            this.setNext(UI.btn.tapSentence, false);
             const buttons = $$('.sentence', box);
             buttons.forEach(btn => btn.addEventListener('click', () => {
                 const ok = +btn.dataset.i === t.wrong;
                 buttons.forEach(b => { b.disabled = true; });
                 buttons[t.wrong].classList.add('is-right');
                 if (!ok) btn.classList.add('is-wrong');
-                this.answered(ok ? 1 : 0, { title: ok ? pick(GOOD) : pick(BAD), text: t.explain });
+                this.answered(ok ? 1 : 0, { title: ok ? pick(UI.good) : pick(UI.bad), text: t.explain });
             }));
         },
 
         poll(t, box) {
             const max = Math.max(...t.options.map(o => o.p));
-            box.innerHTML = this.head('🧩 Эксперимент', t.title, t.text) +
+            box.innerHTML = this.head(UI.experiment, t.title, t.text) +
                 `<p class="phrase">${esc(t.phrase)}</p>
                 <div class="poll">${t.options.map((o, i) =>
                     `<button class="poll__opt" type="button" data-i="${i}"><i class="poll__fill"></i><span>${esc(o.t)}</span><span class="poll__pct">${o.p}%</span></button>`).join('')}
                 </div>`;
-            this.setNext('Выбери слово', false);
+            this.setNext(UI.btn.pickWord, false);
             const poll = $('.poll', box);
             const buttons = $$('.poll__opt', box);
             buttons.forEach(btn => btn.addEventListener('click', () => {
@@ -1028,32 +1182,32 @@ const app = {
                 });
                 poll.classList.add('is-open');
                 this.answered(null, {
-                    title: o.p === max ? 'Ты думаешь как нейросеть!' : 'Нейросеть выбрала бы другое',
+                    title: o.p === max ? UI.pollMatch : UI.pollOther,
                     text: t.explain
                 });
             }));
         },
 
         mission(t, box) {
-            box.innerHTML = this.head('🚀 Миссия', t.title, t.text) + `<div class="mission__prompt">
+            box.innerHTML = this.head(UI.mission, t.title, t.text) + `<div class="mission__prompt">
                 <p id="mission-text">${esc(t.prompt)}</p>
-                <button class="btn btn--white" type="button">Скопировать</button>
+                <button class="btn btn--white" type="button">${UI.copy}</button>
             </div>
             <p class="mission__note">${esc(t.note)}</p>`;
             const copy = $('.mission__prompt .btn', box);
             copy.addEventListener('click', () => {
-                const done = () => { copy.textContent = 'Скопировано ✓'; Sound.play('pop'); };
+                const done = () => { copy.textContent = UI.copied; Sound.play('pop'); };
                 const fallback = () => {
                     const range = document.createRange();
                     range.selectNodeContents($('#mission-text', box));
                     const sel = window.getSelection();
                     sel.removeAllRanges();
                     sel.addRange(range);
-                    copy.textContent = 'Выделено — скопируй';
+                    copy.textContent = UI.selected;
                 };
                 try { navigator.clipboard.writeText(t.prompt).then(done, fallback); } catch (e) { fallback(); }
             });
-            this.setNext('Я попробовал(а) ✓', true);
+            this.setNext(UI.btn.tried, true);
             const skip = $('#skip-btn');
             skip.hidden = false;
             this.run.onNext = () => { this.run.scores[this.run.step] = null; this.nextTask(); };
@@ -1075,6 +1229,7 @@ const app = {
         const body = new URLSearchParams({
             name: this.state.name,
             course: COURSE.id,
+            lang: LANG,
             block: r.st.block.id,
             lesson: r.lesson.id,
             lessonTitle: r.lesson.title,
@@ -1099,48 +1254,48 @@ const app = {
         $('#result').scrollTop = 0;
 
         $('#result-blup').innerHTML = blup(!res.passed ? 'sad' : res.stars === 3 ? 'victory' : 'joy');
-        $('#result-kicker').textContent = lesson.test ? 'Финал блока' : `Станция ${r.st.block.lessons.indexOf(lesson) + 1}`;
-        $('#result-title').textContent = !res.passed ? 'Почти получилось' : res.stars === 3 ? 'Идеально!' : 'Станция пройдена!';
+        $('#result-kicker').textContent = lesson.test ? UI.finale : UI.station(r.st.block.lessons.indexOf(lesson) + 1);
+        $('#result-title').textContent = !res.passed ? UI.almost : res.stars === 3 ? UI.perfect : UI.stationDone;
         $('#result-lead').textContent = !res.passed
-            ? 'Нужно хотя бы 50% верных. Ещё одна попытка — и всё получится.'
+            ? UI.leadFail
             : res.isReplay && res.earned === 0
-                ? 'Опыт за повтор не начисляется, если результат не лучше прошлого. Звёзды улучшать можно.'
-                : `«${lesson.title}» в копилке.`;
+                ? UI.leadReplay
+                : UI.leadDone(lesson.title);
 
         const starsBox = $('#result-stars');
         starsBox.innerHTML = [0, 1, 2].map(() => '<span aria-hidden="true">⭐</span>').join('') +
-            `<span class="sr-only">${res.stars} из 3 звёзд</span>`;
+            `<span class="sr-only">${UI.starsOf(res.stars)}</span>`;
         const stars = $$('span[aria-hidden]', starsBox);
         stars.forEach((el, i) => {
             if (i < res.stars) setTimeout(() => { el.classList.add('is-on'); Sound.play('star'); }, 450 + i * 380);
         });
 
         $('#result-stats').innerHTML = [
-            [`+${res.earned}`, 'опыта'],
-            [`${Math.round(x.ratio * 100)}%`, 'точность'],
-            [x.bestRun, 'серия без ошибок']
+            [`+${res.earned}`, UI.statXp],
+            [`${Math.round(x.ratio * 100)}%`, UI.statAcc],
+            [x.bestRun, UI.statRun]
         ].map(([v, l]) => `<li><b>${v}</b><span>${l}</span></li>`).join('');
 
         const extra = [];
-        if (res.blockCompleted) extra.push(['🌳', `Блок «${r.st.block.title}» пройден! +${res.blockBonus} XP`]);
-        if (res.levelUp) extra.push(['🆙', `Новый уровень ${res.levelUp.level}: ${res.levelUp.title}`]);
-        res.badges.forEach(b => extra.push([b.icon, `Награда «${b.title}»: ${b.desc.toLowerCase()}`]));
+        if (res.blockCompleted) extra.push(['🌳', UI.blockCompleted(r.st.block.title, res.blockBonus)]);
+        if (res.levelUp) extra.push(['🆙', UI.levelUp(res.levelUp.level, res.levelUp.title)]);
+        res.badges.forEach(b => extra.push([b.icon, UI.badge(b.title, b.desc)]));
         $('#result-extra').innerHTML = extra.map(([icon, text], i) =>
             `<li style="animation-delay:${1.4 + i * .3}s"><span aria-hidden="true">${icon}</span>${esc(text)}</li>`).join('');
 
         const mapBtn = $('#result-map'), retry = $('#result-retry');
         if (res.passed) {
-            mapBtn.textContent = 'На карту →';
+            mapBtn.textContent = UI.toMap;
             mapBtn.onclick = () => this.backToMap(res);
-            retry.textContent = 'Пройти ещё раз';
+            retry.textContent = UI.replay;
             retry.onclick = () => this.startLesson(lesson.id, { fresh: true });
             this.confetti(res.stars === 3 ? 180 : 110);
             if (res.levelUp || res.blockCompleted) setTimeout(() => this.confetti(160), 1500);
             Sound.play('win');
         } else {
-            mapBtn.textContent = 'Ещё раз';
+            mapBtn.textContent = UI.again;
             mapBtn.onclick = () => this.startLesson(lesson.id, { fresh: true });
-            retry.textContent = 'На карту';
+            retry.textContent = UI.map;
             retry.onclick = () => this.backToMap(res);
             Sound.play('bad');
         }
@@ -1164,7 +1319,7 @@ const app = {
         }
         if (res && res.blockCompleted) {
             const next = COURSE.blocks.find(b => b.soon);
-            if (next) this.toast(`Дальше — «${next.title}». Блок скоро откроется 🌱`);
+            if (next) this.toast(UI.nextBlock(next.title));
         }
     },
 
@@ -1183,7 +1338,7 @@ const app = {
         $('#settings-unlock').checked = s.unlockAll;
         $('#reset-confirm').hidden = true;
         $('#badges').innerHTML = BADGES.map(b =>
-            `<span class="badge${s.badges[b.id] ? '' : ' is-off'}" title="${esc(b.title + ': ' + b.desc)}" role="img" aria-label="${esc(b.title + (s.badges[b.id] ? ', получена' : ', ещё не получена'))}">${b.icon}</span>`).join('');
+            `<span class="badge${s.badges[b.id] ? '' : ' is-off'}" title="${esc(b.title + ': ' + b.desc)}" role="img" aria-label="${esc(b.title + (s.badges[b.id] ? UI.badgeHave : UI.badgeMissing))}">${b.icon}</span>`).join('');
         $('#settings-sheet').showModal();
     },
 
@@ -1280,7 +1435,7 @@ const app = {
             $('#hello-sheet').close();
             this.renderHello();
             Sound.play('pop');
-            this.toast(`Приятно познакомиться, ${name}! Жми на первую станцию`);
+            this.toast(UI.welcome(name));
         });
 
         $('#settings-form').addEventListener('submit', e => {
@@ -1292,7 +1447,7 @@ const app = {
             this.save();
             $('#settings-sheet').close();
             this.renderAll();
-            this.toast('Сохранено');
+            this.toast(UI.savedSettings);
         });
         $('#reset-btn').addEventListener('click', () => { $('#reset-confirm').hidden = false; });
         $('#reset-no').addEventListener('click', () => { $('#reset-confirm').hidden = true; });
@@ -1303,7 +1458,7 @@ const app = {
             $('#settings-sheet').close();
             this.renderAll();
             window.scrollTo(0, 0);
-            this.toast('Прогресс сброшен. Начинаем тропу заново');
+            this.toast(UI.resetDone);
         });
 
         $$('dialog').forEach(dlg => {

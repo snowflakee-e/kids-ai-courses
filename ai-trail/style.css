@@ -1180,3 +1180,5 @@ button { font: inherit; color: inherit; }
     .feedback__text p { font-size: 14px; line-height: 1.4; }
     .result__stars span { font-size: 44px; }
 }
+
+.map-note a { color: var(--go-deep); font-weight: 800; text-underline-offset: 3px; }
