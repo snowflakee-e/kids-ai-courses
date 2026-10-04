@@ -10,7 +10,7 @@ const CONFIG = {
     resultsWebhook: '',
     // Адрес Блупа-помощника (Cloudflare Worker из папки worker/), например https://bloop-tutor.имя.workers.dev
     // Пусто — помощник выключен: кнопки «Спросить Блупа» нет, «Объясни Блупу» работает как самопроверка.
-    tutorUrl: '',
+    tutorUrl: 'https://bloop-tutor.kirillsotnikov12345.workers.dev/',
     storageKey: LANG === 'en' ? 'bloop-trail-en-v1' : 'bloop-trail-v1',
     // Профиль из кабинета школы (тот же домен на GitHub Pages): берём оттуда имя
     cabinetKey: 'bloop-cabinet-v1'
