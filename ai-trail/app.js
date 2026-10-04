@@ -295,7 +295,10 @@ const Tutor = {
                 signal: ctrl.signal
             });
             const data = await res.json().catch(() => ({}));
-            if (!res.ok || typeof data.reply !== 'string') throw new Error(data.error || 'http ' + res.status);
+            if (!res.ok || typeof data.reply !== 'string') {
+                console.warn('Bloop tutor:', res.status, data.error || '', data.detail || '');
+                throw new Error(data.error || 'http ' + res.status);
+            }
             return data;
         } finally {
             clearTimeout(timer);
