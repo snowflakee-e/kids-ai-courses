@@ -50,7 +50,7 @@ VIDEO_TZ.md       ТЗ на ролики
 - ⚙️ → «Сбросить прогресс» — начать заново в этом браузере.
 - Урок можно закрыть на любом задании: при следующем входе продолжится с того же места.
 
-Чтобы видеть результаты детей, создай в Make.com сценарий Custom Webhook → Google Sheets и вставь адрес в `CONFIG.resultsWebhook` в `app.js`. После каждого урока придёт форма с полями `name, course, block, lesson, lessonTitle, stars, scorePct, xpEarned, xpTotal, level, plays, durationSec, scores, finishedAt`.
+Чтобы видеть результаты детей, создай в Make.com сценарий Custom Webhook → Google Sheets и вставь адрес в `CONFIG.resultsWebhook` в `app.js`. После каждого урока придёт форма с полями `name, course, lang, block, lesson, lessonTitle, stars, scorePct, xpEarned, xpTotal, level, plays, durationSec, scores, finishedAt`.
 
 ## Языки
 
