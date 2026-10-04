@@ -3,7 +3,7 @@
 // воркер собирает системный промпт, удерживает тему курса и возвращает { reply, verdict }.
 // Переписка нигде не сохраняется.
 
-const LIMITS = { body: 16000, messages: 12, user: 600, assistant: 1500, field: 600, points: 6, maxTokens: 450 };
+const LIMITS = { body: 16000, messages: 12, user: 600, assistant: 1500, field: 600, points: 6, maxTokens: 800 };
 
 // Модели можно сменить переменными MODEL и MODEL_FALLBACK в настройках воркера, без правки кода
 const DEFAULT_MODEL = '@cf/google/gemma-4-26b-a4b-it';
@@ -65,6 +65,9 @@ Explain in simple words why the student’s answer doesn’t fit and why the cor
 
 export default {
     async fetch(request, env) {
+        // Самодиагностика: открой https://<воркер>.workers.dev/debug в браузере
+        if (request.method === 'GET' && new URL(request.url).pathname === '/debug') return debug(env);
+
         const cors = corsHeaders(request, env);
         if (!cors) return json({ error: 'origin' }, 403);
         if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
@@ -91,16 +94,44 @@ export default {
             if (!out.reply) throw new Error('empty reply');
             return json(out, 200, cors);
         } catch (e) {
-            const quota = isQuota(e);
-            return json({ error: quota ? 'quota' : 'model' }, quota ? 503 : 502, cors);
+            if (isQuota(e)) return json({ error: 'quota' }, 503, cors);
+            console.error('Bloop: model failed', e && e.message);
+            return json({ error: 'model', detail: String(e && e.message).slice(0, 200) }, 502, cors);
         }
     }
 };
 
+// Короткий запрос к каждой модели: видно, подключена ли привязка AI и что отвечают модели
+async function debug(env) {
+    const report = { binding: !!(env.AI && typeof env.AI.run === 'function'), origins: allowedOrigins(env), models: [] };
+    if (!report.binding) return json({ ...report, hint: 'Нет привязки Workers AI с именем AI: Settings → Bindings → Add → Workers AI' }, 200);
+    for (const model of modelList(env)) {
+        const t0 = Date.now();
+        try {
+            const out = await env.AI.run(model, {
+                messages: [{ role: 'system', content: 'Reply with one short sentence.' }, { role: 'user', content: 'Say hello to a student.' }],
+                max_tokens: LIMITS.maxTokens
+            });
+            const text = extract(out);
+            report.models.push({ model, ok: !!text, ms: Date.now() - t0, reply: text.slice(0, 120), raw: text ? undefined : JSON.stringify(out).slice(0, 400) });
+        } catch (e) {
+            report.models.push({ model, ok: false, ms: Date.now() - t0, error: String(e && e.message).slice(0, 300) });
+        }
+    }
+    return json(report, 200);
+}
+
+function allowedOrigins(env) {
+    return env.ALLOWED_ORIGINS ? env.ALLOWED_ORIGINS.split(',').map(s => s.trim()).filter(Boolean) : DEFAULT_ORIGINS;
+}
+
+function modelList(env) {
+    return [env.MODEL || DEFAULT_MODEL, env.MODEL_FALLBACK || FALLBACK_MODEL].filter((m, i, all) => all.indexOf(m) === i);
+}
+
 function corsHeaders(request, env) {
     const origin = request.headers.get('Origin') || '';
-    const allowed = env.ALLOWED_ORIGINS ? env.ALLOWED_ORIGINS.split(',').map(s => s.trim()).filter(Boolean) : DEFAULT_ORIGINS;
-    if (!allowed.includes(origin)) return null;
+    if (!allowedOrigins(env).includes(origin)) return null;
     return {
         'Access-Control-Allow-Origin': origin,
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -157,18 +188,18 @@ function parse(text) {
 }
 
 async function run(env, messages) {
-    const models = [env.MODEL || DEFAULT_MODEL, env.MODEL_FALLBACK || FALLBACK_MODEL]
-        .filter((m, i, all) => all.indexOf(m) === i);
     let lastError = new Error('no model');
-    for (const model of models) {
+    for (const model of modelList(env)) {
         try {
             const text = extract(await env.AI.run(model, { messages, max_tokens: LIMITS.maxTokens, temperature: 0.4 }));
             if (text) return text;
             lastError = new Error('empty reply from ' + model);
+            console.error('Bloop: empty reply', model);
         } catch (e) {
             // Дневной лимит общий на аккаунт: запасная модель тоже не ответит
             if (isQuota(e)) throw e;
-            lastError = e;
+            console.error('Bloop: model error', model, e && e.message);
+            lastError = new Error(model + ': ' + (e && e.message));
         }
     }
     throw lastError;
@@ -179,8 +210,10 @@ function extract(out) {
     if (typeof out === 'string') return out;
     if (!out) return '';
     if (typeof out.response === 'string') return out.response;
+    if (out.result && typeof out.result.response === 'string') return out.result.response;
     const choice = Array.isArray(out.choices) ? out.choices[0] : null;
     if (choice && choice.message && typeof choice.message.content === 'string') return choice.message.content;
+    if (choice && typeof choice.text === 'string') return choice.text;
     if (typeof out.output_text === 'string') return out.output_text;
     return '';
 }

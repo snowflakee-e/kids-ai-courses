@@ -132,3 +132,25 @@ test('rate limiter blocks when the binding says so', async () => {
     assert.equal(res.status, 429);
     assert.equal(ai.calls.length, 0);
 });
+
+test('debug page reports the binding and each model', async () => {
+    const ai = fakeAI(model => {
+        if (model.includes('gemma')) throw new Error('5007: No such model');
+        return { response: 'Hello!' };
+    });
+    const res = await worker.fetch(new Request('https://x.dev/debug'), { AI: ai });
+    const data = await res.json();
+    assert.equal(data.binding, true);
+    assert.deepEqual(data.models.map(m => [m.ok, m.error ? 'err' : m.reply]), [[false, 'err'], [true, 'Hello!']]);
+
+    const none = await (await worker.fetch(new Request('https://x.dev/debug'), {})).json();
+    assert.equal(none.binding, false);
+    assert.match(none.hint, /Workers AI/);
+});
+
+test('model failure explains itself in detail', async () => {
+    const ai = fakeAI(model => { throw new Error('broken ' + model.split('/').pop()); });
+    const res = await worker.fetch(post(checkBody()), { AI: ai });
+    assert.equal(res.status, 502);
+    assert.match((await res.json()).detail, /llama-3.3-70b-instruct-fp8-fast: broken/);
+});
