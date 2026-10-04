@@ -30,31 +30,42 @@ test('stars by ratio', () => {
 });
 
 test('every playable task type is known and quiz options are not empty', () => {
-  const known = ['cards', 'video', 'quiz', 'sort', 'build', 'spot', 'poll', 'mission'];
+  const known = ['cards', 'video', 'quiz', 'sort', 'build', 'spot', 'poll', 'mission', 'talk'];
   for (const st of G.stations()) {
     for (const t of st.lesson.tasks) {
       assert.ok(known.includes(t.type), st.lesson.id + ': ' + t.type);
       if (t.type === 'quiz') assert.ok(t.options.length >= 2);
       if (t.type === 'spot') assert.ok(t.wrong < t.sentences.length);
+      if (t.type === 'talk') {
+        assert.ok(!G.isGraded(t), 'talk is not graded');
+        assert.ok(t.question && t.points.length && t.sample, st.lesson.id + ': talk needs question, points, sample');
+      }
     }
   }
 });
 
+// Серия даёт бонус с comboFrom-го безошибочного задания подряд
+const comboFor = run => Math.max(0, run - XP_RULES.comboFrom + 1) * XP_RULES.combo;
+
 test('lesson XP: base + combo + done + perfect', () => {
-  const l = lesson('l1'); // 4 оцениваемых задания
+  const l = lesson('l1');
+  const n = l.tasks.filter(G.isGraded).length;
   const x = G.lessonXp(l, scores(l));
-  assert.equal(x.graded, 4);
-  assert.equal(x.total, 40 + 2 * XP_RULES.combo + XP_RULES.lessonDone + XP_RULES.perfect);
+  assert.equal(x.graded, n);
+  assert.equal(x.total, n * XP_RULES.correct + comboFor(n) + XP_RULES.lessonDone + XP_RULES.perfect);
   assert.equal(x.stars, 3);
 });
 
 test('partial sort score gives partial XP and breaks the combo', () => {
   const l = lesson('l1');
+  const n = l.tasks.filter(G.isGraded).length;
   const s = scores(l);
-  s[l.tasks.findIndex(t => t.type === 'sort')] = 5 / 6;
+  const sortAt = l.tasks.findIndex(t => t.type === 'sort');
+  assert.equal(l.tasks.slice(0, sortAt).some(G.isGraded), false, 'sort is the first graded task');
+  s[sortAt] = 5 / 6;
   const x = G.lessonXp(l, s);
-  assert.equal(x.base, 8 + 30);
-  assert.equal(x.combo, XP_RULES.combo); // серия 3 только на последнем вопросе
+  assert.equal(x.base, 8 + (n - 1) * XP_RULES.correct);
+  assert.equal(x.combo, comboFor(n - 1)); // серия начинается только после сортировки
   assert.equal(x.stars, 2);
 });
 
@@ -122,6 +133,7 @@ test('English content mirrors the Russian one', () => {
         buckets: t.items && t.items.map(i => i.b),
         slots: t.slots && t.slots.map(s => s.options.length),
         wrong: t.wrong,
+        points: t.points && t.points.length,
         scenes: t.scenes && t.scenes.map(s => s.sec + s.pose)
       }))
     }))

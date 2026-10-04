@@ -1,0 +1,21 @@
+name = "bloop-tutor"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+# Нейросеть Cloudflare Workers AI: в коде доступна как env.AI
+[ai]
+binding = "AI"
+
+[vars]
+# Сайты, которым можно обращаться к помощнику, через запятую
+ALLOWED_ORIGINS = "https://snowflakee-e.github.io,http://localhost:8000,http://127.0.0.1:8000"
+# Смена модели без правки кода:
+# MODEL = "@cf/google/gemma-4-26b-a4b-it"
+# MODEL_FALLBACK = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+
+# Необязательно: не больше 20 сообщений в минуту с одного IP.
+# Раскомментируй, если wrangler deploy принимает этот блок; без него воркер тоже работает.
+# [[ratelimits]]
+# name = "LIMITER"
+# namespace_id = "1001"
+# simple = { limit = 20, period = 60 }

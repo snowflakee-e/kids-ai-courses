@@ -12,7 +12,7 @@ var COURSE = {
       id: 'b1', title: 'Forest Edge', subtitle: 'What AI is and how to work with it',
       lessons: [
         {
-          id: 'l1', icon: '🤖', title: 'What is AI', minutes: 5,
+          id: 'l1', icon: '🤖', title: 'What is AI', minutes: 7,
           goal: 'Find out what AI really is and how it learns.',
           tasks: [
             { type: 'cards', cards: [
@@ -69,11 +69,28 @@ var COURSE = {
               explain: 'AI only knows what it learned from. Examples that are all alike create blind spots.' },
             { type: 'quiz', q: 'Which of these is true about AI?',
               options: ['It’s a program that finds patterns', 'AI has feelings and opinions', 'AI always knows the right answer'],
-              explain: 'AI is a powerful tool, but it has no feelings and no guarantee of being right.' }
+              explain: 'AI is a powerful tool, but it has no feelings and no guarantee of being right.' },
+            { type: 'quiz', q: 'What does it mean that AI was “trained”?',
+              options: ['It was shown lots of examples and adjusted its settings', 'It was given a big database of ready answers', 'It was taught to think like a human'],
+              explain: 'Training means lots of examples and lots of small corrections after mistakes.' },
+            { type: 'quiz', q: 'Which task is a better fit for AI?',
+              options: ['Recognizing whether there’s a dog in a photo', 'Adding two numbers', 'Turning on a light with a button'],
+              explain: 'AI is needed to recognize or guess something. Exact rule-based actions are a job for a regular program.' },
+            { type: 'quiz', q: 'Why does AI need varied examples?',
+              options: ['So it doesn’t fail on cases that look different', 'So it switches on faster', 'So it comes alive'],
+              explain: 'The more varied the examples, the fewer blind spots.' },
+            { type: 'talk', title: 'Explain it to Bloop',
+              question: 'Explain in your own words: how does AI learn to recognize cats in photos?',
+              points: [
+                'AI is shown lots of labeled examples',
+                'It makes mistakes and adjusts its settings after each one',
+                'The more varied the examples, the fewer mistakes on new photos'
+              ],
+              sample: 'AI is shown a huge number of photos labeled “cat” and “not a cat”. At first it gets things wrong, but after each mistake it tweaks its settings a little. Over time it recognizes cats even in new photos. If the examples were all alike, it will make mistakes on cats that look different.' }
           ]
         },
         {
-          id: 'l2', icon: '🧭', title: 'Why you need AI', minutes: 5,
+          id: 'l2', icon: '🧭', title: 'Why you need AI', minutes: 7,
           goal: 'Find out where AI really helps, and where it only does harm.',
           tasks: [
             { type: 'cards', cards: [
@@ -133,11 +150,28 @@ var COURSE = {
               explain: 'Keep your address, phone number, passwords and documents to yourself.' },
             { type: 'quiz', q: 'AI suggested which pills to take for a headache. What should you do?',
               options: ['Ask an adult or a doctor', 'Take them right away, AI is smart', 'Take a double dose to be sure'],
-              explain: 'AI can be wrong about health. Adults and doctors make these decisions.' }
+              explain: 'AI can be wrong about health. Adults and doctors make these decisions.' },
+            { type: 'quiz', q: 'AI wrote you a ready-made essay. What’s the honest thing to do?',
+              options: ['Use it as an example and write your own', 'Hand it in as yours', 'Change a couple of words and hand it in'],
+              explain: 'You can use AI text as an example, but you hand in your own work.' },
+            { type: 'quiz', q: 'Which request will help you prepare for a test?',
+              options: ['Ask me 5 questions on the topic and check my answers', 'Write me a cheat sheet to copy from', 'Take the test for me'],
+              explain: 'Practicing with questions is the best way to prepare.' },
+            { type: 'quiz', q: 'A friend wants to make a funny AI picture with your teacher’s face. What do you say?',
+              options: ['Don’t: you can’t do that without the person’s consent', 'Sure, it’s just a joke', 'I’ll make it and post it anonymously'],
+              explain: 'Pictures of real people made without their consent can hurt them.' },
+            { type: 'talk', title: 'Explain it to Bloop',
+              question: 'Give your own example of how AI can help with studying honestly, and an example of how you shouldn’t use it.',
+              points: [
+                'Honest example: explain a topic, check your own writing, practice or make a plan',
+                'Dishonest example: hand in AI-written text as your own or let AI do all the work',
+                'The point is that the skill stays with you'
+              ],
+              sample: 'Honest: ask AI to explain fractions using pizza slices, then solve the problems myself. Not OK: ask AI to write an essay and hand it in as mine. That way I learn nothing.' }
           ]
         },
         {
-          id: 'l3', icon: '🪄', title: 'How to ask the right way', minutes: 6,
+          id: 'l3', icon: '🪄', title: 'How to ask the right way', minutes: 8,
           goal: 'Learn to write requests that get spot-on answers from AI.',
           tasks: [
             { type: 'cards', cards: [
@@ -194,6 +228,24 @@ var COURSE = {
             { type: 'quiz', q: 'AI’s answer is too complicated. What should you do?',
               options: ['Write: “Explain it more simply, with a real-life example”', 'Close the chat forever', 'Repeat the same question in caps'],
               explain: 'A follow-up request is the best way to polish an answer.' },
+            { type: 'quiz', q: 'Which part of a prompt is the role?',
+              options: ['“You’re a soccer coach”', '“Answer as a list”', '“I’m 14”'],
+              explain: 'The role tells AI who to be. “I’m 14” is context, “as a list” is format.' },
+            { type: 'quiz', q: 'What should you add to the prompt “Come up with a gift”?',
+              options: ['Who it’s for, the budget and what they like', 'Lots of exclamation marks', 'The word “urgent”'],
+              explain: 'Context helps AI hit the target.' },
+            { type: 'quiz', q: 'AI’s answer is too long. Which follow-up works?',
+              options: ['“Shorten it to 3 bullet points”', '“Write it properly”', '“Again”'],
+              explain: 'A specific format request gets you the answer you need.' },
+            { type: 'talk', title: 'Explain it to Bloop',
+              question: 'Write your own prompt using the RTCF formula: ask AI to help you prepare for a test in any subject.',
+              points: [
+                'Role: who AI should be',
+                'Task: what exactly to do',
+                'Context: your grade, the topic, the deadline or what you’re stuck on',
+                'Format: how the answer should look'
+              ],
+              sample: 'You’re a biology teacher. Write 7 self-check questions on “The Cell”. I’m in 7th grade, the test is on Thursday, and I mix up the names of organelles. Questions as a list, answers at the end.' },
             { type: 'mission', title: 'Mission in a real AI',
               text: 'Open a chatbot your parents or school allow you to use. Send this prompt, then just send “tell me about the Moon”. Compare the answers.',
               prompt: 'You’re an astronomy teacher. Explain why there’s no air on the Moon. I’m 14 and preparing a 2-minute talk. Answer in 5 short bullet points.',
@@ -201,7 +253,7 @@ var COURSE = {
           ]
         },
         {
-          id: 'l4', icon: '🔍', title: 'AI makes mistakes too', minutes: 6,
+          id: 'l4', icon: '🔍', title: 'AI makes mistakes too', minutes: 8,
           goal: 'Understand why AI sometimes makes things up, and learn to catch it.',
           tasks: [
             { type: 'poll', title: 'Think like a neural network',
@@ -256,11 +308,28 @@ var COURSE = {
               explain: 'A hallucination is a believable but made-up answer.' },
             { type: 'quiz', q: 'AI gave you the date of an event for your report. What do you do?',
               options: ['Check it in a textbook or encyclopedia', 'Paste it straight into the report', 'Ask AI again and trust the second answer'],
-              explain: 'Asking the same AI again isn’t checking. You need an independent, reliable source.' }
+              explain: 'Asking the same AI again isn’t checking. You need an independent, reliable source.' },
+            { type: 'quiz', q: 'AI gave you a link to a book. What do you do first?',
+              options: ['Check that the book actually exists', 'Cite it in your report right away', 'Ask AI to confirm it'],
+              explain: 'AI can make up books and links. Check in a search engine or a library catalog.' },
+            { type: 'quiz', q: 'Which source is more reliable for checking a fact?',
+              options: ['An encyclopedia or an official website', 'A comment on social media', 'The same chatbot'],
+              explain: 'Check with independent sources you can trust.' },
+            { type: 'quiz', q: 'Why might AI not know recent news?',
+              options: ['It learned from data up to a certain date', 'It doesn’t like the news', 'It’s not allowed to know the news'],
+              explain: 'A model has a cutoff date and hasn’t seen anything after it, unless it can search the web.' },
+            { type: 'talk', title: 'Explain it to Bloop',
+              question: 'AI confidently gave you the date of an event for your report. How will you check if it’s true, and why could AI be wrong?',
+              points: [
+                'Check reliable sources, ideally two: a textbook, an encyclopedia, an official website',
+                'AI picks believable words and doesn’t check facts',
+                'Asking the same AI again isn’t checking'
+              ],
+              sample: 'I’ll look up the date in my textbook and in an encyclopedia. AI could be wrong because it picks words that sound believable instead of checking facts. Asking the same AI again isn’t a real check.' }
           ]
         },
         {
-          id: 't1', icon: '🌳', title: 'The Great Oak Challenge', minutes: 5, test: true,
+          id: 't1', icon: '🌳', title: 'The Great Oak Challenge', minutes: 6, test: true,
           goal: 'The final test of the Forest Edge: 8 questions covering every station. Score 50% or more to complete the block.',
           tasks: [
             { type: 'quiz', q: 'AI is…',
@@ -286,7 +355,13 @@ var COURSE = {
               explain: 'A chatbot guesses likely words. Believable doesn’t mean true.' },
             { type: 'quiz', q: 'What should you never send to a chatbot?',
               options: ['Passwords and document details', 'Your report topic', 'A question about physics homework'],
-              explain: 'Keep personal data to yourself, even if AI asks very politely.' }
+              explain: 'Keep personal data to yourself, even if AI asks very politely.' },
+            { type: 'quiz', q: 'What is a prompt?',
+              options: ['Your task for AI', 'A mistake AI makes', 'The name of a neural network'],
+              explain: 'Everything you type to AI is a prompt.' },
+            { type: 'quiz', q: 'What should you do if AI’s answer doesn’t fit?',
+              options: ['Clarify: “shorter”, “simpler”, “with an example”', 'Give up and never use it again', 'Repeat the exact same thing'],
+              explain: 'Clarifying is the fastest way to a good answer.' }
           ]
         }
       ]
