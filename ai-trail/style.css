@@ -513,6 +513,15 @@ button { font: inherit; color: inherit; }
     border: 3px dashed var(--lav-deep);
 }
 .node--extra.node--open { background: var(--lav-soft); box-shadow: 0 6px 0 var(--lav-deep); }
+.node--boss::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 4px solid var(--bad);
+    animation: glow 1.6s ease-in-out infinite;
+}
+.node--boss.node--open, .node--boss.node--current { background: var(--lav-soft); box-shadow: 0 6px 0 var(--lav-deep); }
 .node.is-shake { animation: shake .4s ease; }
 .node.is-pop { animation: pop .6s cubic-bezier(.2, 1.6, .4, 1); }
 
@@ -1048,8 +1057,60 @@ button { font: inherit; color: inherit; }
 .poll.is-open .poll__pct { opacity: 1; }
 .poll__opt.is-mine { box-shadow: 0 4px 0 var(--go-deep), inset 0 0 0 3px var(--go); }
 
-/* Миссия */
-.mission__prompt {
+/* Финальный босс: полоска здоровья над заданием, прилипает к верху при прокрутке */
+.boss {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: calc(100% - 32px);
+    max-width: 648px;
+    margin: 10px auto 0;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: var(--lav-soft);
+    box-shadow: inset 0 0 0 2px var(--lav-deep), var(--shadow);
+    color: var(--lav-ink);
+}
+.boss__face { flex: none; font-size: 38px; line-height: 1; }
+.boss__info { flex: 1; min-width: 0; }
+.boss__name { display: flex; justify-content: space-between; gap: 8px; margin: 0 0 6px; font-family: var(--font-display); font-size: 16px; }
+.boss__hp { font-variant-numeric: tabular-nums; font-weight: 800; }
+.boss__bar { height: 12px; border-radius: 99px; background: var(--surface); overflow: hidden; box-shadow: inset 0 0 0 2px var(--line); }
+.boss__bar span { display: block; height: 100%; border-radius: inherit; background: var(--go); transition: width .6s cubic-bezier(.3, 1.4, .5, 1); }
+.boss.is-low .boss__bar span { background: var(--bad); }
+.boss.is-hit .boss__face { animation: shake .4s ease; }
+.boss.is-hit .boss__hit { animation: float-up 1s ease forwards; }
+.boss.is-down .boss__face { animation: bump .5s ease; }
+.boss__hit {
+    position: absolute;
+    left: 48px;
+    top: 4px;
+    opacity: 0;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: var(--bad-deep);
+    pointer-events: none;
+}
+.boss__say {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: calc(100% + 6px);
+    padding: 8px 12px;
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 2px var(--lav-deep), var(--shadow);
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--ink);
+    animation: pop .3s cubic-bezier(.2, 1.6, .4, 1);
+}
+
+/* Шаги задания и промпт для копирования (когда Блуп не на связи) */
+.copy-prompt {
     position: relative;
     margin: 4px 0 12px;
     padding: 14px 14px 56px;
@@ -1058,9 +1119,9 @@ button { font: inherit; color: inherit; }
     box-shadow: inset 0 0 0 2px var(--lav);
     font-weight: 700;
 }
-.mission__prompt .btn { position: absolute; right: 10px; bottom: 10px; min-height: 40px; padding: 8px 14px; font-size: 15px; }
-.mission__note { font-size: 14px; color: var(--ink-soft); }
-.mission__steps { display: grid; gap: 6px; margin: 0 0 14px; padding-left: 24px; font-weight: 700; }
+.copy-prompt .btn { position: absolute; right: 10px; bottom: 10px; min-height: 40px; padding: 8px 14px; font-size: 15px; }
+.copy-note { font-size: 14px; color: var(--ink-soft); }
+.task-steps { display: grid; gap: 6px; margin: 0 0 14px; padding-left: 24px; font-weight: 700; }
 
 /* Порядок шагов */
 .order__done { display: grid; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; counter-reset: step; }
@@ -1130,6 +1191,25 @@ button { font: inherit; color: inherit; }
 .chat-form textarea:disabled { opacity: .6; }
 .chat-form .btn { flex: none; width: 56px; min-height: 56px; padding: 0; font-size: 20px; }
 .chat-bot { width: 60px; flex: none; }
+.chat-log--task { margin: 4px 0 10px; }
+.chat-log--task:empty { display: none; }
+.chat-chips { display: grid; gap: 8px; margin: 6px 0 14px; }
+.chat-chip {
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 2px var(--lav);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+.chat-chip span { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.chat-chip:active { scale: .98; }
+.chat-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.chat-tools .chat-note { flex: 1 1 220px; }
 .sheet--chat { width: min(100% - 32px, 560px); }
 .verdict {
     display: block;

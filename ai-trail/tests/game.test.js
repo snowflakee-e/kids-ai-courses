@@ -33,7 +33,7 @@ test('stars by ratio', () => {
 });
 
 test('every task is valid', () => {
-  const known = ['cards', 'video', 'quiz', 'sort', 'build', 'spot', 'order', 'poll', 'mission', 'talk'];
+  const known = ['cards', 'video', 'quiz', 'sort', 'build', 'spot', 'order', 'poll', 'chat', 'talk'];
   const ids = new Set();
   for (const st of G.stations()) {
     const l = st.lesson;
@@ -59,6 +59,10 @@ test('every task is valid', () => {
         assert.ok(!G.isGraded(t), 'talk is not graded');
         assert.ok(t.question && t.points.length && t.sample, where + ': talk needs question, points, sample');
       }
+      if (t.type === 'chat') {
+        assert.ok(!G.isGraded(t), 'chat is not graded');
+        assert.ok(t.title && t.text && t.prompts.length && t.prompts.every(x => x && x.length <= 1200), where + ': chat needs title, text, prompts');
+      }
       if (t.type === 'video') assert.ok(t.scenes.every(s => s.sec > 0 && s.pose && s.voice && s.visual), where);
     }
   }
@@ -70,11 +74,27 @@ test('lessons stay practical: little theory, few quiz questions', () => {
     if (l.test) continue;
     const cards = l.tasks.filter(t => t.type === 'cards').reduce((n, t) => n + t.cards.length, 0);
     const quizzes = l.tasks.filter(t => t.type === 'quiz').length;
-    const practice = l.tasks.filter(t => ['sort', 'build', 'spot', 'order', 'talk', 'mission'].includes(t.type)).length;
+    const practice = l.tasks.filter(t => ['sort', 'build', 'spot', 'order', 'poll', 'talk', 'chat'].includes(t.type)).length;
     assert.ok(cards <= 3, `${l.id}: ${cards} theory cards`);
     assert.ok(quizzes <= 3, `${l.id}: ${quizzes} quiz questions`);
     assert.ok(practice >= 3, `${l.id}: only ${practice} practice tasks`);
   }
+});
+
+test('the course ends with a boss fight that mixes the skills', () => {
+  const bosses = G.stations().filter(st => st.lesson.boss);
+  assert.equal(bosses.length, 1, 'one boss');
+  const st = bosses[0], l = st.lesson;
+  assert.equal(st.index, G.stations().length - 1, 'the boss is the last station');
+  assert.ok(l.test && !l.extra, 'the boss is a main finale');
+  assert.ok(l.boss.name && l.boss.icon && l.boss.hp > 0 && l.boss.taunts.length && l.boss.hurt.length);
+  const types = new Set(l.tasks.filter(G.isGraded).map(t => t.type));
+  for (const type of ['build', 'order', 'spot', 'sort', 'quiz']) assert.ok(types.has(type), 'boss round: ' + type);
+});
+
+test('Bloop practice replaced the missions', () => {
+  assert.ok(G.stations().every(st => !st.lesson.tasks.some(t => t.type === 'mission')));
+  assert.ok(G.stations().some(st => st.lesson.tasks.some(t => t.type === 'chat')));
 });
 
 test('side quests: not in the first block, never first in a block, never a test', () => {

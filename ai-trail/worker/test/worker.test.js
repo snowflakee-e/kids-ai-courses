@@ -59,7 +59,8 @@ test('check mode: system prompt holds the task, verdict is parsed and removed', 
     assert.equal(input.messages[0].role, 'system');
     assert.match(input.messages[0].content, /Как ИИ учится\?/);
     assert.match(input.messages[0].content, /- поправки после ошибок/);
-    assert.match(input.messages[0].content, /Говори только о текущем задании/);
+    assert.match(input.messages[0].content, /Никогда не оскорбляй/);
+    assert.equal(input.temperature, 0.4);
     assert.deepEqual(input.messages.slice(1), [{ role: 'user', content: 'Ему показывают много картинок' }]);
 });
 
@@ -89,7 +90,8 @@ test('bad input is rejected before calling the model', async () => {
         checkBody({ messages: [{ role: 'assistant', content: 'hi' }] }),
         checkBody({ messages: [{ role: 'user', content: 'a' }, { role: 'assistant', content: 'b' }] }),
         checkBody({ messages: Array.from({ length: 13 }, (_, i) => ({ role: i % 2 ? 'assistant' : 'user', content: 'x' })) }),
-        'x'.repeat(17000)
+        { lang: 'en', mode: 'chat', context: { task: '' }, messages: [{ role: 'user', content: 'hi' }] },
+        'x'.repeat(33000)
     ];
     for (const body of bad) assert.equal((await worker.fetch(post(body), env)).status, 400, JSON.stringify(body).slice(0, 60));
     assert.equal(ai.calls.length, 0);
@@ -98,7 +100,49 @@ test('bad input is rejected before calling the model', async () => {
 test('long messages are trimmed to the limits', async () => {
     const ai = fakeAI(() => ({ response: 'ok' }));
     await worker.fetch(post(checkBody({ messages: [{ role: 'user', content: 'я'.repeat(2000) }] })), { AI: ai });
-    assert.equal(ai.calls[0].input.messages[1].content.length, 600);
+    assert.equal(ai.calls[0].input.messages[1].content.length, 1200);
+});
+
+test('chat mode: Bloop acts as a regular chatbot for the task', async () => {
+    const ai = fakeAI(() => ({ response: '- The Moon has weak gravity\n- So gas escapes into space' }));
+    const res = await worker.fetch(post({
+        lang: 'en', mode: 'chat', lesson: 'Your first real prompt',
+        context: { task: 'Vague vs specific', goal: 'Send both prompts and compare', steps: ['Prompt 1: tell me about the Moon', 'Prompt 2: the specific one'] },
+        messages: [{ role: 'user', content: 'You’re an astronomy teacher. Explain why there’s no air on the Moon.' }]
+    }), { AI: ai });
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.equal(data.verdict, null);
+    assert.equal(data.blocked, undefined);
+    assert.match(data.reply, /weak gravity/);
+    const { input } = ai.calls[0];
+    assert.match(input.messages[0].content, /you are that chatbot/);
+    assert.match(input.messages[0].content, /Task: Vague vs specific/);
+    assert.match(input.messages[0].content, /2\. Prompt 2: the specific one/);
+    assert.match(input.messages[0].content, /Never insult, mock, swear/);
+    assert.match(input.messages[0].content, /no internet access/);
+    assert.equal(input.temperature, 0.6);
+});
+
+test('bad words get a calm reply without calling the model', async () => {
+    const ai = fakeAI(() => ({ response: 'should not be called' }));
+    for (const [lang, text] of [['en', 'this is shit'], ['en', 'What the FUCK'], ['ru', 'да пошёл ты нахуй'], ['ru', 'сука, не работает']]) {
+        const res = await worker.fetch(post(checkBody({ lang, messages: [{ role: 'user', content: text }] })), { AI: ai });
+        const data = await res.json();
+        assert.equal(res.status, 200);
+        assert.equal(data.blocked, true, text);
+        assert.match(data.reply, lang === 'en' ? /friendly/ : /без грубых слов/);
+    }
+    assert.equal(ai.calls.length, 0);
+});
+
+test('ordinary words that only look rude are not blocked', async () => {
+    const ai = fakeAI(() => ({ response: 'ok' }));
+    for (const text of ['I was in Scunthorpe', 'shiitake mushrooms', 'хуже не бывает', 'дай хлеба', 'небо синее', 'суккуленты', 'class assignment']) {
+        const data = await (await worker.fetch(post(checkBody({ messages: [{ role: 'user', content: text }] })), { AI: ai })).json();
+        assert.equal(data.blocked, undefined, text);
+    }
+    assert.equal(ai.calls.length, 7);
 });
 
 test('falls back to the second model when the first fails', async () => {

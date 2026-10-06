@@ -61,7 +61,7 @@ const UI = {
         start: title => `Начать: ${title}`,
         block: n => `Блок ${n}`,
         soon: 'скоро',
-        finale: 'Финал блока',
+        finale: 'Финал блока', bossKicker: 'Финальный босс',
         station: n => `Станция ${n}`,
         locked: '🔒 закрыто',
         passed: 'пройдено',
@@ -72,7 +72,7 @@ const UI = {
         newStation: 'Новая станция!',
         soonToast: title => `«${title}» скоро откроется 🌱`,
         firstPass: title => `Сначала пройди «${title}»`,
-        kind: { theory: '📖 Теория', video: '🎬 Ролик', practice: '🧩 Практика', ai: '🤖 Проверка с Блупом', test: '✅ Тест' },
+        kind: { theory: '📖 Теория', video: '🎬 Ролик', practice: '🧩 Практика', ai: '🤖 С Блупом', test: '✅ Тест' },
         best: (stars, pct) => `Лучший результат: ${stars} · ${pct}%`,
         rule: n => `${n} ${plural(n, 'задание', 'задания', 'заданий')}. От 50% верных — станция пройдена.`,
         resumeFrom: n => `Продолжить с задания ${n}`,
@@ -94,9 +94,9 @@ const UI = {
         orderScore: (c, n) => `${c} из ${n} с первого раза`,
         orderText: 'Порядок шагов решает.',
         combo: n => `Серия ×${n}! 🔥`,
-        practice: '🧩 Практика', experiment: '🧩 Эксперимент', mission: '🚀 Миссия',
+        practice: '🧩 Практика', experiment: '🧩 Эксперимент',
         video: sec => `🎬 Ролик · ${sec} сек`,
-        quizKicker: (test, n, total) => `${test ? '🌳 Испытание' : '✅ Тест'} · вопрос ${n} из ${total}`,
+        quizKicker: (test, n, total, boss) => `${boss ? '⚡ Блиц' : test ? '🌳 Испытание' : '✅ Тест'} · вопрос ${n} из ${total}`,
         prompt: 'Промпт', tap: 'Нажми',
         storyboard: 'Раскадровка ролика', draft: 'Черновик ролика', play: 'Смотреть ролик',
         playHint: 'Нажми ▶, чтобы смотреть. Тап по экрану — следующая сцена.',
@@ -136,7 +136,7 @@ const UI = {
         tutorTitle: 'Спроси Блупа',
         tutorStart: 'Почему мой ответ неправильный?',
         tutorPlaceholder: 'Напиши вопрос…',
-        tutorNote: 'Блуп отвечает только про уроки курса. Не пиши личные данные.',
+        tutorNote: 'Блуп общается вежливо и по делу. Не пиши личные данные.',
         tutorSend: 'Отправить',
         tutorThinking: 'Блуп думает',
         tutorError: 'Блуп сейчас не на связи. Попробуй чуть позже.',
@@ -151,7 +151,22 @@ const UI = {
         talkPoints: 'В хорошем ответе есть:',
         talkSample: 'Пример ответа:',
         talkWait: 'Сначала ответь Блупу',
-        verdict: { yes: '✓ Засчитано', partly: '≈ Почти', no: '✗ Пока нет' }
+        verdict: { yes: '✓ Засчитано', partly: '≈ Почти', no: '✗ Пока нет' },
+        chatKicker: '🤖 Попробуй с Блупом',
+        chatHint: 'Блуп — тоже нейросеть: отвечает как обычный чат-бот и тоже может ошибаться.',
+        chatPrompts: 'Готовые сообщения: нажми, чтобы вставить',
+        chatPlaceholder: 'Напиши промпт…',
+        chatNew: '↺ Новый чат',
+        chatNewDone: 'Новый чат: Блуп забыл прошлую переписку',
+        chatFill: 'Замени [скобки] своими словами',
+        chatWait: 'Отправь промпт Блупу',
+        chatOffline: 'Блуп сейчас не на связи. Скопируй промпт и попробуй в чат-боте, которым тебе разрешают пользоваться.',
+        bossHp: 'здоровье',
+        bossHit: n => `−${n} HP`,
+        bossWin: name => `${name} повержен!`,
+        bossLose: name => `${name} пока сильнее`,
+        bossLeadWin: 'Ты победил финального босса тем, что умеешь: точные промпты, проверка фактов, защита данных и честная работа.',
+        bossLeadFail: 'Сбей хотя бы половину здоровья босса. Ошибки разобраны, попробуй ещё раз.'
     },
     en: {
         good: ['Correct!', 'Bullseye!', 'Nailed it!', 'Nice one!', 'Big brain move!', 'Keep it up!'],
@@ -167,7 +182,7 @@ const UI = {
         start: title => `Start: ${title}`,
         block: n => `Block ${n}`,
         soon: 'coming soon',
-        finale: 'Block finale',
+        finale: 'Block finale', bossKicker: 'Final boss',
         station: n => `Station ${n}`,
         locked: '🔒 locked',
         passed: 'done',
@@ -178,7 +193,7 @@ const UI = {
         newStation: 'New station!',
         soonToast: title => `“${title}” is coming soon 🌱`,
         firstPass: title => `Finish “${title}” first`,
-        kind: { theory: '📖 Theory', video: '🎬 Video', practice: '🧩 Practice', ai: '🤖 Check with Bloop', test: '✅ Test' },
+        kind: { theory: '📖 Theory', video: '🎬 Video', practice: '🧩 Practice', ai: '🤖 With Bloop', test: '✅ Test' },
         best: (stars, pct) => `Best result: ${stars} · ${pct}%`,
         rule: n => `${n} ${n === 1 ? 'task' : 'tasks'}. Get 50% right to pass the station.`,
         resumeFrom: n => `Continue from task ${n}`,
@@ -200,9 +215,9 @@ const UI = {
         orderScore: (c, n) => `${c} of ${n} on the first try`,
         orderText: 'The order of the steps is what makes it work.',
         combo: n => `${n} in a row! 🔥`,
-        practice: '🧩 Practice', experiment: '🧩 Experiment', mission: '🚀 Mission',
+        practice: '🧩 Practice', experiment: '🧩 Experiment',
         video: sec => `🎬 Video · ${sec} sec`,
-        quizKicker: (test, n, total) => `${test ? '🌳 Challenge' : '✅ Test'} · question ${n} of ${total}`,
+        quizKicker: (test, n, total, boss) => `${boss ? '⚡ Rapid fire' : test ? '🌳 Challenge' : '✅ Test'} · question ${n} of ${total}`,
         prompt: 'Prompt', tap: 'Tap',
         storyboard: 'Video storyboard', draft: 'Draft video', play: 'Watch the video',
         playHint: 'Press ▶ to watch. Tap the screen for the next scene.',
@@ -242,7 +257,7 @@ const UI = {
         tutorTitle: 'Ask Bloop',
         tutorStart: 'Why is my answer wrong?',
         tutorPlaceholder: 'Type your question…',
-        tutorNote: 'Bloop only talks about the course lessons. Don’t share personal info.',
+        tutorNote: 'Bloop keeps it friendly and on topic. Don’t share personal info.',
         tutorSend: 'Send',
         tutorThinking: 'Bloop is thinking',
         tutorError: 'Bloop is offline right now. Try again a bit later.',
@@ -257,7 +272,22 @@ const UI = {
         talkPoints: 'A good answer covers:',
         talkSample: 'Example answer:',
         talkWait: 'Answer Bloop first',
-        verdict: { yes: '✓ Nailed it', partly: '≈ Almost', no: '✗ Not yet' }
+        verdict: { yes: '✓ Nailed it', partly: '≈ Almost', no: '✗ Not yet' },
+        chatKicker: '🤖 Try it with Bloop',
+        chatHint: 'Bloop is AI too: it answers like a regular chatbot and can be wrong too.',
+        chatPrompts: 'Ready-made messages: tap one to put it in the box',
+        chatPlaceholder: 'Write your prompt…',
+        chatNew: '↺ New chat',
+        chatNewDone: 'New chat: Bloop forgot the old conversation',
+        chatFill: 'Replace the [brackets] with your own words first',
+        chatWait: 'Send your prompt to Bloop',
+        chatOffline: 'Bloop is offline right now. Copy the prompt and try it in a chatbot you’re allowed to use.',
+        bossHp: 'HP',
+        bossHit: n => `−${n} HP`,
+        bossWin: name => `${name} is defeated!`,
+        bossLose: name => `${name} is still standing`,
+        bossLeadWin: 'You beat the final boss with real skills: clear prompts, fact-checking, guarding your data and honest work.',
+        bossLeadFail: 'Knock out at least half of the boss’s HP. You’ve seen the mistakes, so try again.'
     }
 }[LANG];
 
@@ -322,11 +352,14 @@ const Tutor = {
     },
 
     // Лента сообщений + форма. Вся переписка уходит в воркер, у ученика не больше maxTurns сообщений.
-    chat({ log, form, mode, lesson, context, maxTurns, onReply, onFail }) {
+    // guard(text) может не пустить сообщение (например, с незаполненными [скобками]).
+    // Сообщение с грубыми словами воркер не отправляет в модель (blocked): эта пара не остаётся в переписке.
+    chat({ log, form, mode, lesson, context, maxTurns, maxLength = 500, guard, onReply, onFail }) {
         const input = $('textarea', form);
         const sendBtn = $('button[type="submit"]', form);
-        const history = [];
-        let turns = 0, busy = false;
+        const placeholder = input.placeholder;
+        let history = [];
+        let turns = 0, busy = false, epoch = 0;
 
         const add = (who, text, extra) => {
             const p = document.createElement('p');
@@ -340,8 +373,10 @@ const Tutor = {
         const lock = on => { input.disabled = sendBtn.disabled = on; };
 
         const send = async text => {
-            text = String(text || '').trim().slice(0, 500);
+            text = String(text || '').trim().slice(0, maxLength);
             if (!text || busy || turns >= maxTurns) return;
+            if (guard && !guard(text)) return;
+            const my = epoch;
             busy = true;
             turns++;
             lock(true);
@@ -351,33 +386,53 @@ const Tutor = {
             const typing = add('ai', UI.tutorThinking, 'is-typing');
             try {
                 const data = await Tutor.ask({ mode, lesson, context, messages: history });
+                if (my !== epoch) return;
                 typing.remove();
+                if (data.blocked) {
+                    history.pop();
+                    add('ai', data.reply, 'is-error');
+                    return;
+                }
                 history.push({ role: 'assistant', content: data.reply });
                 const bubble = add('ai', data.reply);
                 if (onReply) onReply(data, bubble);
             } catch (e) {
+                if (my !== epoch) return;
                 typing.remove();
                 history.pop();
                 turns--;
                 add('ai', e.message === 'quota' ? UI.tutorTired : UI.tutorError, 'is-error');
                 if (onFail) onFail(e);
             } finally {
-                busy = false;
-                lock(turns >= maxTurns);
-                if (turns >= maxTurns) input.placeholder = UI.tutorLimit;
+                if (my === epoch) {
+                    busy = false;
+                    lock(turns >= maxTurns);
+                    if (turns >= maxTurns) input.placeholder = UI.tutorLimit;
+                }
             }
+        };
+
+        // Новый чат: Блуп забывает переписку, лимит сообщений начинается заново
+        const reset = () => {
+            epoch++;
+            history = [];
+            turns = 0;
+            busy = false;
+            log.innerHTML = '';
+            lock(false);
+            input.placeholder = placeholder;
         };
 
         form.addEventListener('submit', e => { e.preventDefault(); send(input.value); });
         input.addEventListener('keydown', e => {
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
         });
-        return { send };
+        return { send, reset };
     }
 };
 
-const chatForm = placeholder => `<form class="chat-form">
-    <textarea rows="2" maxlength="500" placeholder="${esc(placeholder)}" aria-label="${esc(placeholder)}"></textarea>
+const chatForm = (placeholder, maxLength = 500) => `<form class="chat-form">
+    <textarea rows="2" maxlength="${maxLength}" placeholder="${esc(placeholder)}" aria-label="${esc(placeholder)}"></textarea>
     <button class="btn btn--go" type="submit" aria-label="${esc(UI.tutorSend)}">➤</button>
 </form>`;
 
@@ -488,7 +543,7 @@ function nodeBase(block, bi, lesson, li) {
     const num = block.lessons.slice(0, li + 1).filter(l => !l.extra && !l.test).length;
     return {
         block, bi, lesson, li, num,
-        soon: !!block.soon, big: !!lesson.test, extra: !!lesson.extra,
+        soon: !!block.soon, big: !!lesson.test, boss: !!lesson.boss, extra: !!lesson.extra,
         index: st ? st.index : -1
     };
 }
@@ -664,7 +719,7 @@ function mapSvg(L) {
     </svg>`;
 }
 
-const KIND = { cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', order: 'practice', poll: 'practice', mission: 'practice', talk: 'ai' };
+const KIND = { cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', order: 'practice', poll: 'practice', talk: 'ai', chat: 'ai' };
 
 // ---------- Приложение ----------
 const app = {
@@ -680,6 +735,7 @@ const app = {
         Sound.on = this.state.sound;
         $('#brand-blup').innerHTML = blup('neutral');
         this.mountTutor();
+        this.mountBoss();
         this.mountNav();
         this.bind();
         this.renderAll();
@@ -795,7 +851,7 @@ const app = {
             else place = `left:${X(n.x)};top:${Y(n.y - off + 4)}`;
             if (L.dir === 'h') place += `;max-width:${X(L.STEP - 20)}`;
 
-            return `<button class="node node--${status}${n.big ? ' node--big' : ''}${n.extra ? ' node--extra' : ''}" type="button" data-node="${i}"
+            return `<button class="node node--${status}${n.big ? ' node--big' : ''}${n.boss ? ' node--boss' : ''}${n.extra ? ' node--extra' : ''}" type="button" data-node="${i}"
                     style="left:${X(n.x)};top:${Y(n.y)}" aria-label="${esc(name)}">${icon}</button>
                 <button class="label label--${status} label--${n.label}${n.extra ? ' label--extra' : ''}" type="button" data-node="${i}" tabindex="-1"
                     style="${place}" aria-hidden="true">
@@ -828,8 +884,9 @@ const app = {
         this.renderNav();
     },
 
-    // Подпись станции: номер на главной тропе, «ответвление» или «финал блока»
+    // Подпись станции: номер на главной тропе, «ответвление», «финал блока» или «финальный босс»
     kicker(n) {
+        if (n.lesson.boss) return UI.bossKicker;
         if (n.lesson.test) return UI.finale;
         if (n.extra) return UI.sideQuest;
         return UI.station(n.num);
@@ -1130,6 +1187,7 @@ const app = {
         void box.offsetWidth;
         box.style.animation = '';
         $('.lesson__body').scrollTop = 0;
+        this.renderBoss();
         this.setNext(UI.btn.next, true);
         this.tasks[t.type].call(this, t, box, r.token);
     },
@@ -1172,6 +1230,7 @@ const app = {
             Sound.play('pop');
         }
         this.showFeedback(tone, title, text);
+        if (r.lesson.boss && typeof score === 'number') this.hitBoss(score);
         this.setNext(UI.btn.next, true);
         $('#ask-btn').hidden = !(Tutor.enabled && typeof score === 'number' && score < 1 && r.mistake);
     },
@@ -1367,7 +1426,7 @@ const app = {
             const quizzes = lesson.tasks.filter(x => x.type === 'quiz');
             const num = quizzes.indexOf(t) + 1;
             const opts = shuffle(t.options.map((text, i) => ({ text, ok: i === 0 })));
-            box.innerHTML = `<p class="eyebrow task__kicker">${UI.quizKicker(lesson.test, num, quizzes.length)}</p>
+            box.innerHTML = `<p class="eyebrow task__kicker">${UI.quizKicker(lesson.test, num, quizzes.length, !!lesson.boss)}</p>
                 <h2 class="question">${esc(t.q)}</h2>
                 <div class="options">${opts.map((o, i) =>
                     `<button class="option" type="button" data-i="${i}"><span class="option__key">${UI.letters[i]}</span><span>${esc(o.text)}</span></button>`).join('')}
@@ -1695,30 +1754,85 @@ const app = {
             });
         },
 
-        mission(t, box) {
-            box.innerHTML = this.head(UI.mission, t.title, t.text) +
-                (t.steps ? `<ol class="mission__steps">${t.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : '') + `<div class="mission__prompt">
-                <p id="mission-text">${esc(t.prompt)}</p>
-                <button class="btn btn--white" type="button">${UI.copy}</button>
-            </div>
-            <p class="mission__note">${esc(t.note)}</p>`;
-            const copy = $('.mission__prompt .btn', box);
-            copy.addEventListener('click', () => {
-                const done = () => { copy.textContent = UI.copied; Sound.play('pop'); };
-                const fallback = () => {
-                    const range = document.createRange();
-                    range.selectNodeContents($('#mission-text', box));
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                    copy.textContent = UI.selected;
-                };
-                try { navigator.clipboard.writeText(t.prompt).then(done, fallback); } catch (e) { fallback(); }
-            });
-            this.setNext(UI.btn.tried, true);
+        // Практика прямо в уроке: ученик пишет промпты Блупу, Блуп отвечает как обычный чат-бот.
+        // prompts — готовые сообщения (первое уже в поле), steps — шаги задания. Без помощника — промпт для копирования.
+        chat(t, box, token) {
+            const prompts = t.prompts || [];
+            const steps = t.steps ? `<ol class="task-steps">${t.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : '';
             const skip = $('#skip-btn');
             skip.hidden = false;
             this.run.onNext = () => { this.run.scores[this.run.step] = null; this.nextTask(); };
+
+            if (!Tutor.enabled) {
+                box.innerHTML = this.head(UI.chatKicker, t.title, t.text) + steps +
+                    prompts.map((x, i) => `<div class="copy-prompt">
+                        <p class="copy-prompt__text">${esc(x)}</p>
+                        <button class="btn btn--white" type="button" data-i="${i}">${UI.copy}</button>
+                    </div>`).join('') + `<p class="copy-note">${UI.chatOffline}</p>`;
+                $$('.copy-prompt .btn', box).forEach(copy => copy.addEventListener('click', () => {
+                    const text = prompts[+copy.dataset.i];
+                    const done = () => { copy.textContent = UI.copied; Sound.play('pop'); };
+                    const fallback = () => {
+                        const range = document.createRange();
+                        range.selectNodeContents($('.copy-prompt__text', copy.parentNode));
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                        copy.textContent = UI.selected;
+                    };
+                    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+                }));
+                this.setNext(UI.btn.next, true);
+                return;
+            }
+
+            box.innerHTML = this.head(UI.chatKicker, t.title, t.text) + steps +
+                (prompts.length > 1 ? `<p class="eyebrow">${UI.chatPrompts}</p>
+                    <div class="chat-chips">${prompts.map((x, i) => `<button class="chat-chip" type="button" data-i="${i}"><span>${esc(x)}</span></button>`).join('')}</div>` : '') + `
+                <div class="chat-log chat-log--task" aria-live="polite"></div>
+                ${chatForm(UI.chatPlaceholder, 1200)}
+                <div class="chat-tools">
+                    <p class="chat-note">${UI.chatHint}</p>
+                    <button class="link-btn chat-new" type="button">${UI.chatNew}</button>
+                </div>`;
+            const log = $('.chat-log', box), form = $('.chat-form', box);
+            const input = $('textarea', form);
+            const alive = () => this.run && this.run.token === token;
+            input.value = prompts[0] || '';
+
+            $$('.chat-chip', box).forEach(chip => chip.addEventListener('click', () => {
+                input.value = prompts[+chip.dataset.i];
+                input.focus();
+                Sound.play('tap');
+            }));
+
+            // Незаполненные [скобки] из шаблона: выделяем первую и просим заменить
+            const guard = () => {
+                const m = input.value.match(/\[[^\]\n]{1,60}\]/);
+                if (!m) return true;
+                this.toast(UI.chatFill);
+                input.focus();
+                input.setSelectionRange(m.index, m.index + m[0].length);
+                return false;
+            };
+
+            const chat = Tutor.chat({
+                log, form, mode: 'chat', lesson: this.run.lesson.title,
+                context: { task: t.title, goal: t.text || '', steps: t.steps || [] },
+                maxTurns: t.maxTurns || 6, maxLength: 1200, guard,
+                onReply: () => {
+                    if (!alive()) return;
+                    Sound.play('pop');
+                    this.setNext(UI.btn.next, true);
+                }
+            });
+            $('.chat-new', box).addEventListener('click', () => {
+                chat.reset();
+                this.toast(UI.chatNewDone);
+                Sound.play('tap');
+                input.focus();
+            });
+            this.setNext(UI.chatWait, false);
         }
     },
 
@@ -1749,6 +1863,62 @@ const app = {
             </div>
         </dialog>`);
         $('#ask-btn').addEventListener('click', () => this.openTutor());
+    },
+
+    // ---------- Финальный босс: полоска здоровья над заданием ----------
+    // Каждое оцениваемое задание снимает равную долю здоровья, умноженную на его балл.
+    mountBoss() {
+        $('#task').insertAdjacentHTML('beforebegin', `<div class="boss" id="boss" hidden>
+            <span class="boss__face" aria-hidden="true"></span>
+            <div class="boss__info">
+                <p class="boss__name"><b></b><span class="boss__hp"></span></p>
+                <div class="boss__bar" role="progressbar" aria-valuemin="0"><span></span></div>
+            </div>
+            <span class="boss__say" hidden></span>
+            <span class="boss__hit" aria-hidden="true"></span>
+        </div>`);
+    },
+
+    bossHp() {
+        const r = this.run, B = r.lesson.boss;
+        const graded = r.lesson.tasks.map((t, i) => i).filter(i => Game.isGraded(r.lesson.tasks[i]));
+        const dealt = graded.reduce((sum, i) => sum + (typeof r.scores[i] === 'number' ? r.scores[i] : 0), 0);
+        return { hp: Math.max(0, Math.round(B.hp * (1 - dealt / graded.length))), per: B.hp / graded.length };
+    },
+
+    renderBoss() {
+        const el = $('#boss'), B = this.run.lesson.boss;
+        el.hidden = !B;
+        if (!B) return;
+        const { hp } = this.bossHp();
+        $('.boss__face', el).textContent = hp > 0 ? B.icon : '💥';
+        $('.boss__name b', el).textContent = B.name;
+        $('.boss__hp', el).textContent = `${hp} ${UI.bossHp}`;
+        const bar = $('.boss__bar', el);
+        bar.setAttribute('aria-valuemax', B.hp);
+        bar.setAttribute('aria-valuenow', hp);
+        bar.setAttribute('aria-label', `${B.name}: ${hp} ${UI.bossHp}`);
+        $('span', bar).style.width = (hp / B.hp * 100) + '%';
+        el.classList.toggle('is-low', hp <= B.hp / 2);
+        el.classList.toggle('is-down', hp === 0);
+    },
+
+    hitBoss(score) {
+        const el = $('#boss'), B = this.run.lesson.boss;
+        const dmg = Math.round(this.bossHp().per * score);
+        this.renderBoss();
+        if (dmg > 0) {
+            const hit = $('.boss__hit', el);
+            hit.textContent = UI.bossHit(dmg);
+            el.classList.remove('is-hit');
+            void el.offsetWidth;
+            el.classList.add('is-hit');
+        }
+        const say = $('.boss__say', el);
+        say.textContent = pick(score === 1 ? B.hurt : B.taunts);
+        say.hidden = false;
+        clearTimeout(this.bossTimer);
+        this.bossTimer = setTimeout(() => { say.hidden = true; }, 2800);
     },
 
     // Один разговор на одну ошибку: повторное открытие показывает ту же переписку
@@ -1812,12 +1982,16 @@ const app = {
 
         $('#result-blup').innerHTML = blup(!res.passed ? 'sad' : res.stars === 3 ? 'victory' : 'joy');
         $('#result-kicker').textContent = this.kicker(this.layout.nodes.find(n => n.lesson === lesson));
-        $('#result-title').textContent = !res.passed ? UI.almost : res.stars === 3 ? UI.perfect : UI.stationDone;
-        $('#result-lead').textContent = !res.passed
-            ? UI.leadFail
-            : res.isReplay && res.earned === 0
-                ? UI.leadReplay
-                : UI.leadDone(lesson.title);
+        $('#result-title').textContent = lesson.boss
+            ? (res.passed ? UI.bossWin(lesson.boss.name) : UI.bossLose(lesson.boss.name))
+            : !res.passed ? UI.almost : res.stars === 3 ? UI.perfect : UI.stationDone;
+        $('#result-lead').textContent = lesson.boss
+            ? (res.passed ? UI.bossLeadWin : UI.bossLeadFail)
+            : !res.passed
+                ? UI.leadFail
+                : res.isReplay && res.earned === 0
+                    ? UI.leadReplay
+                    : UI.leadDone(lesson.title);
 
         const starsBox = $('#result-stars');
         starsBox.innerHTML = [0, 1, 2].map(() => '<span aria-hidden="true">⭐</span>').join('') +
