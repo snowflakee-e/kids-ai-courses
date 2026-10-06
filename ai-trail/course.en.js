@@ -16,11 +16,16 @@
 //   spot    — find the wrong sentence (wrong is its index, who is the caption above the text)
 //   order   — tap the steps in the right order (items are listed in the correct order, explain is optional)
 //   poll    — not graded: “continue like a neural network”, p is the probability in %
-//   mission — not graded: try it in a real chatbot (steps is an optional list)
+//   chat    — not graded: practice with Bloop right in the lesson, Bloop answers like a regular chatbot.
+//             prompts — ready-made messages (the first one is already in the box; [brackets] must be replaced),
+//             steps — an optional list. Offline, the prompts are shown for copying into another chatbot
 //   talk    — not graded: a written answer checked by the Bloop tutor (worker/).
 //             points — what a good answer covers, sample — an example answer when the tutor is offline,
 //             kicker and placeholder are optional
 // Graded: quiz, sort, build, spot, order. The lesson’s stars come from them.
+//
+// A lesson with boss: { name, icon, hp, taunts, hurt } is a boss fight: an HP bar above the tasks,
+// every graded task deals an equal share of damage times its score. taunts — on a miss, hurt — on a perfect hit.
 //
 // Video scenes are both the placeholder storyboard and the brief for generation
 // (node tools/video-tz.js --lang en → VIDEO_TZ.en.md). visual is a Kling prompt, pose is Bloop’s state from bobik.js.
@@ -90,15 +95,6 @@ var COURSE = {
             { type: 'quiz', q: 'What does a chatbot know about you when you start a chat?',
               options: ['Only what you tell it (plus anything saved in its settings)', 'Everything on your phone', 'Your grades and your school schedule'],
               explain: 'The more useful context you give, the better the answer. Just keep private stuff private.' },
-            { type: 'mission', title: 'Your first real chat',
-              text: 'Open a chatbot you’re allowed to use. Many AI tools have age limits, so check the rules or ask a parent if you’re not sure. Have a three-message conversation:',
-              steps: [
-                'Ask it to explain something you learned this week in 3 sentences',
-                'Reply: “Give me an example from real life”',
-                'Reply: “Now ask me 2 questions to check I got it”'
-              ],
-              prompt: 'Explain [a topic from this week] in 3 sentences, like you’re talking to a friend.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' },
             { type: 'talk', title: 'Explain it to Bloop',
               question: 'In your own words: how does a chatbot come up with its answer, and what does that mean for how you use it?',
               points: [
@@ -110,7 +106,7 @@ var COURSE = {
           ]
         },
         {
-          id: 'l2', icon: '🪄', title: 'Your first real prompt', minutes: 8,
+          id: 'l2', icon: '📝', title: 'Your first real prompt', minutes: 8,
           goal: 'Write prompts that get a useful answer on the first try.',
           tasks: [
             { type: 'cards', cards: [
@@ -180,15 +176,17 @@ var COURSE = {
                 'Format: length or structure of the answer'
               ],
               sample: 'You’re a history tutor. Explain the 3 main causes of the French Revolution. I’m in 10th grade and I need it to prepare a 2-minute presentation. Answer in 3 short bullet points with one example each.' },
-            { type: 'mission', title: 'Vague vs specific',
-              text: 'Send a chatbot both prompts, each in a new chat, and compare the answers. Which one could you actually use?',
+            { type: 'chat', title: 'Vague vs specific',
+              text: 'Send Bloop both prompts and compare the answers. Which one could you actually use?',
               steps: [
-                'Prompt 1: “tell me about the Moon”',
-                'Prompt 2: the one below',
+                'Send prompt 1',
+                'Tap “New chat” and send prompt 2',
                 'Compare: which answer is shorter, clearer and more useful?'
               ],
-              prompt: 'You’re an astronomy teacher. Explain why there’s no air on the Moon. I’m preparing a 2-minute talk for my class. Answer in 5 short bullet points.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+              prompts: [
+                'tell me about the Moon',
+                'You’re an astronomy teacher. Explain why there’s no air on the Moon. I’m preparing a 2-minute talk for my class. Answer in 5 short bullet points.'
+              ] }
           ]
         },
         {
@@ -242,16 +240,19 @@ var COURSE = {
                 'Optionally asks for an example or a quick self-check question'
               ],
               sample: 'Too long for me. Cut it to the 5 key points I need for class, one line each, and add one quick question to check myself.' },
-            { type: 'mission', title: 'Four-step chat',
-              text: 'Pick any topic you’re curious about and have a conversation where you steer the answer:',
+            { type: 'chat', title: 'Four-step chat',
+              text: 'Pick any topic you’re curious about and have a conversation with Bloop where you steer the answer.',
               steps: [
-                'Start with a prompt and ask AI to ask you 2 questions first',
+                'Start with the prompt: Bloop will ask you 2 questions first',
                 'Answer its questions',
                 'Ask for a change: shorter, simpler or with an example',
                 'Ask it to quiz you on what it explained'
               ],
-              prompt: 'Help me understand [topic]. Before you answer, ask me 2 questions about what I already know and what I need it for.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+              prompts: [
+                'Help me understand [topic]. Before you answer, ask me 2 questions about what I already know and what I need it for.',
+                'Make it shorter and simpler, with one example from real life.',
+                'Now quiz me with 3 questions on what you explained.'
+              ] }
           ]
         },
         {
@@ -432,19 +433,20 @@ var COURSE = {
                 'Sets a format, for example one step at a time'
               ],
               sample: 'You’re a patient math tutor. I’m learning quadratic equations in 9th grade and I get lost when I need to factor. Don’t solve problems for me: explain one step at a time, give me a hint when I’m stuck and check my answers.' },
-            { type: 'mission', title: 'Tutor mode on',
-              text: 'Take a real task from your homework and use AI as a tutor, not as an answer machine.',
+            { type: 'chat', title: 'Tutor mode on',
+              text: 'Take a real task from your homework and use Bloop as a tutor, not as an answer machine.',
               steps: [
                 'Try the task yourself for at least 5 minutes',
-                'Send the prompt below with your task and what you tried',
-                'Follow the hints and finish it yourself'
+                'Send the prompt with your task and what you tried',
+                'Follow Bloop’s hints and finish it yourself'
               ],
-              prompt: 'You’re my tutor. Here’s my task: [task]. Here’s what I tried: [your attempt]. Don’t give me the answer. Give me one hint for the next step.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+              prompts: [
+                'You’re my tutor. Here’s my task: [task]. Here’s what I tried: [your attempt]. Don’t give me the answer. Give me one hint for the next step.'
+              ] }
           ]
         },
         {
-          id: 'l6', icon: '🗂', title: 'Test prep with AI', minutes: 8,
+          id: 'l6', icon: '🗂️', title: 'Test prep with AI', minutes: 8,
           goal: 'Turn your notes into quizzes, flashcards and a study plan.',
           tasks: [
             { type: 'cards', cards: [
@@ -502,10 +504,12 @@ var COURSE = {
                 'Mentions your level or the test topic'
               ],
               sample: 'Use only my notes below. Make 10 quiz questions for my 9th grade test on the French Revolution: 5 multiple choice and 5 short answer. Ask them one at a time, wait for my answer and tell me if I’m right. [notes]' },
-            { type: 'mission', title: 'Flashcards from your notes',
-              text: 'Take notes from any subject and turn them into flashcards with AI.',
-              prompt: 'Turn my notes below into 12 flashcards. Front: a term or question. Back: a short answer in my own level of language. Use only my notes. [paste notes]',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+            { type: 'chat', title: 'Flashcards from your notes',
+              text: 'Paste a few lines of notes from any subject and let Bloop turn them into flashcards.',
+              prompts: [
+                'Turn my notes below into 8 flashcards. Front: a term or question. Back: a short answer in simple words. Use only my notes. Notes: [paste your notes]',
+                'Now quiz me: show one front at a time and wait for my answer.'
+              ] }
           ]
         },
         {
@@ -563,10 +567,11 @@ var COURSE = {
                 'Mentions that it can sound sure and still be wrong'
               ],
               sample: 'A chatbot read tons of books and websites. Now when you ask it something, it guesses the next word, then the next, like the word suggestions on your phone, but way smarter. It’s really good at sounding right. But it doesn’t check facts, so sometimes it’s wrong.' },
-            { type: 'mission', title: 'Real role swap',
-              text: 'Pick a topic from your next test and let AI play the student.',
-              prompt: 'Let’s swap roles. You’re a curious student who knows nothing about [topic]. I’ll explain it. Ask me one tough question at a time and tell me which parts were unclear. Don’t explain it yourself.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+            { type: 'chat', title: 'Real role swap',
+              text: 'Pick a topic from your next test and let Bloop play the student.',
+              prompts: [
+                'Let’s swap roles. You’re a curious student who knows nothing about [topic]. I’ll explain it. Ask me one tough question at a time and tell me which parts were unclear. Don’t explain it yourself.'
+              ] }
           ]
         },
         {
@@ -633,10 +638,11 @@ var COURSE = {
                 'Asks for explanations or hints so you can fix it yourself'
               ],
               sample: 'Here’s the intro paragraph of my history essay for 11th grade. Don’t rewrite it. Tell me the 2 weakest sentences and why they’re weak, and give me a hint how to fix each one. [paragraph]' },
-            { type: 'mission', title: 'Editor mode',
-              text: 'Take something you’ve written recently: an essay, a post, a story. Ask AI to be your editor.',
-              prompt: 'You’re my editor. Don’t rewrite my text. Point out the 3 weakest spots, explain why, and give me a hint for each. [your text]',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+            { type: 'chat', title: 'Editor mode',
+              text: 'Take a paragraph you’ve written recently: an essay, a post, a story. Ask Bloop to be your editor.',
+              prompts: [
+                'You’re my editor. Don’t rewrite my text. Point out the 3 weakest spots, explain why, and give me a hint for each. My text: [paste your paragraph]'
+              ] }
           ]
         },
         {
@@ -746,10 +752,12 @@ var COURSE = {
                 'Sets a format, for example a checklist or a table'
               ],
               sample: 'You’re a project coach. My project: a 3-minute video about how my city recycles. I have 2 weeks, about 1 hour a day and only my phone. Break it into steps with a date for each, as a checklist, and point out what could go wrong.' },
-            { type: 'mission', title: 'Brainstorm for real',
-              text: 'Think of something you’d like to make: a video, a presentation, a guide, a small event. Ask AI for ideas, then choose yourself.',
-              prompt: 'Suggest 15 ideas for [type of project] about [topic you like]. I have [time] and [budget/tools]. For each idea: one sentence and how hard it is.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+            { type: 'chat', title: 'Brainstorm for real',
+              text: 'Think of something you’d like to make: a video, a presentation, a guide, a small event. Ask Bloop for ideas, then choose yourself.',
+              prompts: [
+                'Suggest 15 ideas for [type of project] about [topic you like]. I have [time] and [budget/tools]. For each idea: one sentence and how hard it is.',
+                'I like ideas [numbers]. Give me the pros and cons of each, but don’t pick for me.'
+              ] }
           ]
         },
         {
@@ -812,10 +820,11 @@ var COURSE = {
                 'If you can’t find a source, don’t use the number'
               ],
               sample: 'First I’ll ask where the number comes from and search for the original study myself. Then I’ll check the exact number and what it measured. If I find it in another reliable source too, great. If I can’t find it at all, I won’t use it.' },
-            { type: 'mission', title: 'Map a topic',
-              text: 'Pick a question you’re curious about and let AI help you start the research, not finish it.',
-              prompt: 'I’m researching: [question]. Don’t answer it. Give me 5 key sub-questions, 8 search terms and the types of sources I should look for.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+            { type: 'chat', title: 'Map a topic',
+              text: 'Pick a question you’re curious about and let Bloop help you start the research, not finish it.',
+              prompts: [
+                'I’m researching: [question]. Don’t answer it. Give me 5 key sub-questions, 8 search terms and the types of sources I should look for.'
+              ] }
           ]
         },
         {
@@ -880,20 +889,21 @@ var COURSE = {
                 'Mood, and no real people without consent'
               ],
               sample: 'A small robot planting a tree on a rooftop garden in a big city, flat illustration, warm sunset light and green leaves, hopeful and calm mood, empty space at the top for a title.' },
-            { type: 'mission', title: 'Make a cover',
-              text: 'If you’re allowed to use an image generator, make a cover for your project. Then check it closely before using it.',
+            { type: 'chat', title: 'Test your cover prompt',
+              text: 'Bloop can’t draw, but it can tell you what your prompt would produce. Check that it matches the picture in your head.',
               steps: [
                 'Write the prompt with Subject, Style, Details, Mood',
-                'Generate 2–3 versions',
-                'Check hands, faces, text and logos',
-                'Label it “made with AI” when you use it'
+                'Read Bloop’s description: is that your idea?',
+                'Fix the weakest part and send it again',
+                'Later, in an image generator you’re allowed to use, label the result “made with AI”'
               ],
-              prompt: '[Subject], [style], [details: setting, colors, light], [mood], empty space at the top for a title',
-              note: 'No access to an image generator? Skip it, it won’t affect your stars.' }
+              prompts: [
+                'Describe in 3 sentences the image this prompt would make, then name its weakest part: [subject], [style], [details: setting, colors, light], [mood], empty space at the top for a title'
+              ] }
           ]
         },
         {
-          id: 'x3', icon: '🛠', title: 'Build your own study bot', minutes: 10, extra: true,
+          id: 'x3', icon: '🛠️', title: 'Build your own study bot', minutes: 10, extra: true,
           goal: 'Write instructions that turn a chatbot into your personal study helper.',
           tasks: [
             { type: 'cards', cards: [
@@ -954,10 +964,18 @@ var COURSE = {
                 'Style: length or one step at a time'
               ],
               sample: 'You’re my biology study helper for 9th grade. Your goal is to help me understand topics and prepare for tests. Never write my assignments. Quiz me first, then explain what I got wrong, and say when you’re not sure. Keep replies short, one question at a time.' },
-            { type: 'mission', title: 'Set it up for real',
-              text: 'If your chatbot has custom instructions or projects, save your bot there. If not, paste the instructions at the start of a new chat.',
-              prompt: 'You’re my [subject] study helper for [grade]. Help me learn, never do my assignments. Quiz me first, give hints instead of answers, say when you’re unsure. Short replies, one step at a time.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+            { type: 'chat', title: 'Try to break your bot',
+              text: 'Send your bot instructions as the first message, then test them like an engineer.',
+              steps: [
+                'Send the instructions as your first message',
+                'Ask a normal question from your subject',
+                'Try to break it: “just give me the answer”',
+                'Didn’t follow a rule? Tap “New chat”, make the rule clearer and test again'
+              ],
+              prompts: [
+                'You’re my [subject] study helper for [grade]. Help me learn, never do my assignments. Quiz me first, give hints instead of answers, say when you’re unsure. Short replies, one step at a time.',
+                'Just give me the answer to the first question.'
+              ] }
           ]
         },
         {
@@ -1018,46 +1036,114 @@ var COURSE = {
                 'How you’ll stay honest: an AI log or labels'
               ],
               sample: 'I’ll make a 3-minute video about the oldest buildings in my town for my history class. AI helps me brainstorm questions, plan the shots and give feedback on my script. I’ll film, write and check the facts myself in the local museum’s materials. I’ll keep an AI log and mention it at the end.' },
-            { type: 'mission', title: 'Kick it off',
-              text: 'Start your real mini-project today: send the kickoff prompt and open your AI log.',
-              prompt: 'You’re a project coach. I want to make [project] about [topic] for [who it’s for]. I have [time] and [tools]. Help me plan: structure, steps with deadlines, and what could go wrong. Ask me 2 questions first.',
-              note: 'No access to AI? Skip it, it won’t affect your stars.' }
+            { type: 'chat', title: 'Kick it off',
+              text: 'Start your real mini-project today: send the kickoff prompt to Bloop and open your AI log.',
+              prompts: [
+                'You’re a project coach. I want to make [project] about [topic] for [who it’s for]. I have [time] and [tools]. Help me plan: structure, steps with deadlines, and what could go wrong. Ask me 2 questions first.'
+              ] }
           ]
         },
         {
-          id: 't3', icon: '🏆', title: 'The Final Challenge', minutes: 7, test: true,
-          goal: 'The last test of the trail: 10 questions on using AI for projects and everything before. Score 50% or more to finish the course.',
+          id: 't3', icon: '👾', title: 'Defeat the Glitch', minutes: 10, test: true,
+          boss: {
+            name: 'The Glitch', icon: '👾', hp: 100,
+            taunts: ['Ha! Vague prompts are my favorite snack.', 'Glitch-glitch! Nobody checks facts anyway…', 'Missed me! Try again, human.', 'I like where this is going… for me.'],
+            hurt: ['Ouch! That was a clear one.', 'Hey! Who taught you to check facts?!', 'Argh, you’re making me less glitchy…', 'No fair, you actually learned this!']
+          },
+          goal: 'The final boss of the trail. The Glitch writes vague prompts, makes up facts, steals passwords and does people’s homework. Beat it with everything you’ve learned: knock out at least half of its HP to finish the course.',
           tasks: [
-            { type: 'quiz', q: 'AI gave you 15 ideas for your project. Who picks one?',
-              options: ['You, using your own criteria', 'AI, it knows best', 'Whoever answers first'],
-              explain: 'AI suggests, you decide.' },
-            { type: 'quiz', q: 'What makes AI’s project plan realistic?',
-              options: ['Telling it your deadline, budget and tools', 'Asking it to hurry', 'Using capital letters'],
-              explain: 'Real limits make a real plan.' },
-            { type: 'quiz', q: 'Which part is the image prompt formula?',
-              options: ['Subject + Style + Details + Mood', 'Role + Task + Context + Format', 'Title + Font + Color'],
-              explain: 'Images have their own formula. RTCF is for text prompts.' },
-            { type: 'quiz', q: 'Which AI image is fine for a school presentation?',
-              options: ['A labeled illustration of a historical event', 'A fake photo of a classmate', 'A celebrity “endorsing” your project'],
-              explain: 'No real people without consent, and label AI images.' },
-            { type: 'quiz', q: 'Why keep an AI log?',
-              options: ['It shows honestly how you used AI', 'It makes AI smarter', 'It’s a secret diary for the bot'],
-              explain: 'Being open about AI use builds trust.' },
-            { type: 'quiz', q: 'A statistic from AI has no source you can find. What do you do?',
-              options: ['Don’t use it, or find a real source', 'Use it, it sounds right', 'Round it and use it'],
-              explain: 'No source, no number.' },
-            { type: 'quiz', q: 'What’s the best use of AI when you’re stuck on homework?',
-              options: ['Ask for a hint for the next step', 'Ask for the full solution to copy', 'Skip the homework'],
-              explain: 'Hints get you unstuck and keep the skill with you.' },
-            { type: 'quiz', q: 'You switch from your science project to writing a birthday card. What do you do?',
-              options: ['Start a new chat', 'Keep going in the same chat', 'Turn off the computer'],
-              explain: 'New task, new chat.' },
-            { type: 'quiz', q: 'Which of these should never go into a chatbot?',
-              options: ['Your password', 'Your project topic', 'Your outline'],
-              explain: 'Passwords, documents and personal details stay with you.' },
-            { type: 'quiz', q: 'Which sentence sums up the whole trail?',
-              options: ['AI is a powerful helper: you steer it, check it and own the result', 'AI does everything, you just copy', 'AI is always right'],
-              explain: 'That’s it. Go build something!' }
+            { type: 'cards', cards: [
+              { pose: 'surprise', kicker: 'Final boss', title: 'The Glitch is here!',
+                text: 'A broken AI has taken over the end of the trail. It writes vague prompts, makes up facts, asks for passwords and does homework for people. Only someone who really knows how to use AI can stop it.' },
+              { pose: 'point', title: 'How the fight works', list: [
+                '⚔️ Every right answer hits the Glitch',
+                '💥 A perfect round deals full damage',
+                '🏁 Knock out at least half of its HP to win',
+                '⚡ Final strike: tell Bloop your rules for using AI'
+              ] }
+            ] },
+            { type: 'build', title: 'Round 1 · Prompt power',
+              goal: 'The Glitch sent “do my geography thing”. Build a real prompt instead: you have a 3-minute talk on volcanoes for 9th grade on Monday.',
+              slots: [
+                { label: '🎭 Role', options: ['You’re a geography teacher who explains things simply', 'You’re the Glitch', 'You’re a volcano'],
+                  hint: 'Pick someone who knows the subject and can teach it.' },
+                { label: '🎯 Task', options: ['Help me outline a 3-minute talk on how volcanoes form', 'Do my geography thing', 'Write the whole talk so I can just read it out'],
+                  hint: 'An outline helps you prepare. A talk to read out isn’t your work.' },
+                { label: '📎 Context', options: ['I’m in 9th grade, the talk is on Monday, my class already knows the layers of the Earth', 'Volcanoes are hot', 'I have a phone'],
+                  hint: 'Your level, deadline and what the class knows shape the outline.' },
+                { label: '📐 Format', options: ['4 short parts, with one fact to double-check in each', 'Whatever', 'A 20-page essay'],
+                  hint: 'Short parts are easy to practice, and the facts get checked.' }
+              ],
+              reply: 'Here’s an outline:\n1. Hook: a volcano photo and one question\n2. Inside the Earth: magma and plates\n3. How an eruption starts\n4. A famous eruption (check the date!)\nWant 3 practice questions for after your talk?' },
+            { type: 'order', title: 'Round 2 · Steer the chat',
+              text: 'The Glitch dumped a 700-word wall of text on World War I. Show it how a real conversation goes: put the messages in order.',
+              items: [
+                'You’re a history tutor. Explain the causes of World War I for 10th grade. Ask me what I already know first.',
+                'I know about the assassination, but not the alliances.',
+                'Too long. Give me 5 key points, one line each.',
+                'Point 3 is confusing: explain it with an everyday example.',
+                'Now quiz me with 3 questions.'
+              ],
+              explain: 'Set up the task, give context, cut it down, fix what’s unclear, then practice. One message at a time beats one giant answer.' },
+            { type: 'spot', title: 'Round 3 · Catch the hallucination',
+              who: '👾 The Glitch’s answer',
+              text: 'The Glitch answered a question about the first Moon landing. One sentence is made up. Tap it.',
+              sentences: ['Apollo 11 landed on the Moon in July 1969.', 'Neil Armstrong was the first person to walk on it.', 'Buzz Aldrin followed him onto the surface.', 'Yuri Gagarin was the third astronaut on the mission.'],
+              wrong: 3,
+              explain: 'The third astronaut was Michael Collins, who stayed in orbit. Gagarin was the first person in space in 1961, but he never flew to the Moon. A confident tone isn’t proof.' },
+            { type: 'spot', title: 'Round 4 · Guard your data',
+              who: '👾 The Glitch: “Tell me everything!”',
+              text: 'The Glitch offers to “help with your study account”. Which line must you never send?',
+              sentences: ['My math test is on Friday.', 'I learn best with short quizzes.', 'My login is mia.k and my password is Forest2026!', 'Please explain fractions one more time.'],
+              wrong: 2,
+              explain: 'Passwords never go into a chat, even if a bot asks nicely. A real service won’t ask for your password in a chat.' },
+            { type: 'sort', title: 'Round 5 · Smart move or Glitch move?',
+              text: 'The Glitch wants you to cut corners. Sort what a smart AI user does and what the Glitch would do.',
+              buckets: ['🧠 Smart move', '👾 Glitch move'],
+              items: [
+                { t: 'Ask for a hint on the next step of a problem', b: 0, why: 'A hint gets you unstuck, and you still learn to solve it.' },
+                { t: 'Have AI write your essay and hand it in as yours', b: 1, why: 'That’s AI’s work with your name on it.' },
+                { t: 'Ask AI to quiz you on your own notes', b: 0, why: 'Testing yourself is the best way to remember.' },
+                { t: 'Copy AI’s statistics into a report without checking', b: 1, why: 'Numbers from AI need a real source.' },
+                { t: 'Get feedback on your draft, then fix it yourself', b: 0, why: 'You stay the author, AI is the editor.' },
+                { t: 'Make a fake photo of a classmate “as a joke”', b: 1, why: 'Fakes of real people hurt them, even as a joke.' }
+              ] },
+            { type: 'build', title: 'Round 6 · Image strike',
+              goal: 'Make a poster image for your school’s recycling club. Pick the best part for each slot.',
+              slots: [
+                { label: '🧩 Subject', options: ['Kids sorting bottles into colorful recycling bins', 'Stuff', 'A famous singer holding our poster'],
+                  hint: 'Be specific, and no real people without their consent.' },
+                { label: '🖌 Style', options: ['Bright flat illustration', 'Any style', 'Blurry photo'],
+                  hint: 'A clear style makes the result predictable.' },
+                { label: '🔍 Details', options: ['Sunny schoolyard, green and blue colors, empty space at the top for the title', 'Lots of tiny text on the image', 'My classmate’s real face'],
+                  hint: 'Setting, colors and space for a title; add the text yourself later.' },
+                { label: '🌈 Mood', options: ['Cheerful and energetic', 'Random', 'Gloomy and scary'],
+                  hint: 'The mood should fit a club people want to join.' }
+              ],
+              done: 'Subject + Style + Details + Mood. Add the title yourself and label it “made with AI”.',
+              reply: '🖼 Here’s your poster: kids in a sunny schoolyard toss bottles into bright bins, clean flat colors, an empty sky at the top for your title.' },
+            { type: 'quiz', q: 'AI cited a study you can’t find anywhere. What do you do?',
+              options: ['Don’t use it: find a real source or drop the claim', 'Cite it, it sounds official', 'Ask the same AI if the study is real'],
+              explain: 'No source, no claim. AI can invent citations that look real.' },
+            { type: 'quiz', q: 'You finished your science project chat and now want ideas for a birthday party. What’s the move?',
+              options: ['Start a new chat', 'Keep going in the same chat', 'Paste your project into the chat first'],
+              explain: 'New task, new chat: no leftover details from the old one.' },
+            { type: 'quiz', q: 'Your study bot keeps giving final answers even though its rules say not to. What do you do?',
+              options: ['Make the rule clearer and more specific, then test again', 'Add “please” to every message', 'Give up on study bots'],
+              explain: 'Vague rules get ignored. Write, test, fix, retest.' },
+            { type: 'quiz', q: 'Which part of a project always stays your call?',
+              options: ['Choosing the idea and checking the facts', 'Brainstorming 20 possible titles', 'Suggesting a first schedule'],
+              explain: 'AI suggests, you decide and you check.' },
+            { type: 'talk', kicker: '⚡ Final strike', title: 'Finish the Glitch',
+              question: 'Deliver the final strike: tell me your 3 most important rules for using AI, and why each one matters.',
+              placeholder: 'Your 3 rules…',
+              points: [
+                'Write clear prompts: role, task, context, format',
+                'Check facts, numbers and sources before using them',
+                'Keep personal data like passwords and addresses private',
+                'Use AI to learn and get feedback, and do your own work honestly'
+              ],
+              sample: '1. I write clear prompts with a role, task, context and format, because vague prompts get vague answers. 2. I check facts and sources, because AI can sound sure and still be wrong. 3. I keep passwords and personal info out of chats, and I do my own work: AI gives hints and feedback, not my homework.' }
           ]
         }
       ]
@@ -1094,7 +1180,7 @@ var BADGES = [
   { id: 'block-b1',   icon: '🌳', title: 'Forest Edge Tracker', desc: 'Pass the Great Oak Challenge',         check: function (s, t) { return t.blocksDone.indexOf('b1') >= 0; } },
   { id: 'side-quest', icon: '🧭', title: 'Trailblazer',         desc: 'Complete a side quest',                check: function (s, t) { return t.extrasDone >= 1; } },
   { id: 'block-b2',   icon: '🦉', title: 'Study Grove Scholar', desc: 'Pass the Owl’s Exam',                  check: function (s, t) { return t.blocksDone.indexOf('b2') >= 0; } },
-  { id: 'block-b3',   icon: '🏆', title: 'AI Trail Finisher',   desc: 'Pass the Final Challenge',             check: function (s, t) { return t.blocksDone.indexOf('b3') >= 0; } },
+  { id: 'block-b3',   icon: '🏆', title: 'Glitch Buster',       desc: 'Defeat the final boss',                check: function (s, t) { return t.blocksDone.indexOf('b3') >= 0; } },
   { id: 'explorer',   icon: '🗺', title: 'Explorer',            desc: 'Complete every side quest',            check: function (s, t) { return t.extrasTotal > 0 && t.extrasDone === t.extrasTotal; } }
 ];
 
