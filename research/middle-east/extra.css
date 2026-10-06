@@ -1,0 +1,15 @@
+/* Ближний Восток: свой колонтитул и цвет обложки */
+@page {
+  @bottom-left {
+    content: "Как учить детей ИИ · Ближний Восток";
+    font: 400 7pt Inter, sans-serif;
+    color: #8a8984;
+  }
+}
+@page cover {
+  @bottom-left { content: none; }
+}
+.cover { background: #0d2b2a; }
+.cover .kicker { color: #8fe3c4; }
+.chapter-head .num { color: #1baf7a; }
+.ar { font-family: "DejaVu Sans", sans-serif; direction: rtl; unicode-bidi: isolate; }
