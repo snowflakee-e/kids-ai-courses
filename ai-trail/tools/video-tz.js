@@ -1,46 +1,31 @@
 'use strict';
 
 // ТЗ на ролики из сцен курса.
-//   node tools/video-tz.js                  > VIDEO_TZ.md      — русские ролики, таблицы для человека
-//   node tools/video-tz.js --lang en        > VIDEO_TZ.en.md   — английские ролики
-//   node tools/video-tz.js [--lang en] --json                  — сцены в JSON для автоматизации (Make.com)
+//   node tools/video-tz.js          > VIDEO_TZ.md   — таблицы для человека
+//   node tools/video-tz.js --json                   — сцены в JSON для автоматизации (Make.com)
 
-const LANG = process.argv.includes('--lang') && process.argv[process.argv.indexOf('--lang') + 1] === 'en' ? 'en' : 'ru';
-const { COURSE } = require(LANG === 'en' ? '../course.en.js' : '../course.js');
+const LANG = 'en';
+const { COURSE } = require('../course.en.js');
 
 // Темп озвучки, слов в секунду: по нему проверяем, влезает ли голос в сцену
-const RATE = { ru: 2.2, en: 2.6 };
-// Ролик лежит рядом со страницей своего языка: src в курсе — относительный путь от неё
-const DIR = { ru: 'ai-trail/', en: 'ai-trail/en/' };
+const RATE = 2.6;
+// Ролик лежит рядом со страницей курса: src в курсе — относительный путь от неё
+const DIR = 'ai-trail/';
 
 const L = {
-    ru: {
-        title: `# ТЗ на ролики «${COURSE.title}»`,
-        source: 'Файл собирается из `course.js` командой `node tools/video-tz.js > VIDEO_TZ.md`. Сцены правь в `course.js`, не здесь: из них же играет раскадровка-заглушка в уроке. Английские ролики — в `VIDEO_TZ.en.md`.',
-        format: [
-            `- Аудитория: ${COURSE.age}. Тон «старший брат или сестра»: быстро, с юмором, без сюсюканья.`,
-            '- Голос: русский, живой, темп около 130 слов в минуту.',
-            '- Субтитры и текст на экране — на русском. Маскот — Блуп.'
-        ],
-        file: 'videos/',
-        courseFile: 'course.js'
-    },
-    en: {
-        title: `# ТЗ на английские ролики «${COURSE.title}»`,
-        source: 'Файл собирается из `course.en.js` командой `node tools/video-tz.js --lang en > VIDEO_TZ.en.md`. Сцены правь в `course.en.js`, не здесь. Английская версия — основная: русская (`course.js`) пока на прежнем контенте, её ролики в `VIDEO_TZ.md`.',
-        format: [
-            '- Аудитория: англоязычные подростки 14–18 лет. Тон «старший брат или сестра»: быстро, с юмором, без сюсюканья.',
-            '- Голос: носитель английского, темп около 150 слов в минуту. Выбери один акцент на весь курс, американский или британский, и не смешивай.',
-            '- Субтитры и текст на экране — на английском. Маскот — Bloop (русский Блуп).',
-            '- Уже есть русские ролики с живым ведущим? В HeyGen есть перевод видео с синхроном губ. Для анимации Блупа проще переозвучить по колонке «Голос».'
-        ],
-        file: 'videos/',
-        courseFile: 'course.en.js'
-    }
-}[LANG];
+    title: `# ТЗ на ролики «${COURSE.title}»`,
+    source: 'Файл собирается из `course.en.js` командой `node tools/video-tz.js > VIDEO_TZ.md`. Сцены правь в `course.en.js`, не здесь: из них же играет раскадровка-заглушка в уроке.',
+    format: [
+        '- Аудитория: англоязычные подростки 14–18 лет. Тон «старший брат или сестра»: быстро, с юмором, без сюсюканья.',
+        '- Голос: носитель английского, темп около 150 слов в минуту. Выбери один акцент на весь курс, американский или британский, и не смешивай.',
+        '- Субтитры и текст на экране — на английском. Маскот — Bloop (русский Блуп).'
+    ],
+    file: 'videos/',
+    courseFile: 'course.en.js'
+};
 
 const words = text => text.split(/\s+/).filter(Boolean).length;
-const voiceSec = text => Math.round(words(text) / RATE[LANG] * 10) / 10;
+const voiceSec = text => Math.round(words(text) / RATE * 10) / 10;
 
 const videos = [];
 COURSE.blocks.filter(b => !b.soon).forEach(block => {
@@ -55,7 +40,7 @@ COURSE.blocks.filter(b => !b.soon).forEach(block => {
                 durationSec: v.scenes.reduce((s, sc) => s + sc.sec, 0),
                 aspect: '16:9',
                 src: `${L.file}${lesson.id}.mp4`,
-                file: `${DIR[LANG]}${L.file}${lesson.id}.mp4`,
+                file: `${DIR}${L.file}${lesson.id}.mp4`,
                 scenes: v.scenes.map((sc, i) => ({ n: i + 1, ...sc, voiceSec: voiceSec(sc.voice) }))
             });
         });
@@ -77,7 +62,7 @@ out.push('- Длина 35–50 секунд, одна идея на ролик. 
 out.push('- 16:9, 1920×1080 для урока. Из того же материала — нарезка 9:16 для Reels и TikTok (реклама курса).');
 out.push('- Субтитры вшиты: подростки часто смотрят без звука. Текст из колонки «Экран» — крупно, 3–6 слов.');
 out.push('- Блуп — состояние из `bobik.js` (колонка «Блуп»), палитра `peach`.');
-out.push(`- Колонка «Голос, с» — оценка длины озвучки при темпе ${RATE[LANG]} слова в секунду. ⚠️ значит, что голос не влезает в сцену: растяни сцену или сократи текст.`);
+out.push(`- Колонка «Голос, с» — оценка длины озвучки при темпе ${RATE} слова в секунду. ⚠️ значит, что голос не влезает в сцену: растяни сцену или сократи текст.`);
 out.push('');
 out.push('## Как снимать', '');
 out.push('| Вариант | Как | Когда брать |');
@@ -92,7 +77,7 @@ out.push('## Как подключить готовый ролик', '');
 out.push(`Положи файл по пути из строки «файл» под заголовком ролика и в \`${L.courseFile}\` у задания \`video\` заполни \`src\` (например, \`src: '${L.file}l1.mp4'\`) или \`youtube: 'ID'\`. Раскадровка отключится сама, а кнопка «Дальше» откроется после 90% просмотра.`);
 out.push('');
 out.push('## Автоматизация', '');
-out.push(`\`node tools/video-tz.js${LANG === 'en' ? ' --lang en' : ''} --json\` отдаёт те же сцены в JSON. Сценарий для Make.com: JSON → итерация по сценам → генерация (HeyGen: голос и аватар, Kling: визуал) → ожидание готовности → склейка → загрузка файла → путь в \`src\`.`);
+out.push('`node tools/video-tz.js --json` отдаёт те же сцены в JSON. Сценарий для Make.com: JSON → итерация по сценам → генерация (HeyGen: голос и аватар, Kling: визуал) → ожидание готовности → склейка → загрузка файла → путь в `src`.');
 out.push('');
 
 videos.forEach((v, i) => {

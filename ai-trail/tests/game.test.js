@@ -221,14 +221,3 @@ test('finishing a lesson clears its saved progress', () => {
   const r = G.applyLesson(s, 'l1', scores(lesson('l1')), '2026-10-01');
   assert.equal(r.state.current, null);
 });
-
-// Русская версия пока на прежнем контенте: проверяем только, что она собирается тем же движком
-test('the Russian course still works with the same engine', () => {
-  const ru = require('../course.js');
-  const R = G.make(ru);
-  assert.ok(R.stations().length > 0);
-  const first = R.stations()[0].lesson;
-  const r = R.applyLesson(R.newState(), first.id, first.tasks.map(t => (R.isGraded(t) ? 1 : null)), '2026-10-01');
-  assert.equal(r.passed, true);
-  assert.deepEqual(ru.XP_RULES, XP_RULES);
-});
