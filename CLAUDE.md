@@ -8,7 +8,8 @@ A network of Instagram/TikTok accounts in these niches:
 
 # AI courses for kids
 ## Audience
-- Learners: kids aged 6 to 16.
+- Learners: kids aged 6 to 14.
+- Course language: English only. Russian is not needed for now.
 - Buyers: parents. Sales content speaks to parents; lesson content speaks to kids.
 - Mascot: Bobik, a capsule-shaped robot (see `BOBIK_SPEC.md`).
 
@@ -26,13 +27,14 @@ Give kids a simple, honest understanding of AI and the skill to use it safely in
 8. Safety: no personal data (name, address, school, photos, passwords), tell an adult about anything strange, respect others' work, don't use AI to hurt people.
 9. Creating with AI: the kid is the author, AI is the helper.
 
-## Age adaptation (proposed bands, not yet confirmed)
+## Age adaptation
+Bands match the site filters and the signup form.
+
 | Age | Format | Text | Examples |
 |---|---|---|---|
 | 6-8 | Games, pictures, stories with Bobik | Minimal, short sentences, no jargon | Toys, animals, drawing, voice assistant |
 | 9-11 | Quests, mini-projects | Short, simple terms with a one-line definition | Games, school, YouTube/TikTok recommendations, stories |
-| 12-14 | Projects, first prompts, simple bots | Normal language, terms explained once | Study, hobbies, creative work, how a chatbot works |
-| 15-16 | Real projects, critical thinking, career | Close to adult level, still no unexplained jargon | Study and exams, portfolio, ethics, deepfakes, professions |
+| 12-14 | Projects, first prompts, simple bots | Normal language, terms explained once | Study, hobbies, creative work, how a chatbot works, deepfakes, ethics |
 
 ## Explanation rules
 - One idea per block. Analogy first, term second.
@@ -45,10 +47,10 @@ Give kids a simple, honest understanding of AI and the skill to use it safely in
 # How we work
 When a content-plan keyword is used, act autonomously: determine the audience yourself and optimize the text.
 
-Keywords (typed in Russian, keep them as-is):
-- `контент план` (content plan): act independently.
-- `аффирмация` (affirmation): content plan for the girl's blog (affirmations for men).
-- `курсы для детей` (courses for kids): content plan for selling AI courses. Target parents of kids aged 6-16; show kid-friendly lesson snippets as proof; cover all topics from the "AI courses for kids" section.
+Keywords:
+- `content plan`: act independently.
+- `affirmation`: content plan for the girl's blog (affirmations for men).
+- `courses for kids`: content plan for selling AI courses. Target parents of kids aged 6-14; show kid-friendly lesson snippets as proof; cover all topics from the "AI courses for kids" section.
 
 # What not to do
 1. Boundaries: do not delete files or leave the working folder without permission.
@@ -78,4 +80,5 @@ Keywords (typed in Russian, keep them as-is):
 
 # Other
 - Goal: build a network of automated social media accounts using cross-platform AI integrations.
-- Geography/Languages: needs clarification (content languages, auto-translation, regional references).
+- Languages: English only (courses and content). No Russian, no auto-translation for now.
+- Geography: needs clarification (target countries, regional references).
