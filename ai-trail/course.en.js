@@ -1,6 +1,6 @@
 'use strict';
 
-// AI Trail content (ages 14–18). The main language of the course: course.js (Russian) is the older version.
+// AI Trail content (ages 14–18).
 // Everything that changes without code lives here: blocks, lessons, tasks, XP rules, levels and badges.
 //
 // Block = a forest zone on the map. Lesson = a station. Task = one screen of a lesson.
