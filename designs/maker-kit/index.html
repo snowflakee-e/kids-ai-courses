@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School: AI workshop for kids</title>
+    <meta name="description" content="A hands-on AI workshop for kids aged 6–17. Pick an age and get only the kits built for it.">
+    <meta name="theme-color" content="#EEF1FA">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="bar">
+        <a class="bar__brand" href="#top" aria-label="Bloop AI School, back to top">
+            <span class="bar__bot" id="bar-bot"></span>Bloop AI School
+        </a>
+        <nav class="bar__nav" aria-label="Sections">
+            <a href="#kits">Kits by age</a>
+            <a href="#build">How a lesson works</a>
+            <a href="#rules">Workshop rules</a>
+        </nav>
+        <a class="bar__cta" href="#bench">Free first lesson</a>
+    </header>
+
+    <main id="main">
+        <!-- Схема Блупа: из чего состоит ИИ -->
+        <section class="hero" id="top">
+            <div class="hero__text">
+                <h1>Kids don’t just use AI here. They take it apart.</h1>
+                <p>A hands-on AI workshop for ages 6 to 17. Kids train models, write prompts, break things on purpose and work out why. Every kit is built for one age band.</p>
+                <div class="hero__cta">
+                    <a class="btn btn--yellow" href="#kits">Choose a kit by age</a>
+                    <a class="btn btn--white" href="#bench">Free first lesson</a>
+                </div>
+            </div>
+
+            <figure class="diagram" aria-labelledby="diagram-cap">
+                <svg class="diagram__lines" viewBox="0 0 1000 760" aria-hidden="true">
+                    <g class="examples">
+                        <rect x="600" y="478" width="70" height="56" rx="8" transform="rotate(-10 635 506)"/>
+                        <rect x="616" y="470" width="70" height="56" rx="8" transform="rotate(4 651 498)"/>
+                        <rect x="632" y="464" width="70" height="56" rx="8" transform="rotate(14 667 492)"/>
+                        <text x="667" y="502" text-anchor="middle" transform="rotate(14 667 492)">🐱</text>
+                    </g>
+                    <path d="M330 92 L430 92 L500 186"/>
+                    <path d="M300 330 L409 318"/>
+                    <path d="M330 610 L430 610 L500 440"/>
+                    <path d="M724 282 L669 318"/>
+                    <path d="M694 614 L668 528"/>
+                    <circle cx="500" cy="186" r="9"/><circle cx="409" cy="318" r="9"/><circle cx="500" cy="440" r="9"/>
+                    <circle cx="669" cy="318" r="9"/><circle cx="668" cy="528" r="9"/>
+                </svg>
+                <div class="diagram__bot" id="diagram-bot" aria-hidden="true"></div>
+                <p class="part" style="--x:40;--y:40;--w:290"><b>Sensors</b><span>How AI sees and hears: a camera, a microphone.</span></p>
+                <p class="part" style="--x:20;--y:282;--w:280"><b>Output</b><span>A guess, not a fact. Always check it.</span></p>
+                <p class="part" style="--x:40;--y:562;--w:290"><b>Model</b><span>The patterns it found in the examples.</span></p>
+                <p class="part" style="--x:724;--y:232;--w:270"><b>Prompt</b><span>Your instructions. Clearer in, better out.</span></p>
+                <p class="part" style="--x:694;--y:600;--w:290"><b>Data</b><span>The examples it learned from. Bad data, bad AI.</span></p>
+                <figcaption id="diagram-cap">Bloop, the hero of every course, taken apart. This is what your child learns AI is made of.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Наборы по возрасту -->
+        <section class="block" id="kits" aria-labelledby="kits-title">
+            <div class="block__head">
+                <h2 id="kits-title">Pick a kit by age</h2>
+                <p>Choose an age band. You get only the kits whose whole age range fits inside it, so a 6-year-old never lands in a course for 10-year-olds.</p>
+            </div>
+            <div class="tracks" id="tracks" role="group" aria-label="Age band"></div>
+            <p class="count" id="kit-count" aria-live="polite"></p>
+            <div class="kits" id="kit-list"></div>
+        </section>
+
+        <!-- Инструкция: шаги урока -->
+        <section class="block block--paper" id="build" aria-labelledby="build-title">
+            <div class="block__head">
+                <h2 id="build-title">Assembly instructions for every lesson</h2>
+                <p>Five steps, the same at 6 and at 16. The parts change with age; the order doesn’t.</p>
+            </div>
+            <ol class="steps">
+                <li><span class="steps__n">1</span><h3>Spot the puzzle</h3><p>A riddle from their world: why does the Minecraft zombie walk to you, not into the wall?</p></li>
+                <li><span class="steps__n">2</span><h3>Predict</h3><p>Before anything runs, your child bets on what the AI will do.</p></li>
+                <li><span class="steps__n">3</span><h3>Test it</h3><p>Train, prompt or sort. One short task, 1 to 5 minutes.</p></li>
+                <li><span class="steps__n">4</span><h3>Debug</h3><p>The result surprises them. With Bloop they find the reason: missing data, a vague prompt, a made-up fact.</p></li>
+                <li><span class="steps__n">5</span><h3>Ship it</h3><p>A picture, a bot, a game level. Signed with what they did and what the AI did.</p></li>
+            </ol>
+            <p class="steps__stop"><span id="stop-bot" aria-hidden="true"></span>Then the lesson ends. Bloop recharges until tomorrow.</p>
+        </section>
+
+        <!-- Спецификация треков -->
+        <section class="block" id="tracks-spec" aria-labelledby="spec-title">
+            <div class="block__head">
+                <h2 id="spec-title">Four tracks, one spiral</h2>
+                <p>The same big ideas come back every year, a level deeper: at 6 Bloop learns to tell toys apart, at 15 your teen builds a study bot.</p>
+            </div>
+            <div class="spec" id="spec" role="table" aria-label="Age tracks compared"></div>
+        </section>
+
+        <!-- Правила мастерской -->
+        <section class="block" id="rules" aria-labelledby="rules-title">
+            <div class="poster">
+                <h2 id="rules-title">Workshop rules</h2>
+                <p class="poster__lead">Printed for kids, written for parents.</p>
+                <ul class="rules">
+                    <li><b>Bloop says it’s a program.</b> At the start of every chat, and again if a kid forgets.</li>
+                    <li><b>No names, schools or photos go in.</b> Bloop hides them and explains why.</li>
+                    <li><b>Under 13, Bloop’s sandbox only.</b> No public chatbots. From 13, real tools with your consent.</li>
+                    <li><b>Parents set the daily limit.</b> When it’s reached, the next lesson waits until tomorrow.</li>
+                    <li><b>Stars for discoveries.</b> Not for minutes on screen, not for just logging in.</li>
+                    <li><b>Nothing burns.</b> No daily streaks, no loot boxes, no notifications to kids.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Запись: возраст в форме сужает список курсов -->
+        <section class="block block--paper" id="bench" aria-labelledby="bench-title">
+            <div class="bench">
+                <div class="bench__text">
+                    <h2 id="bench-title">Save a seat at the bench</h2>
+                    <p>The first lesson is free. Pick your child’s age and you’ll see only the kits for it. A teacher replies within a day with times.</p>
+                    <ul class="bench__formats">
+                        <li><b>Mini group</b> 3 to 6 kids, never more than two years apart</li>
+                        <li><b>Team group</b> 8 to 12 kids from 11, with roles and a demo day</li>
+                        <li><b>One-on-one</b> your child’s pace and interests</li>
+                        <li><b>Family</b> a parent and a child of 6–8, together</li>
+                    </ul>
+                </div>
+                <form class="form" id="lead-form">
+                    <label class="field"><span>Child’s age</span>
+                        <select name="age" id="lead-age" required><option value="" disabled selected>Choose an age band</option></select>
+                    </label>
+                    <label class="field"><span>Kit</span>
+                        <select name="course" id="lead-course" disabled><option value="">Choose the age first</option></select>
+                    </label>
+                    <label class="field"><span>Your name</span><input name="parent" type="text" autocomplete="name" required></label>
+                    <label class="field"><span>Email or phone</span><input name="contact" type="text" autocomplete="email" required></label>
+                    <button class="btn btn--yellow btn--block" type="submit">Save my seat</button>
+                    <p class="form__note" id="lead-note" role="status"></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <span>© <span id="year"></span> Bloop AI School</span>
+        <nav aria-label="Other versions">
+            <a href="../">All design versions</a>
+            <a href="../../">Current site</a>
+            <a href="../../../kids-ai-cabinet/">My cabinet</a>
+        </nav>
+    </footer>
+
+    <script src="../../bobik.js"></script>
+    <script src="../../catalog.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

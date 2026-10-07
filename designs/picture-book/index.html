@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School: growing up with AI</title>
+    <meta name="description" content="AI courses for kids and teens aged 6–17. Pick your child's age and see only the courses made for it.">
+    <meta name="theme-color" content="#FFFEFA">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Gluten:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="top">
+        <a class="brand" href="#top" aria-label="Bloop AI School, back to top">
+            <span class="brand__bot" id="brand-bot"></span>
+            <span>Bloop AI School</span>
+        </a>
+        <nav class="top__nav" aria-label="Sections">
+            <a href="#chart">Courses</a>
+            <a href="#lesson">A lesson</a>
+            <a href="#promise">For parents</a>
+            <a href="#faq">Questions</a>
+        </nav>
+        <a class="top__cabinet" href="../../../kids-ai-cabinet/">My cabinet</a>
+    </header>
+
+    <main id="main">
+        <!-- Обложка книги -->
+        <section class="cover" id="top">
+            <div class="cover__text">
+                <h1>Growing up with AI, one chapter at a time</h1>
+                <p class="cover__lead">Bloop AI School teaches kids aged 6 to 17 what AI is, how it learns and how to use it wisely and safely. Every age gets its own course, its own pace and a teacher who knows your child's name.</p>
+                <div class="cover__cta">
+                    <a class="btn btn--ink" href="#chart">Find a course for my child</a>
+                    <button class="btn btn--line" type="button" data-lead>Book a free first lesson</button>
+                </div>
+            </div>
+            <figure class="cover__art" aria-hidden="true">
+                <span class="blob blob--sun"></span>
+                <span class="blob blob--pink"></span>
+                <span class="dots"></span>
+                <div class="cover__bot" id="cover-bot"></div>
+                <figcaption class="cover__note">Bloop is the hero of our course.<br>Bloop is also honest: “I’m a program people taught.”</figcaption>
+            </figure>
+        </section>
+
+        <!-- Ростомер: выбор возраста -->
+        <section class="chapter" id="chart" aria-labelledby="chart-title">
+            <div class="chapter__head">
+                <h2 id="chart-title">How tall is your reader?</h2>
+                <p>Tap a band to see a whole age group, or tap one age on the tape. You only get courses that fit that age.</p>
+            </div>
+
+            <div class="chart" id="growth-chart" role="group" aria-label="Choose your child's age"></div>
+            <p class="chart__reset"><button class="link" type="button" id="show-all">Show courses for every age</button></p>
+
+            <div class="shelf" aria-live="polite">
+                <div class="shelf__intro" id="shelf-intro"></div>
+                <div class="books" id="books"></div>
+            </div>
+        </section>
+
+        <!-- Как идёт урок -->
+        <section class="chapter chapter--tint" id="lesson" aria-labelledby="lesson-title">
+            <div class="chapter__head">
+                <h2 id="lesson-title">What happens in one lesson</h2>
+                <p>The same five steps for every age, from a picture game at 6 to a real chatbot at 15. Then the lesson stops, on purpose.</p>
+            </div>
+            <ol class="panels">
+                <li class="panel">
+                    <span class="panel__n">1</span>
+                    <h3>A riddle</h3>
+                    <p>A question from your child's world: why can AI draw a cat but not a hand?</p>
+                </li>
+                <li class="panel">
+                    <span class="panel__n">2</span>
+                    <h3>A guess</h3>
+                    <p>“What will the AI do?” Your child makes a bet before anything happens.</p>
+                </li>
+                <li class="panel">
+                    <span class="panel__n">3</span>
+                    <h3>A try</h3>
+                    <p>A short task with Bloop: sort cards, train a model, fix a prompt.</p>
+                </li>
+                <li class="panel">
+                    <span class="panel__n">4</span>
+                    <h3>A surprise</h3>
+                    <p>The result is not what they guessed. Bloop helps them work out why.</p>
+                </li>
+                <li class="panel">
+                    <span class="panel__n">5</span>
+                    <h3>Something of their own</h3>
+                    <p>A picture, a bot, a game or a story, signed with who did what.</p>
+                </li>
+            </ol>
+            <div class="rest">
+                <div class="rest__bot" id="rest-bot" aria-hidden="true"></div>
+                <p><b>The end of the page.</b> After a lesson Bloop “recharges until tomorrow”. No endless videos, no streak that burns, nothing lost for skipping a day.</p>
+            </div>
+        </section>
+
+        <!-- Обещания родителям -->
+        <section class="chapter" id="promise" aria-labelledby="promise-title">
+            <div class="chapter__head">
+                <h2 id="promise-title">A note for parents</h2>
+                <p>You pay, your child plays. So the rules are written for you.</p>
+            </div>
+            <div class="promise">
+                <div class="promise__col">
+                    <h3>We always</h3>
+                    <ul class="ticks">
+                        <li>Keep children under 13 in Bloop's own sandbox, never on public chatbots.</li>
+                        <li>Have Bloop say it is a program, at the start of every chat.</li>
+                        <li>Refuse names, addresses, schools and photos. Bloop hides them and explains why.</li>
+                        <li>Send you a short weekly note: what we did and one question for dinner.</li>
+                        <li>Let you set the daily limit. After it, the next lesson waits until tomorrow.</li>
+                    </ul>
+                </div>
+                <div class="promise__col promise__col--never">
+                    <h3>We never</h3>
+                    <ul class="crosses">
+                        <li>Use streaks that burn or a sad mascot who “misses you”.</li>
+                        <li>Sell loot boxes, lives or random prizes.</li>
+                        <li>Autoplay the next video.</li>
+                        <li>Send notifications to your child, or to anyone at night.</li>
+                        <li>Rank kids under 13 on public leaderboards.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <aside class="notes" aria-label="From our research">
+                <figure class="note">
+                    <p class="note__big">72%</p>
+                    <figcaption>of US teens have already tried AI companions. <cite>Common Sense Media, 2025</cite></figcaption>
+                </figure>
+                <figure class="note">
+                    <p class="note__big">1 in 8</p>
+                    <figcaption>parents plan to pay for AI tutoring or camps to close the gap. <cite>EdChoice, 2025</cite></figcaption>
+                </figure>
+                <figure class="note">
+                    <p class="note__big">6 min</p>
+                    <figcaption>is where attention to a learning video drops. Our videos are shorter and end with a task. <cite>Guo, Kim &amp; Rubin, 2014</cite></figcaption>
+                </figure>
+            </aside>
+        </section>
+
+        <!-- Форматы: оглавление -->
+        <section class="chapter chapter--tint" id="formats" aria-labelledby="formats-title">
+            <div class="chapter__head">
+                <h2 id="formats-title">Ways to learn</h2>
+                <p>Kids in one group are never more than two years apart, and only one year apart for the youngest.</p>
+            </div>
+            <ol class="toc">
+                <li><span class="toc__name">Family lessons</span><span class="toc__lead" aria-hidden="true"></span><span class="toc__for">a parent and a child of 6–8, together</span></li>
+                <li><span class="toc__name">Mini group</span><span class="toc__lead" aria-hidden="true"></span><span class="toc__for">3 to 6 kids, live teacher online</span></li>
+                <li><span class="toc__name">Group with team roles</span><span class="toc__lead" aria-hidden="true"></span><span class="toc__for">8 to 12 kids aged 11+, projects and a demo day</span></li>
+                <li><span class="toc__name">One-on-one</span><span class="toc__lead" aria-hidden="true"></span><span class="toc__for">your child's pace and interests</span></li>
+                <li><span class="toc__name">App and a weekly meeting</span><span class="toc__lead" aria-hidden="true"></span><span class="toc__for">teens 14–17, self-paced with a live hour</span></li>
+            </ol>
+        </section>
+
+        <!-- Вопросы -->
+        <section class="chapter" id="faq" aria-labelledby="faq-title">
+            <div class="chapter__head">
+                <h2 id="faq-title">Questions parents ask</h2>
+            </div>
+            <div class="faq">
+                <details>
+                    <summary>My child is 6. Isn't that too early?</summary>
+                    <p>At 6 most of the course is off-screen: sorting cards, playing “I am a robot”, short cartoons with Bloop. A grown-up runs the AI tools. Kids learn three rules and that AI is a program, not a friend.</p>
+                </details>
+                <details>
+                    <summary>Will my child talk to ChatGPT?</summary>
+                    <p>Not before 13. Younger kids use Bloop's sandbox with filters and message limits. From 13, real tools only with your consent and in teen modes.</p>
+                </details>
+                <details>
+                    <summary>Won't this make them use AI for homework?</summary>
+                    <p>We teach the opposite: AI as a coach that asks questions, not an author that writes the essay. Kids learn how to say where AI helped.</p>
+                </details>
+                <details>
+                    <summary>How do I know it's working?</summary>
+                    <p>A weekly note with your child's project, a family task for ten minutes, and a demo day at the end of each module where your child shows what they made.</p>
+                </details>
+            </div>
+        </section>
+
+        <section class="last" aria-labelledby="last-title">
+            <div class="last__bot" id="last-bot" aria-hidden="true"></div>
+            <h2 id="last-title">The first lesson is free</h2>
+            <p>Sit next to your child for 25 minutes and see what they make.</p>
+            <button class="btn btn--ink" type="button" data-lead>Book a free first lesson</button>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <p>© <span id="year"></span> Bloop AI School</p>
+        <nav aria-label="Other versions">
+            <a href="../">All design versions</a>
+            <a href="../../">Current site</a>
+            <a href="../../ai-trail/">AI Trail for teens</a>
+        </nav>
+    </footer>
+
+    <dialog class="sheet" id="lead" aria-labelledby="lead-title">
+        <form class="sheet__box" id="lead-form" method="dialog">
+            <button class="sheet__close" type="button" data-close aria-label="Close">✕</button>
+            <h2 id="lead-title">Book a free first lesson</h2>
+            <p id="lead-course" class="sheet__course"></p>
+            <label class="field"><span>Your name</span><input name="parent" type="text" autocomplete="name" required></label>
+            <label class="field"><span>Email or phone</span><input name="contact" type="text" autocomplete="email" required></label>
+            <label class="field"><span>Child's age</span>
+                <select name="age" required><option value="" disabled selected>Choose</option></select>
+            </label>
+            <button class="btn btn--ink btn--block" type="submit">Book the lesson</button>
+            <p class="sheet__note" id="lead-note" role="status"></p>
+        </form>
+    </dialog>
+
+    <script src="../../bobik.js"></script>
+    <script src="../../catalog.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

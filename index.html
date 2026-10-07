@@ -80,7 +80,7 @@
                     <button class="btn btn--white btn--lg" type="button" data-open="lead">Free trial lesson</button>
                 </div>
                 <ul class="hero__facts" aria-label="Key facts">
-                    <li><b>7</b> courses</li>
+                    <li><b id="course-count">12</b> courses</li>
                     <li><b>6–17</b> years old</li>
                     <li><b>1st</b> lesson free</li>
                 </ul>
@@ -141,7 +141,7 @@
 
                 <div class="section-head section-head--row">
                     <div>
-                        <h2>Popular courses</h2>
+                        <h2 id="home-courses-title">Popular courses</h2>
                         <p>Pick a course by age: Bobik is already waiting for you in the first lesson.</p>
                     </div>
                     <a class="link-more" href="#/courses">All courses →</a>
@@ -174,10 +174,7 @@
                 <div class="toolbar">
                     <div class="chips" role="group" aria-label="Filter by age" id="age-filter">
                         <button class="chip is-active" type="button" data-age="all">All courses</button>
-                        <button class="chip" type="button" data-age="6-8">Ages 6–8</button>
-                        <button class="chip" type="button" data-age="9-11">Ages 9–11</button>
-                        <button class="chip" type="button" data-age="12-14">Ages 12–14</button>
-                        <button class="chip" type="button" data-age="14-17">Ages 14–17</button>
+                        <!-- группы возраста добавляет main.js из catalog.js -->
                     </div>
                     <p class="results" id="results-count"></p>
                 </div>
@@ -302,9 +299,6 @@
                 <span>How old are you?</span>
                 <select name="age" required>
                     <option value="" disabled selected>Choose your age</option>
-                    <option value="6-8">6–8 years</option>
-                    <option value="9-11">9–11 years</option>
-                    <option value="12-14">12–14 years</option>
                 </select>
             </label>
             <button class="btn btn--primary btn--block" type="submit">Let's go 🚀</button>
@@ -331,10 +325,6 @@
                     <span>Child's age</span>
                     <select name="age" required>
                         <option value="" disabled selected>Choose</option>
-                        <option value="6-8">6–8 years</option>
-                        <option value="9-11">9–11 years</option>
-                        <option value="12-14">12–14 years</option>
-                        <option value="14-17">14–17 years</option>
                     </select>
                 </label>
                 <button class="btn btn--primary btn--block" type="submit">Sign up</button>
@@ -344,6 +334,7 @@
     </dialog>
 
     <script src="bobik.js"></script>
+    <script src="catalog.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

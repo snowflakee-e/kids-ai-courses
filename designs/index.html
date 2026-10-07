@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School: design versions</title>
+    <meta name="description" content="Three design directions for the Bloop AI School site, built on the same course catalog and age filter.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #F4F5F7; --ink: #191C24; --ink-2: #5A6070; --ring: rgba(25, 28, 36, .1); }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.6 'Onest', 'Segoe UI', sans-serif; }
+        main { max-width: 1240px; margin: 0 auto; padding: clamp(40px, 7vw, 88px) clamp(16px, 4vw, 40px); }
+        h1 { margin: 0; font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.05; }
+        .lead { margin: 18px 0 0; max-width: 40em; color: var(--ink-2); font-size: 1.15rem; }
+        .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: clamp(32px, 5vw, 56px); }
+        .card { display: flex; flex-direction: column; background: #fff; border-radius: 24px; box-shadow: inset 0 0 0 1px var(--ring); overflow: hidden; }
+        /* живое превью: сайт в окне 1280px, уменьшенный под ширину карточки */
+        .preview { position: relative; aspect-ratio: 16 / 11; overflow: hidden; background: #e9ebef; border-bottom: 1px solid var(--ring); container-type: inline-size; }
+        .preview iframe { position: absolute; left: 0; top: 0; width: 1280px; height: 880px; border: 0; transform-origin: 0 0; transform: scale(calc(100cqw / 1280px)); pointer-events: none; }
+        @supports not (width: 1cqw) { .preview iframe { transform: scale(.3); } }
+        .body { display: flex; flex-direction: column; gap: 10px; padding: 22px 22px 24px; flex: 1; }
+        h2 { margin: 0; font-size: 1.5rem; letter-spacing: -.03em; }
+        .body p { margin: 0; color: var(--ink-2); }
+        .body b { color: var(--ink); font-weight: 600; }
+        .open { margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 600; text-decoration: none; }
+        .open:focus-visible, a:focus-visible { outline: 2.5px solid #4361EE; outline-offset: 3px; }
+        .shared { margin-top: clamp(32px, 5vw, 56px); padding-top: 24px; border-top: 1px solid var(--ring); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; color: var(--ink-2); }
+        .shared p { margin: 0; max-width: 44em; }
+        .shared a { color: var(--ink); }
+        @media (max-width: 960px) { .grid { grid-template-columns: 1fr; max-width: 560px; } }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Bloop AI School: three design directions</h1>
+        <p class="lead">Same school, same twelve courses, same age rules, built from the teaching research. Each version tries a different personality and a different way to pick your child’s age.</p>
+
+        <div class="grid">
+            <article class="card">
+                <div class="preview"><iframe src="picture-book/" title="Picture Book preview" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+                <div class="body">
+                    <h2>Picture Book</h2>
+                    <p>A risograph-printed children’s book: blue ink, fluorescent pink and yellow, playful lettering and serif reading text.</p>
+                    <p><b>Picking an age:</b> a height chart. Tap a band (6–8) or one age (7). On a phone it turns into a vertical doorframe ruler.</p>
+                    <a class="open" href="picture-book/">Open Picture Book</a>
+                </div>
+            </article>
+            <article class="card">
+                <div class="preview"><iframe src="maker-kit/" title="Maker Kit preview" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+                <div class="body">
+                    <h2>Maker Kit</h2>
+                    <p>An instruction manual for a build kit: graph paper, thick outlines, buttons that press in, a workshop-rules poster.</p>
+                    <p><b>Picking an age:</b> four chunky track buttons. The sign-up form narrows its course list to the chosen age.</p>
+                    <a class="open" href="maker-kit/">Open Maker Kit</a>
+                </div>
+            </article>
+            <article class="card">
+                <div class="preview"><iframe src="calm-lab/" title="Calm Lab preview" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+                <div class="body">
+                    <h2>Calm Lab</h2>
+                    <p>Quiet and premium, written for parents: sage and silver, layered cards, a floating menu, a bento of promises.</p>
+                    <p><b>Picking an age:</b> one sentence, “My child is 9 to 11 and loves drawing”, which filters by age and interest.</p>
+                    <a class="open" href="calm-lab/">Open Calm Lab</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="shared">
+            <p>All versions read courses from one file, <code>catalog.js</code>. A chosen age band shows only courses whose whole age range fits inside it, and the choice carries over between versions.</p>
+            <a href="../">Current site</a>
+        </div>
+    </main>
+</body>
+</html>

@@ -13,32 +13,9 @@ const CONFIG = {
     cabinetKey: 'bloop-cabinet-v1'
 };
 
-const COURSES = [
-    // playable: курс уже есть в кабинете, кнопка ведёт сразу в урок; url: курс живёт отдельной страницей
-    { id: 'hello-ai', title: 'Hello, AI!', age: '6-8', lessons: 8, minutes: 30, level: 'Starter',
-      desc: 'Meet artificial intelligence through games and fun experiments.',
-      palette: 'mint', pose: 'hello', thumb: '#DDF6EF', playable: true },
-    { id: 'ai-tales', title: 'Fairy Tales with AI', age: '6-8', lessons: 6, minutes: 30, level: 'Starter',
-      desc: 'Invent heroes and write magical stories together with AI.',
-      palette: 'peach', pose: 'delight', thumb: '#FFEADF' },
-    { id: 'prompts', title: 'Magic Prompts', age: '9-11', lessons: 10, minutes: 45, level: 'Beginner',
-      desc: 'Learn to talk to AI so it understands you right away.',
-      palette: 'sky', pose: 'idea', thumb: '#E1F0FF', playable: true },
-    { id: 'ai-art', title: 'AI Artist', age: '9-11', lessons: 8, minutes: 45, level: 'Beginner',
-      desc: 'Create pictures, comics and greeting cards with AI tools.',
-      palette: 'lav', pose: 'wink', thumb: '#EEE9FF', playable: true },
-    { id: 'my-bot', title: 'Build Your Robot Helper', age: '12-14', lessons: 12, minutes: 60, level: 'Intermediate',
-      desc: 'Build your own chatbot and teach it to help with everyday tasks.',
-      palette: 'sky', pose: 'victory', thumb: '#FFF1C9' },
-    { id: 'ai-games', title: 'Games and AI', age: '12-14', lessons: 10, minutes: 60, level: 'Intermediate',
-      desc: 'Make a simple game where the characters think with artificial intelligence.',
-      palette: 'mint', pose: 'run', thumb: '#FFE0EA' },
-    { id: 'ai-trail', title: 'AI Trail', age: '14-17', lessons: 18, minutes: 8, level: 'Advanced',
-      desc: 'Use AI for real: studying, projects, spotting fakes and bias. Short hands-on lessons with Bloop.',
-      palette: 'peach', pose: 'point', thumb: '#E3F5D6', url: 'ai-trail/' }
-];
-
-const AGE_LABEL = { '6-8': 'Ages 6–8', '9-11': 'Ages 9–11', '12-14': 'Ages 12–14', '14-17': 'Ages 14–17' };
+// Курсы, возрастные группы и фильтр по возрасту — в catalog.js (общий с вариантами дизайна в designs/)
+const CATALOG = BLOOP_CATALOG;
+const COURSES = CATALOG.COURSES;
 
 // Шапка для каждой страницы: тексты и поза Бобика
 const ROUTES = {
@@ -88,8 +65,10 @@ const app = {
         if (this.user && PALETTES[this.user.palette]) this.palette = this.user.palette;
 
         $('#year').textContent = new Date().getFullYear();
-        this.renderCourseList($('#home-courses'), COURSES.slice(0, 3));
-        this.filterCourses('all');
+        $('#course-count').textContent = COURSES.length;
+        this.renderAgeControls();
+        const saved = CATALOG.loadRange();
+        this.filterCourses(saved && this.groupId(saved) ? this.groupId(saved) : 'all');
         this.bindEvents();
         this.updateAuthButton();
         this.drawStaticBobiks();
@@ -235,10 +214,11 @@ const app = {
 
     // ---------- Курсы ----------
     courseCard(c) {
+        const href = CATALOG.courseHref(c, '');
         return `
             <article class="course">
                 <div class="course__thumb" style="--thumb:${c.thumb}">
-                    <span class="course__age">${AGE_LABEL[c.age]}</span>
+                    <span class="course__age">${CATALOG.courseAges(c)}</span>
                     <div class="course__bot">${this.bobik(c.pose, c.palette)}</div>
                 </div>
                 <div class="course__body">
@@ -250,9 +230,9 @@ const app = {
                         <li>${c.level}</li>
                     </ul>
                     <div class="course__foot">
-                        ${c.url || c.playable
+                        ${href
                             ? `<span class="course__free">Try it right now</span>
-                               <a class="btn" href="${c.url || this.cabinetLink(c.id)}">Play now ▶</a>`
+                               <a class="btn" href="${href}">Play now ▶</a>`
                             : `<span class="course__free">First lesson free</span>
                                <button class="btn" type="button" data-open="lead" data-course="${c.id}">Start</button>`}
                     </div>
@@ -264,15 +244,47 @@ const app = {
         el.innerHTML = list.map(c => this.courseCard(c)).join('');
     },
 
+    // id группы, если диапазон совпадает с одной из групп ('6-8'), иначе null
+    groupId(range) {
+        const g = CATALOG.AGE_GROUPS.find(g => g.min === range.min && g.max === range.max);
+        return g ? g.id : null;
+    },
+
+    // Кнопки фильтра и списки возрастов в формах — из одних и тех же групп каталога
+    renderAgeControls() {
+        $('#age-filter').insertAdjacentHTML('beforeend', CATALOG.AGE_GROUPS.map(g =>
+            `<button class="chip" type="button" data-age="${g.id}">${CATALOG.rangeLabel(g.min, g.max)}</button>`).join(''));
+        $$('select[name="age"]').forEach(sel => {
+            sel.insertAdjacentHTML('beforeend', CATALOG.AGE_GROUPS.map(g =>
+                `<option value="${g.id}">${g.min}–${g.max} years</option>`).join(''));
+        });
+    },
+
+    // Выбор возраста: на странице курсов остаются только курсы, чей возраст целиком внутри диапазона.
+    // Выбор запоминается, и главная показывает курсы этого возраста.
     filterCourses(age) {
-        const list = age === 'all' ? COURSES : COURSES.filter(c => c.age === age);
+        const range = CATALOG.parseRange(age);
+        const list = range ? CATALOG.coursesInRange(range.min, range.max) : COURSES;
+        CATALOG.saveRange(range);
+
         this.renderCourseList($('#all-courses'), list);
-        $('#results-count').textContent = `${list.length} ${plural(list.length, 'course')} found`;
+        $('#results-count').textContent = range
+            ? `${list.length} ${plural(list.length, 'course')} for ${CATALOG.rangeLabel(range.min, range.max).toLowerCase()}`
+            : `${list.length} ${plural(list.length, 'course')} for all ages`;
         $$('#age-filter .chip').forEach(ch => {
             const active = ch.dataset.age === age;
             ch.classList.toggle('is-active', active);
             ch.setAttribute('aria-pressed', String(active));
         });
+        this.renderHomeCourses(range);
+    },
+
+    renderHomeCourses(range) {
+        const list = range ? CATALOG.coursesInRange(range.min, range.max) : COURSES.filter(c => c.popular);
+        this.renderCourseList($('#home-courses'), list.slice(0, 3));
+        $('#home-courses-title').textContent = range
+            ? `Courses for ${CATALOG.rangeLabel(range.min, range.max).toLowerCase()}`
+            : 'Popular courses';
     },
 
     // ---------- Авторизация ----------
@@ -334,6 +346,10 @@ const app = {
         if (name === 'lead') {
             $('#lead-form').dataset.course = course || '';
             $('#lead-note').textContent = '';
+            // Заявка с карточки курса: возраст ребёнка — группа этого курса
+            const c = course && CATALOG.findCourse(course);
+            const group = c && CATALOG.groupOf(c);
+            if (group) $('#lead-form').elements.age.value = group.id;
         }
         if (!dlg.open) dlg.showModal();
     },
