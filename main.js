@@ -35,7 +35,7 @@ const COURSES = [
       palette: 'mint', pose: 'run', thumb: '#FFE0EA' },
     { id: 'ai-trail', title: 'AI Trail', age: '14-17', lessons: 18, minutes: 8, level: 'Advanced',
       desc: 'Use AI for real: studying, projects, spotting fakes and bias. Short hands-on lessons with Bloop.',
-      palette: 'peach', pose: 'point', thumb: '#E3F5D6', url: 'ai-trail/en/' }
+      palette: 'peach', pose: 'point', thumb: '#E3F5D6', url: 'ai-trail/' }
 ];
 
 const AGE_LABEL = { '6-8': 'Ages 6–8', '9-11': 'Ages 9–11', '12-14': 'Ages 12–14', '14-17': 'Ages 14–17' };

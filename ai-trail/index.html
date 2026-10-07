@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Тропа ИИ</title>
-    <meta name="description" content="Курс по ИИ для подростков 14–15 лет: лесная тропа из коротких уроков, роликов, практики и тестов вместе с Блупом.">
+    <title>AI Trail</title>
+    <meta name="description" content="A practical AI course for teens aged 14–17: use AI for studying and your own projects. A forest trail of short hands-on lessons with Bloop.">
     <meta name="theme-color" content="#C9EBA6">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,46 +13,46 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- КАРТА -->
+    <!-- MAP -->
     <header class="topbar" id="topbar">
-        <button class="brand" id="brand" type="button" aria-label="Тропа ИИ: к карте">
+        <button class="brand" id="brand" type="button" aria-label="AI Trail: back to the map">
             <span class="brand__bot" id="brand-blup" aria-hidden="true"></span>
-            <span class="brand__name">Тропа <b>ИИ</b></span>
+            <span class="brand__name">AI <b>Trail</b></span>
         </button>
-        <ul class="pills" aria-label="Твой прогресс">
-            <li class="pill pill--fire" title="Недельная цель"><span aria-hidden="true">📅</span> <b id="stat-week">0/3</b><span class="sr-only"> станций на этой неделе</span></li>
-            <li class="pill pill--star" title="Звёзды"><span aria-hidden="true">⭐</span> <b id="stat-stars">0</b><span class="sr-only"> звёзд</span></li>
-            <li class="pill pill--xp" title="Опыт"><span aria-hidden="true">💎</span> <b id="stat-xp">0</b><span class="sr-only"> XP</span></li>
+        <ul class="pills" aria-label="Your progress">
+            <li class="pill pill--fire" title="Weekly goal"><span aria-hidden="true">📅</span> <b id="stat-week">0/3</b><span class="sr-only"> stations this week</span></li>
+            <li class="pill pill--star" title="Stars"><span aria-hidden="true">⭐</span> <b id="stat-stars">0</b><span class="sr-only"> stars</span></li>
+            <li class="pill pill--xp" title="XP"><span aria-hidden="true">💎</span> <b id="stat-xp">0</b><span class="sr-only"> XP</span></li>
         </ul>
-        <button class="icon-btn" id="sound-btn" type="button" aria-label="Выключить звук">🔊</button>
-        <button class="icon-btn" id="settings-btn" type="button" aria-label="Настройки">⚙️</button>
+        <button class="icon-btn" id="sound-btn" type="button" aria-label="Turn sound off">🔊</button>
+        <button class="icon-btn" id="settings-btn" type="button" aria-label="Settings">⚙️</button>
     </header>
 
     <main class="screen" id="map-screen">
         <section class="hello-card" aria-labelledby="hello-title">
             <div class="hello-card__text">
-                <p class="eyebrow" id="hello-kicker">Блок 1 · Опушка</p>
-                <h1 id="hello-title">Привет!</h1>
+                <p class="eyebrow" id="hello-kicker">Block 1 · Forest Edge</p>
+                <h1 id="hello-title">Hi!</h1>
                 <div class="level">
                     <div class="level__row">
-                        <span id="level-name">Уровень 1 · Новичок тропы</span>
+                        <span id="level-name">Level 1 · Trail Rookie</span>
                         <span class="level__xp" id="level-xp">0 / 60 XP</span>
                     </div>
-                    <div class="bar" role="progressbar" aria-label="Опыт до следующего уровня" aria-valuemin="0" aria-valuemax="100" id="level-bar"><span id="level-fill"></span></div>
+                    <div class="bar" role="progressbar" aria-label="XP to the next level" aria-valuemin="0" aria-valuemax="100" id="level-bar"><span id="level-fill"></span></div>
                 </div>
             </div>
-            <button class="btn btn--go btn--lg" id="continue-btn" type="button">Продолжить</button>
+            <button class="btn btn--go btn--lg" id="continue-btn" type="button">Continue</button>
         </section>
 
-        <div class="map" id="map" aria-label="Карта курса"></div>
+        <div class="map" id="map" aria-label="Course map"></div>
 
-        <p class="map-note">Прогресс сохраняется в этом браузере. <a href="en/">English version</a></p>
+        <p class="map-note">Progress is saved in this browser.</p>
     </main>
 
-    <!-- УРОК -->
-    <section class="lesson" id="lesson" hidden aria-label="Урок">
+    <!-- LESSON -->
+    <section class="lesson" id="lesson" hidden aria-label="Lesson">
         <div class="lesson__top">
-            <button class="icon-btn" id="lesson-close" type="button" aria-label="Выйти на карту">✕</button>
+            <button class="icon-btn" id="lesson-close" type="button" aria-label="Back to the map">✕</button>
             <div class="steps" id="steps" aria-hidden="true"></div>
             <span class="combo" id="combo" hidden>🔥 <b>0</b></span>
         </div>
@@ -69,13 +69,13 @@
                 <span class="xp-pop" id="xp-pop" aria-hidden="true"></span>
             </div>
             <div class="foot-row">
-                <button class="link-btn" id="skip-btn" type="button" hidden>Пропустить</button>
-                <button class="btn btn--go btn--lg btn--block" id="next-btn" type="button">Дальше</button>
+                <button class="link-btn" id="skip-btn" type="button" hidden>Skip</button>
+                <button class="btn btn--go btn--lg btn--block" id="next-btn" type="button">Next</button>
             </div>
         </div>
     </section>
 
-    <!-- ИТОГ УРОКА -->
+    <!-- LESSON RESULT -->
     <section class="result" id="result" hidden aria-labelledby="result-title">
         <div class="result__box">
             <div class="result__bot" id="result-blup" aria-hidden="true"></div>
@@ -86,30 +86,30 @@
             <ul class="result__stats" id="result-stats"></ul>
             <ul class="result__extra" id="result-extra"></ul>
             <div class="result__actions">
-                <button class="btn btn--go btn--lg btn--block" id="result-map" type="button">На карту →</button>
-                <button class="link-btn" id="result-retry" type="button">Пройти ещё раз</button>
+                <button class="btn btn--go btn--lg btn--block" id="result-map" type="button">To the map →</button>
+                <button class="link-btn" id="result-retry" type="button">Play again</button>
             </div>
         </div>
     </section>
 
-    <!-- Знакомство -->
+    <!-- Welcome -->
     <dialog class="sheet" id="hello-sheet" aria-labelledby="hello-sheet-title">
         <form class="sheet__box" id="hello-form" method="dialog">
             <div class="sheet__bot" id="hello-blup" aria-hidden="true"></div>
-            <h2 id="hello-sheet-title">Привет! Я Блуп</h2>
-            <p>Проведу тебя по Тропе ИИ: короткие уроки, ролики, практика и тесты. За каждую станцию — звёзды и опыт.</p>
+            <h2 id="hello-sheet-title">Hi! I’m Bloop</h2>
+            <p>I’ll guide you along the AI Trail: short hands-on lessons on using AI for studying and your own projects. Every station earns you stars and XP.</p>
             <label class="field">
-                <span>Как тебя зовут?</span>
-                <input id="hello-name" name="name" type="text" autocomplete="given-name" maxlength="24" required placeholder="Например, Аня">
+                <span>What’s your name?</span>
+                <input id="hello-name" name="name" type="text" autocomplete="given-name" maxlength="24" required placeholder="For example, Emma">
             </label>
-            <button class="btn btn--go btn--lg btn--block" type="submit">Погнали 🚀</button>
+            <button class="btn btn--go btn--lg btn--block" type="submit">Let’s go 🚀</button>
         </form>
     </dialog>
 
-    <!-- Станция -->
+    <!-- Station -->
     <dialog class="sheet" id="station-sheet" aria-labelledby="station-title">
         <div class="sheet__box">
-            <button class="sheet__close icon-btn" type="button" data-close aria-label="Закрыть">✕</button>
+            <button class="sheet__close icon-btn" type="button" data-close aria-label="Close">✕</button>
             <div class="station-head">
                 <span class="station-head__icon" id="station-icon" aria-hidden="true"></span>
                 <div>
@@ -120,60 +120,60 @@
             <p id="station-goal"></p>
             <ul class="chips" id="station-chips"></ul>
             <p class="station-best" id="station-best"></p>
-            <button class="btn btn--go btn--lg btn--block" id="station-start" type="button">Начать</button>
-            <button class="link-btn" id="station-restart" type="button" hidden>Начать заново</button>
+            <button class="btn btn--go btn--lg btn--block" id="station-start" type="button">Start</button>
+            <button class="link-btn" id="station-restart" type="button" hidden>Start over</button>
         </div>
     </dialog>
 
-    <!-- Настройки -->
+    <!-- Settings -->
     <dialog class="sheet" id="settings-sheet" aria-labelledby="settings-title">
         <form class="sheet__box" id="settings-form" method="dialog">
-            <button class="sheet__close icon-btn" type="button" data-close aria-label="Закрыть">✕</button>
-            <h2 id="settings-title">Настройки</h2>
+            <button class="sheet__close icon-btn" type="button" data-close aria-label="Close">✕</button>
+            <h2 id="settings-title">Settings</h2>
             <label class="field">
-                <span>Имя</span>
+                <span>Name</span>
                 <input id="settings-name" name="name" type="text" maxlength="24" required>
             </label>
             <label class="switch">
                 <input id="settings-sound" type="checkbox">
-                <span>Звуки</span>
+                <span>Sounds</span>
             </label>
             <label class="switch">
                 <input id="settings-unlock" type="checkbox">
-                <span>Режим автора: открыть все станции</span>
+                <span>Author mode: unlock all stations</span>
             </label>
             <div class="badges" id="badges"></div>
             <fieldset class="parent">
-                <legend>Для родителей</legend>
+                <legend>For parents</legend>
                 <p class="parent__time" id="parent-time"></p>
                 <label class="field">
-                    <span>Лимит в день</span>
+                    <span>Daily limit</span>
                     <select id="settings-limit">
-                    <option value="0">Без лимита</option>
-                    <option value="1">1 станция в день</option>
-                    <option value="2">2 станции в день</option>
-                    <option value="3">3 станции в день</option>
-                    <option value="4">4 станции в день</option>
-                    <option value="5">5 станций в день</option>
+                    <option value="0">No limit</option>
+                    <option value="1">1 station a day</option>
+                    <option value="2">2 stations a day</option>
+                    <option value="3">3 stations a day</option>
+                    <option value="4">4 stations a day</option>
+                    <option value="5">5 stations a day</option>
                     </select>
                 </label>
                 <label class="field">
-                    <span>PIN родителя</span>
-                    <input id="settings-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 цифры">
+                    <span>Parent PIN</span>
+                    <input id="settings-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 digits">
                 </label>
                 <p class="parent__note" id="parent-note"></p>
             </fieldset>
             <div class="danger" id="reset-box">
-                <button class="link-btn link-btn--danger" id="reset-btn" type="button">Сбросить прогресс</button>
+                <button class="link-btn link-btn--danger" id="reset-btn" type="button">Reset progress</button>
                 <div class="danger__confirm" id="reset-confirm" hidden>
-                    <p>Сотрём опыт, звёзды и награды в этом браузере. Точно?</p>
+                    <p>This erases your XP, stars and badges in this browser. Are you sure?</p>
                     <div class="danger__row">
-                        <button class="btn btn--bad" id="reset-yes" type="button">Да, сбросить</button>
-                        <button class="btn btn--white" id="reset-no" type="button">Отмена</button>
+                        <button class="btn btn--bad" id="reset-yes" type="button">Yes, reset</button>
+                        <button class="btn btn--white" id="reset-no" type="button">Cancel</button>
                     </div>
                 </div>
             </div>
-            <button class="btn btn--go btn--block" type="submit">Сохранить</button>
+            <button class="btn btn--go btn--block" type="submit">Save</button>
         </form>
     </dialog>
 
@@ -181,7 +181,7 @@
     <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
     <script src="../bobik.js"></script>
-    <script src="course.js"></script>
+    <script src="course.en.js"></script>
     <script src="game.js"></script>
     <script src="app.js"></script>
 </body>

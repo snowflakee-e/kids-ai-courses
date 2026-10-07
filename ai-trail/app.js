@@ -1,7 +1,7 @@
 'use strict';
 
-// Язык страницы: <html lang="en"> — английская версия, иначе русская
-const LANG = document.documentElement.lang === 'en' ? 'en' : 'ru';
+// Курс только на английском: язык уходит Блупу-помощнику, чтобы он отвечал по-английски
+const LANG = 'en';
 
 // Настройки
 const CONFIG = {
@@ -11,7 +11,7 @@ const CONFIG = {
     // Адрес Блупа-помощника (Cloudflare Worker из папки worker/), например https://bloop-tutor.имя.workers.dev
     // Пусто — помощник выключен: кнопки «Спросить Блупа» нет, «Объясни Блупу» работает как самопроверка.
     tutorUrl: 'https://bloop-tutor.kirillsotnikov12345.workers.dev/',
-    storageKey: LANG === 'en' ? 'bloop-trail-en-v1' : 'bloop-trail-v1',
+    storageKey: 'bloop-trail-en-v1',
     // Профиль из кабинета школы (тот же домен на GitHub Pages): берём оттуда имя
     cabinetKey: 'bloop-cabinet-v1'
 };
@@ -34,165 +34,11 @@ function shuffle(list) {
     return a;
 }
 
-// plural(5, 'задание', 'задания', 'заданий') → 'заданий'
-function plural(n, one, few, many) {
-    const m10 = n % 10, m100 = n % 100;
-    if (m10 === 1 && m100 !== 11) return one;
-    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
-    return many;
-}
-
 // Блуп — это Бобик из bobik.js в палитре peach (переменные --rb-* в style.css)
 const blup = pose => bob(STATES[pose] || STATES.neutral).replace(/<title>[^<]*<\/title>/, '');
 
-// Тексты интерфейса. Контент уроков — в course.js (русский) и course.en.js (английский).
+// Тексты интерфейса. Контент уроков — в course.en.js.
 const UI = {
-    ru: {
-        good: ['Точно!', 'В яблочко!', 'Огонь!', 'Красиво!', 'Мозг на максималках!', 'Так держать!'],
-        bad: ['Почти!', 'Не совсем', 'Мимо, но не страшно'],
-        letters: 'АБВГД',
-        soundOff: 'Выключить звук', soundOn: 'Включить звук',
-        hi: name => (name ? `Привет, ${name}!` : 'Привет!'),
-        helloKicker: (n, title, done, total) => `Блок ${n} · ${title} · ${done} из ${total} станций`,
-        level: (n, title) => `Уровень ${n} · ${title}`,
-        resume: title => `Продолжить: ${title}`,
-        blockDone: 'Блок пройден 🌳',
-        next: title => `Дальше: ${title}`,
-        start: title => `Начать: ${title}`,
-        block: n => `Блок ${n}`,
-        soon: 'скоро',
-        finale: 'Финал блока', bossKicker: 'Финальный босс',
-        station: n => `Станция ${n}`,
-        locked: '🔒 закрыто',
-        passed: 'пройдено',
-        resumeShort: '▶ продолжить',
-        minutes: n => `${n} мин`,
-        tasks: n => `${n} ${plural(n, 'задание', 'задания', 'заданий')}`,
-        questions: n => `${n} ${plural(n, 'вопрос', 'вопроса', 'вопросов')}`,
-        newStation: 'Новая станция!',
-        soonToast: title => `«${title}» скоро откроется 🌱`,
-        firstPass: title => `Сначала пройди «${title}»`,
-        kind: { theory: '📖 Теория', video: '🎬 Ролик', practice: '🧩 Практика', ai: '🤖 С Блупом', test: '✅ Тест' },
-        best: (stars, pct) => `Лучший результат: ${stars} · ${pct}%`,
-        rule: n => `${n} ${plural(n, 'задание', 'задания', 'заданий')}. От 50% верных — станция пройдена.`,
-        resumeFrom: n => `Продолжить с задания ${n}`,
-        replay: 'Пройти ещё раз',
-        begin: 'Начать',
-        resumed: n => `Продолжаем с задания ${n}`,
-        saved: 'Прогресс сохранён, продолжишь с этого места',
-        btn: {
-            next: 'Дальше', gotIt: 'Понятно!', watch: 'Досмотри ролик', choose: 'Выбери ответ',
-            sortAll: 'Разложи все карточки', build: 'Собери промпт', tapSentence: 'Нажми на предложение',
-            pickWord: 'Выбери слово', tried: 'Я попробовал(а) ✓', order: 'Расставь все шаги'
-        },
-        sideQuest: 'Ответвление',
-        extraTag: 'по желанию · сложнее',
-        extraChip: '🧭 Ответвление: по желанию, сложнее',
-        pages: 'Блоки тропы', prevPage: 'Предыдущий блок', nextPage: 'Следующий блок',
-        orderHint: 'Нажимай шаги по порядку: какой первый?',
-        orderPerfect: 'Идеальный порядок!',
-        orderScore: (c, n) => `${c} из ${n} с первого раза`,
-        orderText: 'Порядок шагов решает.',
-        combo: n => `Серия ×${n}! 🔥`,
-        practice: '🧩 Практика', experiment: '🧩 Эксперимент',
-        video: sec => `🎬 Ролик · ${sec} сек`,
-        quizKicker: (test, n, total, boss) => `${boss ? '⚡ Блиц' : test ? '🌳 Испытание' : '✅ Тест'} · вопрос ${n} из ${total}`,
-        prompt: 'Промпт', tap: 'Нажми',
-        storyboard: 'Раскадровка ролика', draft: 'Черновик ролика', play: 'Смотреть ролик',
-        playHint: 'Нажми ▶, чтобы смотреть. Тап по экрану — следующая сцена.',
-        pause: 'Пауза', replayVideo: 'Смотреть ещё раз', resumeVideo: 'Смотреть',
-        correctIs: (text, explain) => `Правильно: «${text}». ${explain}`,
-        sortAsk: 'Куда отнесёшь карточку?',
-        sortDone: (r, n) => `Готово: ${r} из ${n}`,
-        perfect: 'Идеально!',
-        sortScore: (r, n) => `${r} из ${n} верно`,
-        sortPerfectText: 'Все карточки на своих местах.',
-        sortHint: 'Пояснения под карточками помогут в следующий раз.',
-        yourPrompt: 'Твой промпт', ai: 'ИИ',
-        buildPerfect: 'Промпт мечты!',
-        buildScore: (c, n) => `${c} из ${n} с первого раза`,
-        buildText: 'Роль + Задача + Контекст + Формат — и ИИ отвечает в точку.',
-        aiAnswer: '🤖 Ответ ИИ',
-        pollMatch: 'Ты думаешь как нейросеть!', pollOther: 'Нейросеть выбрала бы другое',
-        copy: 'Скопировать', copied: 'Скопировано ✓', selected: 'Выделено — скопируй',
-        almost: 'Почти получилось', stationDone: 'Станция пройдена!',
-        leadFail: 'Нужно хотя бы 50% верных. Ещё одна попытка — и всё получится.',
-        leadReplay: 'Опыт за повтор не начисляется, если результат не лучше прошлого. Звёзды улучшать можно.',
-        leadDone: title => `«${title}» в копилке.`,
-        starsOf: n => `${n} из 3 звёзд`,
-        statXp: 'опыта', statAcc: 'точность', statRun: 'серия без ошибок',
-        blockCompleted: (title, xp) => `Блок «${title}» пройден! +${xp} XP`,
-        levelUp: (n, title) => `Новый уровень ${n}: ${title}`,
-        badge: (title, desc) => `Награда «${title}»: ${desc.toLowerCase()}`,
-        toMap: 'На карту →', again: 'Ещё раз', map: 'На карту',
-        nextBlock: title => `Дальше — «${title}». Блок скоро откроется 🌱`,
-        badgeHave: ', получена', badgeMissing: ', ещё не получена',
-        welcome: name => `Приятно познакомиться, ${name}! Жми на первую станцию`,
-        savedSettings: 'Сохранено',
-        resetDone: 'Прогресс сброшен. Начинаем тропу заново',
-        close: 'Закрыть',
-        tutorAsk: 'Спросить Блупа 💬',
-        tutorKicker: 'Разбор ошибки',
-        tutorTitle: 'Спроси Блупа',
-        tutorStart: 'Почему мой ответ неправильный?',
-        tutorPlaceholder: 'Напиши вопрос…',
-        tutorNote: 'Блуп общается вежливо и по делу. Не пиши личные данные.',
-        tutorSend: 'Отправить',
-        tutorThinking: 'Блуп думает',
-        tutorError: 'Блуп сейчас не на связи. Попробуй чуть позже.',
-        tutorTired: 'Блуп устал на сегодня. Возвращайся завтра!',
-        tutorLimit: 'На это задание вопросов хватит, жми «Дальше»',
-        you: 'Ты', bloop: 'Блуп',
-        talkKicker: '🤖 Проверка с Блупом',
-        talkPlaceholder: 'Напиши ответ своими словами…',
-        talkHint: 'Блуп прочитает ответ и подскажет, чего не хватает.',
-        talkOffline: 'Напиши ответ своими словами, а потом сравни с примером.',
-        talkShow: 'Показать пример ответа',
-        talkPoints: 'В хорошем ответе есть:',
-        talkSample: 'Пример ответа:',
-        talkWait: 'Сначала ответь Блупу',
-        verdict: { yes: '✓ Засчитано', partly: '≈ Почти', no: '✗ Пока нет' },
-        chatKicker: '🤖 Попробуй с Блупом',
-        chatHint: 'Блуп — тоже нейросеть: отвечает как обычный чат-бот и тоже может ошибаться.',
-        chatPrompts: 'Готовые сообщения: нажми, чтобы вставить',
-        chatPlaceholder: 'Напиши промпт…',
-        chatNew: '↺ Новый чат',
-        chatNewDone: 'Новый чат: Блуп забыл прошлую переписку',
-        chatFill: 'Замени [скобки] своими словами',
-        chatWait: 'Отправь промпт Блупу',
-        chatOffline: 'Блуп сейчас не на связи. Скопируй промпт и попробуй в чат-боте, которым тебе разрешают пользоваться.',
-        bossHp: 'здоровье',
-        bossHit: n => `−${n} HP`,
-        bossWin: name => `${name} повержен!`,
-        bossLose: name => `${name} пока сильнее`,
-        bossLeadWin: 'Ты победил финального босса тем, что умеешь: точные промпты, проверка фактов, защита данных и честная работа.',
-        bossLeadFail: 'Сбей хотя бы половину здоровья босса. Ошибки разобраны, попробуй ещё раз.',
-        week: (d, g) => `${Math.min(d, g)}/${g}`,
-        weekProgress: (d, g) => `Недельная цель: ${Math.min(d, g)} из ${g} станций`,
-        weekGoalMet: 'Недельная цель выполнена! Пропуск дня ничего не отнимает',
-        predictKicker: '🔮 Сначала предскажи',
-        predictHit: 'Ты угадал(а)!', predictMiss: 'Неожиданно, правда?',
-        reviewKicker: (n, total) => `🔁 Разминка · вопрос ${n} из ${total}`,
-        reviewFrom: title => `Вспомни урок «${title}»`,
-        reviewSkip: 'Пропустить разминку',
-        reviewDone: 'Мозг размялся, начинаем урок',
-        teaser: text => `В следующий раз: ${text.replace(/^(Next|Дальше)[^:]*:\s*/, '')}`,
-        rest: n => `${n} ${plural(n, 'станция', 'станции', 'станций')} за сегодня. Хорошее место, чтобы остановиться: мозг учится и во время отдыха. Блуп заряжается до завтра`,
-        limitDone: n => `На сегодня всё: родитель поставил ${n} ${plural(n, 'станцию', 'станции', 'станций')} в день. До завтра`,
-        limitToast: 'Дневной лимит от родителя исчерпан. Тропа откроется завтра 🌙',
-        limitBtn: 'На сегодня всё 🌙',
-        parentTime: (today, week) => `Сегодня в уроках: ${today} мин · на этой неделе: ${week} мин`,
-        parentNoPin: 'Задай PIN из 4 цифр, чтобы лимит мог менять только взрослый.',
-        parentPinSet: 'Введи PIN, чтобы поменять лимит.',
-        pinWrong: 'Неверный PIN: лимит не изменён',
-        pinBad: 'PIN — ровно 4 цифры',
-        bloopIntro: 'Я Блуп, программа с ИИ, а не человек. Я могу ошибаться, поэтому важное проверяй, а личные данные держи при себе.',
-        chatGuessTitle: 'Перед отправкой: какой ответ ждёшь?',
-        chatGuesses: ['👍 Ровно то, что нужно', '🤷 Нормальный, но придётся уточнить', '👎 Общий или мимо'],
-        chatPickGuess: 'Сначала выбери, какой ответ ждёшь',
-        chatExpected: text => `Ты ждал(а): ${text}`,
-        chatLeft: n => (n > 0 ? `Осталось сообщений: ${n}` : 'Сообщения закончились: сравни ответы и жми «Дальше»')
-    },
     en: {
         good: ['Correct!', 'Bullseye!', 'Nailed it!', 'Nice one!', 'Big brain move!', 'Keep it up!'],
         bad: ['Almost!', 'Not quite', 'Missed, but that’s OK'],
@@ -339,7 +185,7 @@ const UI = {
         chatExpected: text => `You expected: ${text}`,
         chatLeft: n => (n > 0 ? `${n} ${n === 1 ? 'message' : 'messages'} left` : 'No messages left: compare the answers and tap Next')
     }
-}[LANG];
+}.en;
 
 // ---------- Звуки: короткие тоны WebAudio, без файлов ----------
 const Sound = {
