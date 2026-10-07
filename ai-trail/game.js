@@ -1,8 +1,9 @@
 'use strict';
 
-// Логика курса без интерфейса: открытие станций, звёзды, XP, уровни, серии, награды.
-// Работает в браузере (глобальные данные из course.en.js или course.js) и в Node (для тестов).
-// В Node по умолчанию берёт английский курс — основной; make(data) собирает логику для другого курса.
+// Логика курса без интерфейса: открытие станций, звёзды, XP, уровни, недельная цель, награды,
+// повторение пройденного по интервалам и дневной лимит от родителя.
+// Работает в браузере (глобальные данные из course.en.js) и в Node (для тестов).
+// make(data) собирает ту же логику для другого курса — пригодится для курсов других возрастов.
 (function (root) {
   var GRADED = { quiz: true, sort: true, build: true, spot: true, order: true };
 
@@ -14,16 +15,18 @@
         xp: 0,
         combo: 0,
         bestCombo: 0,
-        streak: 0,
-        bestStreak: 0,
-        lastActive: null,
         xpByDay: {},
+        days: {},        // по дням: { runs — законченных станций, sec — время в уроках }
+        weeks: {},       // по неделям (ключ — понедельник): пройденных станций
+        review: {},      // повторение: { lessonId: { n — удачных повторов, next — день следующего } }
         lessons: {},
         badges: {},
         current: null,   // незаконченный урок: { lessonId, step, scores }
         blupAt: 0,       // станция, на которой стоит Блуп (для анимации перехода)
         sound: true,
-        unlockAll: false // режим автора: все станции открыты
+        unlockAll: false, // режим автора: все станции открыты
+        dailyLimit: 0,   // лимит станций в день от родителя, 0 — без лимита
+        parentPin: ''    // PIN родителя: без него лимит не поменять
       };
     }
 
@@ -38,6 +41,18 @@
     function daysBetween(a, b) {
       var pa = a.split('-').map(Number), pb = b.split('-').map(Number);
       return Math.round((Date.UTC(pb[0], pb[1] - 1, pb[2]) - Date.UTC(pa[0], pa[1] - 1, pa[2])) / 86400000);
+    }
+
+    function addDays(day, n) {
+      var p = day.split('-').map(Number);
+      var d = new Date(Date.UTC(p[0], p[1] - 1, p[2] + n));
+      return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0');
+    }
+
+    // Неделя начинается в понедельник: ключ недели — дата её понедельника
+    function weekKey(day) {
+      var p = day.split('-').map(Number);
+      return addDays(day, -((new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay() + 6) % 7));
     }
 
     // Плоский список станций, в которые можно войти (блоки «скоро» не входят).
@@ -148,7 +163,7 @@
 
     function totals(state) {
       // lessonsDone и mainTotal — только главная тропа, extrasDone и extrasTotal — ответвления
-      var t = { stars: 0, maxStars: 0, lessonsDone: 0, mainTotal: 0, extrasDone: 0, extrasTotal: 0, perfectLessons: 0, blocksDone: [] };
+      var t = { stars: 0, maxStars: 0, lessonsDone: 0, mainTotal: 0, extrasDone: 0, extrasTotal: 0, perfectLessons: 0, blocksDone: [], weeksMet: weeksMet(state) };
       stations().forEach(function (st) {
         var r = state.lessons[st.lesson.id];
         t.maxStars += 3;
@@ -166,17 +181,92 @@
       return t;
     }
 
-    // Серия дней: сгорает, если пропущен хотя бы один день
-    function currentStreak(state, today) {
-      if (!state.lastActive) return 0;
-      return daysBetween(state.lastActive, today || dayKey()) <= 1 ? state.streak : 0;
+    // Недельная цель вместо серии дней: пропущенный день ничего не отнимает, ничего не сгорает.
+    // Считаются пройденные станции, повторы тоже.
+    function week(state, today) {
+      var goal = D.XP_RULES.weekGoal;
+      var done = (state.weeks || {})[weekKey(today || dayKey())] || 0;
+      return { done: done, goal: goal, met: done >= goal, weeksMet: weeksMet(state) };
     }
 
-    function touchStreak(s, today) {
-      if (s.lastActive === today) return;
-      s.streak = s.lastActive && daysBetween(s.lastActive, today) === 1 ? s.streak + 1 : 1;
-      s.bestStreak = Math.max(s.bestStreak, s.streak);
-      s.lastActive = today;
+    // Сколько недель цель была выполнена за всё время: только растёт
+    function weeksMet(state) {
+      var w = state.weeks || {}, goal = D.XP_RULES.weekGoal;
+      return Object.keys(w).filter(function (k) { return w[k] >= goal; }).length;
+    }
+
+    function dayStats(state, today) {
+      var d = (state.days || {})[today || dayKey()];
+      return { runs: d ? d.runs : 0, sec: d ? d.sec : 0 };
+    }
+
+    function weekSec(state, today) {
+      var from = weekKey(today || dayKey()), days = state.days || {};
+      return Object.keys(days).reduce(function (sum, k) {
+        var n = daysBetween(from, k);
+        return n >= 0 && n < 7 ? sum + days[k].sec : sum;
+      }, 0);
+    }
+
+    // Лимит родителя: после него новые станции закрыты до завтра. Начатый урок можно закончить.
+    function limitReached(state, today) {
+      return state.dailyLimit > 0 && dayStats(state, today).runs >= state.dailyLimit;
+    }
+
+    // Естественная точка остановки: после нескольких станций за день предлагаем отдохнуть
+    function restTime(state, today) {
+      return dayStats(state, today).runs >= D.XP_RULES.restAfter;
+    }
+
+    // ---------- Повторение по интервалам ----------
+    // После первого прохождения урок вернётся вопросом из своего теста через 1 день,
+    // после верного ответа — через 3, 7, 14, 30 дней; после ошибки — снова завтра.
+    var INTERVALS = [1, 3, 7, 14, 30];
+
+    function quizzesOf(lesson) {
+      return lesson.tasks.filter(function (t) { return t.type === 'quiz'; });
+    }
+
+    // Вопросы для разминки в начале урока: сначала те, чей срок подошёл (самые старые первыми).
+    // Если срок не подошёл ни у кого — один вопрос из последнего пройденного урока, без влияния на график.
+    function reviewFor(state, lessonId, today, max) {
+      today = today || dayKey();
+      max = max || 3;
+      var R = state.review || {};
+      var item = function (id, due) {
+        var st = findStation(id), q = st && quizzesOf(st.lesson);
+        if (!q || !q.length) return null;
+        return { lessonId: id, lessonTitle: st.lesson.title, due: due, task: q[(R[id].n || 0) % q.length] };
+      };
+      var ids = Object.keys(R).filter(function (id) { return id !== lessonId && findStation(id); });
+      var due = ids.filter(function (id) { return R[id].next <= today; })
+        .sort(function (a, b) { return R[a].next < R[b].next ? -1 : R[a].next > R[b].next ? 1 : findStation(a).index - findStation(b).index; })
+        .slice(0, max).map(function (id) { return item(id, true); }).filter(Boolean);
+      if (due.length || !ids.length) return due;
+      var last = ids.sort(function (a, b) {
+        var la = (state.lessons[a] || {}).last || '', lb = (state.lessons[b] || {}).last || '';
+        return la < lb ? 1 : la > lb ? -1 : findStation(b).index - findStation(a).index;
+      })[0];
+      var warm = item(last, false);
+      return warm ? [warm] : [];
+    }
+
+    // results: [{ lessonId, ok, due }]. Меняет график только у вопросов, чей срок подошёл.
+    function applyReview(state, results, today) {
+      today = today || dayKey();
+      var s = clone(state);
+      s.review = s.review || {};
+      results.forEach(function (r) {
+        var rec = s.review[r.lessonId];
+        if (!rec || !r.due) return;
+        if (r.ok) {
+          rec.n = (rec.n || 0) + 1;
+          rec.next = addDays(today, INTERVALS[Math.min(rec.n, INTERVALS.length - 1)]);
+        } else {
+          rec.next = addDays(today, INTERVALS[0]);
+        }
+      });
+      return s;
     }
 
     function unlockBadges(s, today) {
@@ -192,9 +282,13 @@
 
     // Применяет результат урока. Возвращает новое состояние и всё, что нужно показать.
     // Повторное прохождение даёт только разницу с лучшим результатом — XP нельзя «нафармить».
-    function applyLesson(state, lessonId, scores, today) {
+    // sec — сколько секунд шёл урок: родитель видит время за день и неделю.
+    function applyLesson(state, lessonId, scores, today, sec) {
       today = today || dayKey();
       var s = clone(state);
+      s.days = s.days || {};
+      s.weeks = s.weeks || {};
+      s.review = s.review || {};
       var st = findStation(lessonId);
       var R = D.XP_RULES;
       var levelBefore = levelFor(s.xp);
@@ -225,7 +319,16 @@
       var earned = lessonEarned + blockBonus;
       s.xp += earned;
       s.xpByDay[today] = (s.xpByDay[today] || 0) + earned;
-      touchStreak(s, today);
+      var day = s.days[today] || (s.days[today] = { runs: 0, sec: 0 });
+      day.runs++;
+      day.sec += Math.max(0, Math.round(sec || 0));
+      var weekBefore = week(state, today);
+      if (x.stars > 0) s.weeks[weekKey(today)] = (s.weeks[weekKey(today)] || 0) + 1;
+      var weekAfter = week(s, today);
+      // Урок с тестовыми вопросами попадает в повторение после первого прохождения
+      if (x.stars > 0 && !st.lesson.test && !s.review[lessonId] && quizzesOf(st.lesson).length) {
+        s.review[lessonId] = { n: 0, next: addDays(today, INTERVALS[0]) };
+      }
       if (s.current && s.current.lessonId === lessonId) s.current = null;
 
       var levelAfter = levelFor(s.xp);
@@ -242,16 +345,20 @@
         earned: earned,
         blockCompleted: blockBonus > 0,
         levelUp: levelAfter.level > levelBefore.level ? levelAfter : null,
+        week: weekAfter,
+        weekGoalMet: weekAfter.met && !weekBefore.met,
+        rest: restTime(s, today),
         badges: unlockBadges(s, today)
       };
     }
 
     var Game = {
-      newState: newState, dayKey: dayKey, daysBetween: daysBetween,
+      newState: newState, dayKey: dayKey, daysBetween: daysBetween, addDays: addDays, weekKey: weekKey,
       stations: stations, mainStations: mainStations, findStation: findStation, passed: passed,
       isUnlocked: isUnlocked, currentIndex: currentIndex, isGraded: isGraded,
       starsFor: starsFor, lessonXp: lessonXp, levelFor: levelFor,
-      blockDone: blockDone, totals: totals, currentStreak: currentStreak,
+      blockDone: blockDone, totals: totals, week: week, dayStats: dayStats, weekSec: weekSec,
+      limitReached: limitReached, restTime: restTime, reviewFor: reviewFor, applyReview: applyReview,
       applyLesson: applyLesson
     };
     return Game;

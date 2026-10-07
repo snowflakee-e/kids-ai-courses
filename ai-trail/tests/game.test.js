@@ -33,7 +33,7 @@ test('stars by ratio', () => {
 });
 
 test('every task is valid', () => {
-  const known = ['cards', 'video', 'quiz', 'sort', 'build', 'spot', 'order', 'poll', 'chat', 'talk'];
+  const known = ['predict', 'cards', 'video', 'quiz', 'sort', 'build', 'spot', 'order', 'poll', 'chat', 'talk'];
   const ids = new Set();
   for (const st of G.stations()) {
     const l = st.lesson;
@@ -64,6 +64,10 @@ test('every task is valid', () => {
         assert.ok(t.title && t.text && t.prompts.length && t.prompts.every(x => x && x.length <= 1200), where + ': chat needs title, text, prompts');
       }
       if (t.type === 'video') assert.ok(t.scenes.every(s => s.sec > 0 && s.pose && s.voice && s.visual), where);
+      if (t.type === 'predict') {
+        assert.ok(!G.isGraded(t), 'predict is not graded');
+        assert.ok(t.title && t.text && t.options.length >= 2 && t.answer >= 0 && t.answer < t.options.length && t.reveal, where);
+      }
     }
   }
 });
@@ -207,28 +211,91 @@ test('the whole trail can be finished and every badge is reachable', () => {
   assert.equal(G.currentIndex(state), G.mainStations().slice(-1)[0].index);
 });
 
-test('day streak grows and burns', () => {
+test('every regular lesson opens with a prediction, every main station teases the next one', () => {
+  for (const st of G.stations()) {
+    const l = st.lesson;
+    if (l.test) continue;
+    assert.equal(l.tasks[0].type, 'predict', l.id + ' must start with a prediction');
+  }
+  const main = G.mainStations();
+  main.slice(0, -1).forEach(st => assert.ok(st.lesson.teaser, st.lesson.id + ': teaser'));
+});
+
+test('weekly goal: passed stations count, misses take nothing away', () => {
   let s = G.newState();
-  s = G.applyLesson(s, 'l1', scores(lesson('l1')), '2026-10-01').state;
-  s = G.applyLesson(s, 'l2', scores(lesson('l2')), '2026-10-02').state;
-  assert.equal(s.streak, 2);
-  assert.equal(G.currentStreak(s, '2026-10-03'), 2);
-  assert.equal(G.currentStreak(s, '2026-10-05'), 0);
+  s = G.applyLesson(s, 'l1', scores(lesson('l1')), '2026-10-05').state; // понедельник
+  s = G.applyLesson(s, 'l2', scores(lesson('l2'), 0), '2026-10-06').state; // не пройдено — не в счёт
+  assert.deepEqual(G.week(s, '2026-10-07'), { done: 1, goal: XP_RULES.weekGoal, met: false, weeksMet: 0 });
+  s = G.applyLesson(s, 'l2', scores(lesson('l2')), '2026-10-09').state;
+  const r = G.applyLesson(s, 'l3', scores(lesson('l3')), '2026-10-11'); // воскресенье той же недели
+  assert.equal(r.weekGoalMet, true);
+  assert.ok(r.badges.some(b => b.id === 'week-goal'));
+  // Новая неделя начинается с нуля, но выполненная неделя остаётся навсегда
+  assert.deepEqual(G.week(r.state, '2026-10-12'), { done: 0, goal: XP_RULES.weekGoal, met: false, weeksMet: 1 });
+  assert.equal(G.week(r.state, '2026-11-30').weeksMet, 1);
+  assert.equal(G.weekKey('2026-10-11'), '2026-10-05');
+  assert.equal(G.weekKey('2026-10-12'), '2026-10-12');
+});
+
+test('time in lessons, natural stop and the parent daily limit', () => {
+  let s = { ...G.newState(), dailyLimit: 2 };
+  assert.equal(G.limitReached(s, '2026-10-05'), false);
+  s = G.applyLesson(s, 'l1', scores(lesson('l1')), '2026-10-05', 300).state;
+  s = G.applyLesson(s, 'l2', scores(lesson('l2'), 0), '2026-10-05', 120.4).state;
+  assert.deepEqual(G.dayStats(s, '2026-10-05'), { runs: 2, sec: 420 });
+  assert.equal(G.limitReached(s, '2026-10-05'), true, 'failed runs count towards the limit too');
+  assert.equal(G.limitReached(s, '2026-10-06'), false, 'the limit resets the next day');
+  assert.equal(G.limitReached({ ...s, dailyLimit: 0 }, '2026-10-05'), false, 'no limit by default');
+  s = G.applyLesson(s, 'l2', scores(lesson('l2')), '2026-10-07', 60).state;
+  assert.equal(G.weekSec(s, '2026-10-08'), 480);
+  assert.equal(G.restTime(s, '2026-10-05'), XP_RULES.restAfter <= 2);
+  let t = G.newState();
+  let r;
+  for (const id of ['l1', 'l2', 'l3']) { r = G.applyLesson(t, id, scores(lesson(id)), '2026-10-05'); t = r.state; }
+  assert.equal(r.rest, true, 'suggest a stop after restAfter stations');
+});
+
+test('spaced review: tomorrow, then 3 and 7 days; a miss brings it back tomorrow', () => {
+  let s = G.applyLesson(G.newState(), 'l1', scores(lesson('l1')), '2026-10-05').state;
+  assert.deepEqual(s.review.l1, { n: 0, next: '2026-10-06' });
+  // В тот же день срок не подошёл: один вопрос из последнего урока для разминки, график не меняется
+  let items = G.reviewFor(s, 'l2', '2026-10-05');
+  assert.equal(items.length, 1);
+  assert.equal(items[0].due, false);
+  assert.equal(items[0].task.type, 'quiz');
+  assert.deepEqual(G.applyReview(s, [{ lessonId: 'l1', ok: true, due: false }], '2026-10-05').review.l1, s.review.l1);
+  // Назавтра — вопрос по сроку
+  items = G.reviewFor(s, 'l2', '2026-10-06');
+  assert.deepEqual(items.map(i => [i.lessonId, i.due]), [['l1', true]]);
+  s = G.applyReview(s, [{ lessonId: 'l1', ok: true, due: true }], '2026-10-06');
+  assert.deepEqual(s.review.l1, { n: 1, next: '2026-10-09' });
+  s = G.applyReview(s, [{ lessonId: 'l1', ok: true, due: true }], '2026-10-09');
+  assert.equal(s.review.l1.next, '2026-10-16');
+  s = G.applyReview(s, [{ lessonId: 'l1', ok: false, due: true }], '2026-10-16');
+  assert.deepEqual(s.review.l1, { n: 2, next: '2026-10-17' });
+  // Следующий удачный повтор берёт другой вопрос урока
+  const quizzes = lesson('l1').tasks.filter(t => t.type === 'quiz');
+  assert.equal(G.reviewFor(s, 'l2', '2026-10-17')[0].task, quizzes[2 % quizzes.length]);
+  // Не больше трёх вопросов, свой урок не повторяем, тесты в повторение не попадают
+  s = pass(G.newState(), [...mainIds('b1'), 'l5', 'l6'], '2026-10-01').state;
+  assert.equal(s.review.t1, undefined);
+  items = G.reviewFor(s, 'l6', '2026-10-20');
+  assert.equal(items.length, 3);
+  assert.ok(items.every(i => i.lessonId !== 'l6' && i.due));
+});
+
+test('the Open World block covers fakes, bias, companions and careers before the boss', () => {
+  const b4 = COURSE.blocks.find(b => b.id === 'b4');
+  const main = b4.lessons.filter(l => !l.test).map(l => l.id);
+  assert.deepEqual(main, ['l11', 'l12', 'l13', 'l14']);
+  assert.ok(b4.lessons[b4.lessons.length - 1].boss, 'the boss closes the block');
+  const b3 = COURSE.blocks.find(b => b.id === 'b3');
+  const finale = b3.lessons[b3.lessons.length - 1];
+  assert.ok(finale.test && !finale.boss, 'block 3 ends with a regular test');
 });
 
 test('finishing a lesson clears its saved progress', () => {
   const s = { ...G.newState(), current: { lessonId: 'l1', step: 3, scores: [] } };
   const r = G.applyLesson(s, 'l1', scores(lesson('l1')), '2026-10-01');
   assert.equal(r.state.current, null);
-});
-
-// Русская версия пока на прежнем контенте: проверяем только, что она собирается тем же движком
-test('the Russian course still works with the same engine', () => {
-  const ru = require('../course.js');
-  const R = G.make(ru);
-  assert.ok(R.stations().length > 0);
-  const first = R.stations()[0].lesson;
-  const r = R.applyLesson(R.newState(), first.id, first.tasks.map(t => (R.isGraded(t) ? 1 : null)), '2026-10-01');
-  assert.equal(r.passed, true);
-  assert.deepEqual(ru.XP_RULES, XP_RULES);
 });
