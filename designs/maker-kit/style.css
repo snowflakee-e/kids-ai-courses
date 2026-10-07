@@ -1,0 +1,304 @@
+/* Bloop AI School: Maker Kit
+   Инструкция к конструктору: миллиметровка, толстый контур, жёсткие тени, кнопки «вдавливаются».
+   Главный элемент — схема Блупа в первом экране: из чего состоит ИИ. */
+
+:root {
+    --bg: #EEF1FA;
+    --grid: #DBE1F3;
+    --paper: #FFFFFF;
+    --ink: #1D1F4E;
+    --ink-2: #474B78;
+    --yellow: #FFD23F;
+    --blue: #4361EE;
+    --mint: #3BCEAC;
+    --pink: #FF7AA2;
+
+    --t1: var(--yellow);
+    --t2: var(--mint);
+    --t3: var(--pink);
+    --t4: var(--blue);
+
+    --line: 3px solid var(--ink);
+    --lift: 5px 5px 0 var(--ink);
+    --r: 14px;
+    --display: 'Bricolage Grotesque', 'Arial Narrow', sans-serif;
+    --text: 'Lexend', 'Segoe UI', sans-serif;
+    --snap: cubic-bezier(.34, 1.56, .64, 1);
+    --ease: cubic-bezier(.22, 1, .36, 1);
+    --wrap: 1200px;
+    --gutter: clamp(16px, 4vw, 40px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+    margin: 0;
+    color: var(--ink);
+    font: 400 1.0625rem/1.6 var(--text);
+    background-color: var(--bg);
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    overflow-x: hidden;
+}
+h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1; font-stretch: 82%; font-weight: 800; letter-spacing: -.01em; }
+h1 { font-size: clamp(2.8rem, 6.6vw, 5.6rem); }
+h2 { font-size: clamp(2.2rem, 4.6vw, 3.6rem); }
+h3 { font-size: 1.45rem; font-stretch: 90%; }
+p { margin: 0; }
+a { color: inherit; }
+svg { display: block; max-width: 100%; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+::selection { background: var(--yellow); color: var(--ink); }
+html { scrollbar-color: var(--ink) var(--bg); accent-color: var(--blue); }
+input, select { caret-color: var(--blue); }
+
+.skip { position: absolute; left: -999px; top: 8px; z-index: 40; background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px; }
+.skip:focus { left: 8px; }
+
+/* ---------- Кнопки: нажатие вдавливает ---------- */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 54px; padding: .75em 1.4em;
+    font: 700 1.1rem/1 var(--display); font-stretch: 90%;
+    color: var(--ink); text-decoration: none; cursor: pointer;
+    border: var(--line); border-radius: 12px; box-shadow: var(--lift);
+    transition: transform .18s var(--snap), box-shadow .18s var(--snap);
+}
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); }
+.btn:active { transform: translate(5px, 5px); box-shadow: 0 0 0 var(--ink); }
+.btn--yellow { background: var(--yellow); }
+.btn--white { background: var(--paper); }
+.btn--block { width: 100%; }
+
+/* ---------- Шапка ---------- */
+.bar {
+    max-width: var(--wrap); margin: 16px auto 0; padding: 0 var(--gutter);
+    display: flex; align-items: center; gap: 28px;
+}
+.bar__brand { display: inline-flex; align-items: center; gap: 10px; font: 800 1.35rem/1 var(--display); font-stretch: 85%; text-decoration: none; }
+.bar__bot { width: 44px; }
+.bar__nav { display: flex; gap: 24px; margin-left: auto; font-weight: 500; }
+.bar__nav a { white-space: nowrap; text-decoration: none; padding: 6px 0; background: linear-gradient(var(--yellow), var(--yellow)) 0 85% / 0 40% no-repeat; transition: background-size .3s var(--ease); }
+.bar__nav a:hover { background-size: 100% 40%; }
+.bar__cta { font: 700 1rem/1 var(--display); text-decoration: none; padding: 12px 16px; border: var(--line); border-radius: 10px; background: var(--paper); box-shadow: 3px 3px 0 var(--ink); }
+.bar__cta:active { transform: translate(3px, 3px); box-shadow: none; }
+
+/* ---------- Первый экран со схемой ---------- */
+.hero {
+    max-width: var(--wrap); margin: 0 auto; padding: clamp(32px, 6vw, 80px) var(--gutter) clamp(48px, 7vw, 96px);
+    display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(24px, 4vw, 48px); align-items: center;
+}
+.hero__text p { margin-top: 22px; max-width: 32em; font-size: 1.15rem; color: var(--ink-2); }
+.hero__cta { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 30px; }
+
+.diagram {
+    position: relative; margin: 0;
+    aspect-ratio: 1000 / 760; container-type: inline-size;
+    background: var(--paper); border: var(--line); border-radius: 22px; box-shadow: 8px 8px 0 var(--ink);
+}
+.diagram__lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.diagram__lines path { fill: none; stroke: var(--ink); stroke-width: 3; stroke-dasharray: 8 6; }
+.diagram__lines circle { fill: var(--yellow); stroke: var(--ink); stroke-width: 3; }
+/* Стопка примеров (данные) рядом с Блупом: x 600–702, y 464–534 из 1000×760 */
+.examples { position: absolute; left: 60%; top: 61%; width: 7.4%; aspect-ratio: 70 / 56; }
+.examples span { position: absolute; inset: 0; background: var(--paper); border: 2.5px solid var(--ink); border-radius: 8px; display: grid; place-items: center; font-size: clamp(12px, 3cqw, 26px); }
+.examples span:nth-child(1) { transform: translate(-22%, 12%) rotate(-10deg); }
+.examples span:nth-child(2) { transform: translate(-10%, 6%) rotate(4deg); }
+.examples span:nth-child(3) { transform: rotate(14deg); background: var(--mint); }
+/* Блуп на схеме: x 305–695, y 150 из 1000×760; координаты линий в index.html посчитаны под это */
+.diagram__bot { position: absolute; left: 30.5%; top: 19.74%; width: 39%; }
+.part {
+    position: absolute;
+    left: calc(var(--x) / 1000 * 100%); top: calc(var(--y) / 760 * 100%); width: calc(var(--w) / 1000 * 100%);
+    display: grid; gap: .15em;
+    padding: .55em .7em; background: var(--paper); border: 2.5px solid var(--ink); border-radius: 10px;
+    font-size: clamp(10px, 2.1cqw, 16px); line-height: 1.3;
+}
+.part b { font: 800 1.35em/1 var(--display); font-stretch: 85%; }
+.part span { color: var(--ink-2); }
+.diagram figcaption {
+    position: absolute; left: 0; right: 0; top: calc(100% + 16px);
+    font-size: .95rem; color: var(--ink-2); text-align: center;
+}
+
+/* ---------- Блоки ---------- */
+.block { padding: clamp(64px, 9vw, 120px) 0; }
+.block > * { max-width: var(--wrap); margin-left: auto; margin-right: auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+.block--paper { background: var(--paper); border-top: var(--line); border-bottom: var(--line); }
+.block__head { margin-bottom: clamp(28px, 4vw, 44px); }
+.block__head p { margin-top: 16px; max-width: 40em; font-size: 1.1rem; color: var(--ink-2); }
+
+/* ---------- Выбор возраста ---------- */
+.tracks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.track {
+    display: grid; align-content: space-between; gap: 18px; min-height: 148px;
+    padding: 16px 18px; text-align: left; cursor: pointer;
+    background: var(--c, var(--paper)); color: var(--ink);
+    border: var(--line); border-radius: var(--r); box-shadow: var(--lift);
+    transition: transform .2s var(--snap), box-shadow .2s var(--snap);
+}
+.track:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); }
+.track[aria-pressed="true"] { transform: translate(5px, 5px); box-shadow: inset 0 0 0 3px var(--paper), 0 0 0 var(--ink); }
+.track__age { font: 800 clamp(2.4rem, 4.4vw, 3.4rem)/.9 var(--display); font-stretch: 75%; }
+.track__name { font-weight: 600; }
+.track__name small { display: block; font-weight: 400; font-size: .9rem; }
+.track--blue { color: #fff; }
+/* Ребёнок вошёл: возраст задан в кабинете, остальные треки неактивны */
+.track:disabled { cursor: default; }
+.track:disabled:not([aria-pressed="true"]) { opacity: .4; box-shadow: none; transform: none; }
+.age-note { margin-top: 24px; padding: 12px 16px; background: var(--paper); border: var(--line); border-radius: 12px; font-weight: 500; }
+.age-note[hidden] { display: none; }
+.age-note a { font-weight: 700; text-decoration-color: var(--blue); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.empty { grid-column: 1 / -1; padding: 28px; background: var(--paper); border: var(--line); border-radius: var(--r); font-weight: 500; }
+.count { margin-top: 32px; margin-bottom: 18px; font-weight: 600; }
+
+.kits { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 26px; }
+.kit {
+    display: flex; flex-direction: column;
+    background: var(--paper); border: var(--line); border-radius: var(--r); box-shadow: var(--lift);
+    animation: drop .45s var(--snap) both; animation-delay: calc(var(--i, 0) * 60ms);
+}
+@keyframes drop { from { opacity: 0; transform: translateY(-14px) scale(.97); } }
+.kit__lid {
+    position: relative; height: 168px; overflow: hidden;
+    background: var(--c);
+    border-bottom: var(--line); border-radius: 11px 11px 0 0;
+}
+.kit__bot { position: absolute; width: 148px; left: 12px; bottom: -14px; }
+.kit__sticker {
+    position: absolute; right: 14px; top: 14px; width: 86px; height: 86px; border-radius: 50%;
+    display: grid; place-items: center; text-align: center;
+    background: var(--paper); color: var(--ink); border: var(--line); transform: rotate(-9deg);
+    font: 800 1.45rem/.95 var(--display); font-stretch: 75%;
+}
+.kit__sticker small { display: block; font: 500 .72rem/1.2 var(--text); }
+.kit__body { display: flex; flex-direction: column; gap: 10px; padding: 18px 18px 20px; flex: 1; }
+.kit__body p { color: var(--ink-2); font-size: .98rem; line-height: 1.55; }
+.kit__spec { display: grid; grid-template-columns: repeat(3, 1fr); margin: 4px 0 0; border: 2px solid var(--ink); border-radius: 10px; overflow: hidden; }
+.kit__spec div { padding: 8px 10px; }
+.kit__spec div + div { border-left: 2px solid var(--ink); }
+.kit__spec dt { font-size: .75rem; color: var(--ink-2); }
+.kit__spec dd { margin: 0; font: 800 1.15rem/1.1 var(--display); font-stretch: 85%; }
+.kit__go { margin-top: auto; padding-top: 8px; }
+.kit__go .btn { width: 100%; min-height: 50px; font-size: 1rem; }
+
+/* ---------- Инструкция ---------- */
+.steps { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; }
+.steps li { position: relative; padding-top: 70px; }
+.steps li:not(:last-child)::after {
+    content: ''; position: absolute; top: 26px; left: 64px; right: -16px; height: 3px;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 8px, transparent 8px 14px);
+}
+.steps__n {
+    position: absolute; top: 0; left: 0; width: 56px; height: 56px; border-radius: 50%;
+    display: grid; place-items: center; background: var(--yellow); border: var(--line);
+    font: 800 1.7rem/1 var(--display);
+}
+.steps h3 { margin-bottom: 8px; }
+.steps p { color: var(--ink-2); font-size: .98rem; }
+.steps__stop { display: flex; align-items: center; gap: 16px; margin-top: 44px; font: 700 1.3rem/1.2 var(--display); font-stretch: 90%; }
+.steps__stop span { width: 72px; flex: none; }
+
+/* ---------- Таблица треков ---------- */
+.spec {
+    display: grid; grid-template-columns: 1fr repeat(4, minmax(0, 1.3fr));
+    background: var(--paper); border: var(--line); border-radius: var(--r); box-shadow: var(--lift); overflow: hidden;
+}
+.spec > div { display: contents; }
+.spec__cell { padding: 14px 16px; border-top: 2px solid var(--ink); font-size: .95rem; line-height: 1.45; }
+.spec__cell + .spec__cell { border-left: 2px solid var(--ink); }
+.spec__row:first-child .spec__cell { border-top: 0; }
+.spec__label { font-weight: 600; background: var(--bg); }
+.spec__track { background: var(--c); }
+.spec__track b { display: block; font: 800 1.9rem/1 var(--display); font-stretch: 75%; }
+.spec__track--blue { color: #fff; }
+
+/* ---------- Правила ---------- */
+.poster {
+    --stripe: repeating-linear-gradient(-45deg, var(--ink) 0 14px, var(--yellow) 14px 28px);
+    background: var(--yellow); border: var(--line); border-radius: 18px; box-shadow: 8px 8px 0 var(--ink);
+    width: calc(100% - 2 * var(--gutter)); max-width: calc(var(--wrap) - 2 * var(--gutter));
+    padding: clamp(40px, 6vw, 72px) clamp(32px, 6vw, 72px);
+    position: relative;
+}
+.poster::before {
+    content: ''; position: absolute; inset: 0; border-radius: 15px; pointer-events: none;
+    border: 14px solid transparent; border-image: var(--stripe) 14;
+}
+.poster h2 { font-size: clamp(2.6rem, 6vw, 4.6rem); }
+.poster__lead { margin-top: 10px; font-weight: 500; }
+.rules { list-style: none; margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 40px; }
+.rules li { padding: 14px 0 0; border-top: 3px solid var(--ink); }
+.rules b { display: block; font: 800 1.35rem/1.15 var(--display); font-stretch: 85%; margin-bottom: 6px; }
+
+/* ---------- Запись ---------- */
+.bench { display: grid; grid-template-columns: 1fr minmax(320px, .9fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+.bench__text > p { margin-top: 16px; font-size: 1.1rem; color: var(--ink-2); max-width: 30em; }
+.bench__formats { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 12px; }
+.bench__formats li { padding-left: 18px; border-left: 4px solid var(--mint); }
+.bench__formats b { display: block; font: 800 1.2rem/1.2 var(--display); font-stretch: 90%; }
+.form {
+    display: grid; gap: 14px; padding: 24px;
+    background: var(--bg); border: var(--line); border-radius: 18px; box-shadow: 8px 8px 0 var(--ink);
+}
+.field { display: grid; gap: 6px; font-weight: 600; font-size: .95rem; }
+.field input, .field select {
+    width: 100%; min-width: 0; min-height: 50px; padding: 10px 14px; font: 400 1rem var(--text); color: var(--ink);
+    background: var(--paper); border: 2.5px solid var(--ink); border-radius: 10px;
+}
+.field select:disabled { opacity: .55; }
+.form__note { min-height: 1.4em; font-size: .95rem; }
+
+.foot {
+    max-width: var(--wrap); margin: 0 auto; padding: 28px var(--gutter) 36px;
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px;
+}
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+
+/* ---------- Планшет ---------- */
+@media (max-width: 1060px) {
+    .hero { grid-template-columns: 1fr; }
+    .diagram { margin-bottom: 40px; }
+    .tracks { grid-template-columns: repeat(4, 1fr); }
+    .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 36px; }
+    .steps li:nth-child(3)::after { display: none; }
+    /* таблица треков превращается в карточки */
+    .spec { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; box-shadow: none; border: 0; background: none; overflow: visible; }
+    .spec > div { display: none; }
+    .spec > .spec__card { display: block; background: var(--paper); border: var(--line); border-radius: var(--r); box-shadow: var(--lift); overflow: hidden; }
+}
+
+/* ---------- Телефон ---------- */
+@media (max-width: 720px) {
+    body { font-size: 1rem; }
+    .bar { gap: 12px; flex-wrap: wrap; }
+    .bar__nav { order: 3; width: 100%; margin: 0; gap: 18px; overflow-x: auto; font-size: .95rem; }
+    .bar__cta { margin-left: auto; padding: 10px 12px; font-size: .9rem; }
+    .bar__brand { font-size: 1.15rem; }
+    .bar__bot { width: 36px; }
+    .hero__cta .btn { width: 100%; }
+    /* на узком экране подписи схемы — только названия частей */
+    .part { padding: .35em .5em; font-size: 11px; }
+    .part span { display: none; }
+    .part b { font-size: 1.45em; }
+    .diagram { margin-bottom: 64px; }
+    .tracks { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .track { min-height: 112px; padding: 12px 14px; }
+    .steps { grid-template-columns: 1fr; }
+    .steps li::after { display: none; }
+    .spec { grid-template-columns: 1fr; }
+    .rules { grid-template-columns: 1fr; }
+    .bench { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 1061px) { .spec__card { display: none; } }
+.spec__card dl { margin: 0; }
+.spec__card dt { padding: 10px 14px 0; font-weight: 600; font-size: .9rem; }
+.spec__card dd { margin: 0; padding: 2px 14px 10px; border-bottom: 2px solid var(--ink); font-size: .95rem; }
+.spec__card dd:last-child { border-bottom: 0; }
+.spec__card .spec__track { padding: 12px 14px; border-bottom: var(--line); }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School: calm AI lessons for kids</title>
+    <meta name="description" content="Research-based AI lessons for ages 6–17. Choose your child's age and interests and see only the courses that fit.">
+    <meta name="theme-color" content="#F1F4F2" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F1714" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- Плавающее меню-«остров» -->
+    <div class="island-wrap">
+        <header class="island" id="island">
+            <a class="island__brand" href="#top" aria-label="Bloop AI School, back to top"><span class="island__bot" id="island-bot"></span>Bloop</a>
+            <nav class="island__nav" id="island-nav" aria-label="Sections">
+                <a href="#finder">Courses</a>
+                <a href="#why">Why parents choose us</a>
+                <a href="#tracks">Ages 6 to 17</a>
+                <a href="#questions">Questions</a>
+                <a href="../../../kids-ai-cabinet/">My cabinet</a>
+            </nav>
+            <button class="island__burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="island-nav"><span></span><span></span></button>
+            <button class="pill pill--dark pill--sm" type="button" data-lead>
+                <span>Free lesson</span><span class="pill__icon" aria-hidden="true"><i class="ph-bold ph-arrow-up-right"></i></span>
+            </button>
+        </header>
+    </div>
+
+    <main id="main">
+        <!-- Первый экран: фраза-подборщик -->
+        <section class="hero" id="top">
+            <h1 class="hero__title reveal">Ahead with AI, without getting hooked.</h1>
+            <p class="hero__lead reveal">Research-based AI lessons for ages 6 to 17. Lessons stop on time, and you set the limits.</p>
+
+            <div class="bezel bezel--finder reveal" id="finder">
+                <div class="bezel__core finder">
+                    <p class="finder__sentence">
+                        <label for="f-age">My child is</label>
+                        <select id="f-age" class="finder__pick"><option value="" disabled selected>pick an age</option></select>
+                        <label for="f-interest">and loves</label>
+                        <select id="f-interest" class="finder__pick"><option value="">a bit of everything</option></select>
+                    </p>
+                    <p class="finder__note" id="finder-note" hidden></p>
+                    <div class="finder__group" id="finder-group" aria-live="polite"></div>
+                </div>
+            </div>
+
+            <p class="results__count" id="results-count" aria-live="polite"></p>
+            <div class="results" id="results"></div>
+        </section>
+
+        <!-- Бенто: почему родители выбирают -->
+        <section class="section" id="why" aria-labelledby="why-title">
+            <h2 id="why-title" class="section__title">Built for the parent who worries about both.</h2>
+            <p class="section__lead">Most parents fear two things at once: that their child falls behind with AI, and that they get glued to a screen. We designed every lesson around both.</p>
+
+            <div class="bento">
+                <article class="bezel bento__a">
+                    <div class="bezel__core tile tile--stop">
+                        <div class="tile__text">
+                            <h3>Lessons that end on time</h3>
+                            <p>Riddle, guess, try, surprise, make. Then Bloop “recharges until tomorrow”. No autoplay, no endless feed, nothing lost for skipping a day.</p>
+                        </div>
+                        <div class="tile__bot" id="tile-bot" aria-hidden="true"></div>
+                    </div>
+                </article>
+                <article class="bezel bento__b">
+                    <div class="bezel__core tile tile--mint">
+                        <h3>Under 13, a sandbox</h3>
+                        <p>Younger kids never use public chatbots. They work with Bloop, which has filters, message limits and doesn’t store personal data. From 13, real tools only with your consent.</p>
+                    </div>
+                </article>
+                <article class="bezel bento__c">
+                    <div class="bezel__core tile">
+                        <h3>Bloop says it’s a program</h3>
+                        <p>At the start of every chat. Kids under 8 often think a smart speaker has feelings; we gently separate the character from the software.</p>
+                    </div>
+                </article>
+                <article class="bezel bento__d">
+                    <div class="bezel__core tile">
+                        <h3>A weekly note to you</h3>
+                        <p>What your child made, one question to ask at dinner and a ten-minute family task. Notifications go to you, in the daytime, never to your child.</p>
+                    </div>
+                </article>
+                <article class="bezel bento__f">
+                    <div class="bezel__core tile tile--lilac">
+                        <h3>Stars for discoveries only</h3>
+                        <p>Not for minutes on screen or logging in. No daily streaks that burn, no loot boxes, no leaderboards for under-13s.</p>
+                    </div>
+                </article>
+                <article class="bezel bento__e">
+                    <div class="bezel__core tile tile--research">
+                        <h3>From the research behind the course</h3>
+                        <ul>
+                            <li>Seven in ten US teens have already tried AI companions, so we teach kids where a bot ends and a friend begins. <cite>Common Sense Media, 2025</cite></li>
+                            <li>One parent in eight plans to pay for AI tutoring or camps. The first lesson here is free, so you can judge before you pay. <cite>EdChoice, 2025</cite></li>
+                            <li>Attention to a learning video drops after about six minutes. Ours are shorter and end with a task. <cite>Guo, Kim &amp; Rubin, 2014</cite></li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Треки по возрасту: линия от 6 до 17 -->
+        <section class="section" id="tracks" aria-labelledby="tracks-title">
+            <h2 id="tracks-title" class="section__title">The same big ideas, deeper every year.</h2>
+            <p class="section__lead">What AI is, how it learns, where it fails and how to use it well come back at every age, each time a level deeper.</p>
+            <ol class="timeline" id="timeline"></ol>
+        </section>
+
+        <!-- Вопросы -->
+        <section class="section" id="questions" aria-labelledby="q-title">
+            <h2 id="q-title" class="section__title">Questions parents ask.</h2>
+            <div class="qa">
+                <div><h3>Which format should we choose?</h3><p>Mini groups of 3 to 6 for younger kids, team groups of 8 to 12 from age 11, one-on-one for any age, and family lessons for a parent with a 6–8-year-old. Teens 14–17 learn in an app with a weekly live hour.</p></div>
+                <div><h3>How do you group kids?</h3><p>Never more than two years apart, and one year for the youngest. A short chat before the first lesson checks reading, past AI use and interests.</p></div>
+                <div><h3>Won’t AI do their homework?</h3><p>We teach AI as a coach, not an author: it asks questions, your child answers, it explains mistakes. Kids learn how to say where AI helped.</p></div>
+                <div><h3>What does my child need?</h3><p>A computer or tablet and about 25 to 50 minutes, depending on age. The youngest work mostly off-screen with cards and games.</p></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="bezel bezel--cta">
+                <div class="bezel__core cta">
+                    <div class="cta__bot" id="cta-bot" aria-hidden="true"></div>
+                    <div>
+                        <h2 class="section__title">Try one lesson, free.</h2>
+                        <p>Sit with your child for one lesson and see what they make. A teacher replies within a day with times.</p>
+                    </div>
+                    <button class="pill pill--dark" type="button" data-lead>
+                        <span>Book a free lesson</span><span class="pill__icon" aria-hidden="true"><i class="ph-bold ph-arrow-up-right"></i></span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <span>© <span id="year"></span> Bloop AI School</span>
+        <nav aria-label="Other versions">
+            <a href="../">All design versions</a>
+            <a href="../../">Current site</a>
+            <a href="../../ai-trail/">AI Trail for teens</a>
+        </nav>
+    </footer>
+
+    <dialog class="dialog" id="lead" aria-labelledby="lead-title">
+        <div class="bezel">
+            <form class="bezel__core dialog__box" id="lead-form" method="dialog">
+                <button class="dialog__close" type="button" data-close aria-label="Close"><i class="ph-bold ph-x" aria-hidden="true"></i></button>
+                <h2 id="lead-title">Book a free lesson</h2>
+                <p class="dialog__course" id="lead-course"></p>
+                <label class="field"><span>Your name</span><input name="parent" type="text" autocomplete="name" required></label>
+                <label class="field"><span>Email or phone</span><input name="contact" type="text" autocomplete="email" required></label>
+                <label class="field"><span>Child’s age</span><select name="age" required><option value="" disabled selected>Choose</option></select></label>
+                <button class="pill pill--dark pill--block" type="submit">
+                    <span>Send request</span><span class="pill__icon" aria-hidden="true"><i class="ph-bold ph-arrow-up-right"></i></span>
+                </button>
+                <p class="dialog__note" id="lead-note" role="status"></p>
+            </form>
+        </div>
+    </dialog>
+
+    <script src="../../bobik.js"></script>
+    <script src="../../catalog.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

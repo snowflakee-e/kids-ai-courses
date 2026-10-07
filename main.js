@@ -13,32 +13,9 @@ const CONFIG = {
     cabinetKey: 'bloop-cabinet-v1'
 };
 
-const COURSES = [
-    // playable: курс уже есть в кабинете, кнопка ведёт сразу в урок; url: курс живёт отдельной страницей
-    { id: 'hello-ai', title: 'Hello, AI!', age: '6-8', lessons: 8, minutes: 30, level: 'Starter',
-      desc: 'Meet artificial intelligence through games and fun experiments.',
-      palette: 'mint', pose: 'hello', thumb: '#DDF6EF', playable: true },
-    { id: 'ai-tales', title: 'Fairy Tales with AI', age: '6-8', lessons: 6, minutes: 30, level: 'Starter',
-      desc: 'Invent heroes and write magical stories together with AI.',
-      palette: 'peach', pose: 'delight', thumb: '#FFEADF' },
-    { id: 'prompts', title: 'Magic Prompts', age: '9-11', lessons: 10, minutes: 45, level: 'Beginner',
-      desc: 'Learn to talk to AI so it understands you right away.',
-      palette: 'sky', pose: 'idea', thumb: '#E1F0FF', playable: true },
-    { id: 'ai-art', title: 'AI Artist', age: '9-11', lessons: 8, minutes: 45, level: 'Beginner',
-      desc: 'Create pictures, comics and greeting cards with AI tools.',
-      palette: 'lav', pose: 'wink', thumb: '#EEE9FF', playable: true },
-    { id: 'my-bot', title: 'Build Your Robot Helper', age: '12-14', lessons: 12, minutes: 60, level: 'Intermediate',
-      desc: 'Build your own chatbot and teach it to help with everyday tasks.',
-      palette: 'sky', pose: 'victory', thumb: '#FFF1C9' },
-    { id: 'ai-games', title: 'Games and AI', age: '12-14', lessons: 10, minutes: 60, level: 'Intermediate',
-      desc: 'Make a simple game where the characters think with artificial intelligence.',
-      palette: 'mint', pose: 'run', thumb: '#FFE0EA' },
-    { id: 'ai-trail', title: 'AI Trail', age: '14-17', lessons: 18, minutes: 8, level: 'Advanced',
-      desc: 'Use AI for real: studying, projects, spotting fakes and bias. Short hands-on lessons with Bloop.',
-      palette: 'peach', pose: 'point', thumb: '#E3F5D6', url: 'ai-trail/' }
-];
-
-const AGE_LABEL = { '6-8': 'Ages 6–8', '9-11': 'Ages 9–11', '12-14': 'Ages 12–14', '14-17': 'Ages 14–17' };
+// Курсы, возрастные группы и фильтр по возрасту — в catalog.js (общий с вариантами дизайна в designs/)
+const CATALOG = BLOOP_CATALOG;
+const COURSES = CATALOG.COURSES;
 
 // Шапка для каждой страницы: тексты и поза Бобика
 const ROUTES = {
@@ -88,8 +65,9 @@ const app = {
         if (this.user && PALETTES[this.user.palette]) this.palette = this.user.palette;
 
         $('#year').textContent = new Date().getFullYear();
-        this.renderCourseList($('#home-courses'), COURSES.slice(0, 3));
-        this.filterCourses('all');
+        $('#course-count').textContent = COURSES.length;
+        this.renderAgeControls();
+        this.renderCourses();
         this.bindEvents();
         this.updateAuthButton();
         this.drawStaticBobiks();
@@ -235,10 +213,11 @@ const app = {
 
     // ---------- Курсы ----------
     courseCard(c) {
+        const href = CATALOG.courseHref(c, '');
         return `
             <article class="course">
                 <div class="course__thumb" style="--thumb:${c.thumb}">
-                    <span class="course__age">${AGE_LABEL[c.age]}</span>
+                    <span class="course__age">${CATALOG.courseAges(c)}</span>
                     <div class="course__bot">${this.bobik(c.pose, c.palette)}</div>
                 </div>
                 <div class="course__body">
@@ -250,9 +229,9 @@ const app = {
                         <li>${c.level}</li>
                     </ul>
                     <div class="course__foot">
-                        ${c.url || c.playable
+                        ${href
                             ? `<span class="course__free">Try it right now</span>
-                               <a class="btn" href="${c.url || this.cabinetLink(c.id)}">Play now ▶</a>`
+                               <a class="btn" href="${href}">Play now ▶</a>`
                             : `<span class="course__free">First lesson free</span>
                                <button class="btn" type="button" data-open="lead" data-course="${c.id}">Start</button>`}
                     </div>
@@ -260,19 +239,61 @@ const app = {
             </article>`;
     },
 
-    renderCourseList(el, list) {
-        el.innerHTML = list.map(c => this.courseCard(c)).join('');
+    // Кнопки возраста и списки возрастов в формах — из одних и тех же групп каталога (как в кабинете)
+    renderAgeControls() {
+        const chips = CATALOG.AGE_GROUPS.map(g =>
+            `<button class="chip" type="button" data-age="${g.id}" aria-pressed="false">${CATALOG.rangeLabel(g.min, g.max)}</button>`).join('');
+        $$('[data-age-chips]').forEach(box => { box.innerHTML = chips; });
+        $$('select[name="age"]').forEach(sel => {
+            sel.insertAdjacentHTML('beforeend', CATALOG.AGE_GROUPS.map(g =>
+                `<option value="${g.id}">${g.min}–${g.max} years</option>`).join(''));
+        });
     },
 
-    filterCourses(age) {
-        const list = age === 'all' ? COURSES : COURSES.filter(c => c.age === age);
-        this.renderCourseList($('#all-courses'), list);
-        $('#results-count').textContent = `${list.length} ${plural(list.length, 'course')} found`;
-        $$('#age-filter .chip').forEach(ch => {
-            const active = ch.dataset.age === age;
-            ch.classList.toggle('is-active', active);
-            ch.setAttribute('aria-pressed', String(active));
+    // Возраст ребёнка: из кабинета, если он вошёл (тогда выбрать другой нельзя), иначе выбранный гостем.
+    // «Все возрасты» сайт не показывает: без возраста курсов нет, только просьба выбрать возраст.
+    currentAge() {
+        const fromCabinet = this.user && CATALOG.groupRange(this.user.age);
+        if (fromCabinet) return { id: this.user.age, range: fromCabinet, locked: true };
+        const saved = CATALOG.loadRange();
+        return saved ? { id: `${saved.min}-${saved.max}`, range: saved, locked: false } : null;
+    },
+
+    chooseAge(id) {
+        if (this.currentAge()?.locked) return;
+        CATALOG.saveRange(CATALOG.groupRange(id));
+        this.renderCourses();
+    },
+
+    // Курсы только для выбранного возраста: возраст курса целиком внутри группы (6–8 → курсы 6–7, 7–8, 6–8)
+    renderCourses() {
+        const age = this.currentAge();
+        const list = age ? CATALOG.coursesInRange(age.range.min, age.range.max) : [];
+        const label = age ? CATALOG.rangeLabel(age.range.min, age.range.max).toLowerCase() : '';
+
+        $$('[data-age-chips]').forEach(box => { box.hidden = !!age?.locked; });
+        $$('[data-age-chips] .chip').forEach(ch => {
+            const on = !!age && ch.dataset.age === age.id;
+            ch.classList.toggle('is-active', on);
+            ch.setAttribute('aria-pressed', String(on));
         });
+        // Имя ребёнка — пользовательский текст, поэтому только textContent
+        $$('[data-age-note]').forEach(note => {
+            note.hidden = !age?.locked;
+            if (!age?.locked) return;
+            note.textContent = `Courses for ${this.user.name}, ${label}, as set in the cabinet. `;
+            const link = document.createElement('a');
+            link.href = this.cabinetLink();
+            link.textContent = 'Change age in the cabinet';
+            note.append(link);
+        });
+
+        const empty = '<p class="age-empty">Choose your child’s age above and you’ll see only the courses made for it.</p>';
+        $('#all-courses').innerHTML = age ? list.map(c => this.courseCard(c)).join('') : empty;
+        $('#results-count').textContent = age ? `${list.length} ${plural(list.length, 'course')} for ${label}` : '';
+        $('#home-courses').innerHTML = age ? list.slice(0, 3).map(c => this.courseCard(c)).join('') : empty;
+        $('#home-courses-title').textContent = age ? `Courses for ${label}` : 'Find courses for your child’s age';
+        $('#home-courses-more').hidden = !age || list.length <= 3;
     },
 
     // ---------- Авторизация ----------
@@ -334,6 +355,10 @@ const app = {
         if (name === 'lead') {
             $('#lead-form').dataset.course = course || '';
             $('#lead-note').textContent = '';
+            // Заявка с карточки курса: возраст ребёнка — группа этого курса
+            const c = course && CATALOG.findCourse(course);
+            const group = c && CATALOG.groupOf(c);
+            if (group) $('#lead-form').elements.age.value = group.id;
         }
         if (!dlg.open) dlg.showModal();
     },
@@ -367,9 +392,10 @@ const app = {
             });
         });
 
-        $('#age-filter').addEventListener('click', e => {
-            const chip = e.target.closest('.chip');
-            if (chip) this.filterCourses(chip.dataset.age);
+        // Кнопки возраста на главной и на странице курсов
+        document.addEventListener('click', e => {
+            const chip = e.target.closest('[data-age-chips] .chip');
+            if (chip) this.chooseAge(chip.dataset.age);
         });
 
         // Кнопки, открывающие модалки
@@ -380,12 +406,13 @@ const app = {
             if (e.target.closest('[data-close]')) e.target.closest('dialog').close();
         });
 
-        // Вернулись на сайт из кабинета кнопкой «назад» — обновляем прогресс
+        // Вернулись на сайт из кабинета кнопкой «назад» — обновляем прогресс и возраст (его могли сменить в кабинете)
         window.addEventListener('pageshow', e => {
             if (!e.persisted) return;
             this.user = this.loadUser();
             this.updateAuthButton();
             this.renderWelcomeBack();
+            this.renderCourses();
         });
 
         // Закрытие модалки по клику на фон
