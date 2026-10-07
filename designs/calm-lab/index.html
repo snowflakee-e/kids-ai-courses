@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloop AI School: calm AI lessons for kids</title>
     <meta name="description" content="Research-based AI lessons for ages 6–17. Choose your child's age and interests and see only the courses that fit.">
-    <meta name="theme-color" content="#F1F4F2">
+    <meta name="theme-color" content="#F1F4F2" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F1714" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,7 +31,7 @@
             </nav>
             <button class="island__burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="island-nav"><span></span><span></span></button>
             <button class="pill pill--dark pill--sm" type="button" data-lead>
-                <span>Free lesson</span><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5 11 11 5M6 5h5v5"/></svg></span>
+                <span>Free lesson</span><span class="pill__icon" aria-hidden="true"><i class="ph-bold ph-arrow-up-right"></i></span>
             </button>
         </header>
     </div>
@@ -37,16 +40,17 @@
         <!-- Первый экран: фраза-подборщик -->
         <section class="hero" id="top">
             <h1 class="hero__title reveal">Ahead with AI, without getting hooked.</h1>
-            <p class="hero__lead reveal">Short, research-based AI lessons for ages 6 to 17. Your child learns how AI works, where it goes wrong and how to use it honestly. Lessons stop on time, and you set the limits.</p>
+            <p class="hero__lead reveal">Research-based AI lessons for ages 6 to 17. Lessons stop on time, and you set the limits.</p>
 
             <div class="bezel bezel--finder reveal" id="finder">
                 <div class="bezel__core finder">
                     <p class="finder__sentence">
                         <label for="f-age">My child is</label>
-                        <select id="f-age" class="finder__pick"><option value="">any age</option></select>
+                        <select id="f-age" class="finder__pick"><option value="" disabled selected>pick an age</option></select>
                         <label for="f-interest">and loves</label>
                         <select id="f-interest" class="finder__pick"><option value="">a bit of everything</option></select>
                     </p>
+                    <p class="finder__note" id="finder-note" hidden></p>
                     <div class="finder__group" id="finder-group" aria-live="polite"></div>
                 </div>
             </div>
@@ -95,10 +99,13 @@
                     </div>
                 </article>
                 <article class="bezel bento__e">
-                    <div class="bezel__core tile tile--stats">
-                        <figure><b>72%</b><figcaption>of US teens have tried AI companions. <cite>Common Sense Media, 2025</cite></figcaption></figure>
-                        <figure><b>1 in 8</b><figcaption>parents plan to pay for AI tutoring or camps. <cite>EdChoice, 2025</cite></figcaption></figure>
-                        <figure><b>6 min</b><figcaption>is when attention to a learning video drops. Ours are shorter. <cite>Guo, Kim &amp; Rubin, 2014</cite></figcaption></figure>
+                    <div class="bezel__core tile tile--research">
+                        <h3>From the research behind the course</h3>
+                        <ul>
+                            <li>Seven in ten US teens have already tried AI companions, so we teach kids where a bot ends and a friend begins. <cite>Common Sense Media, 2025</cite></li>
+                            <li>One parent in eight plans to pay for AI tutoring or camps. The first lesson here is free, so you can judge before you pay. <cite>EdChoice, 2025</cite></li>
+                            <li>Attention to a learning video drops after about six minutes. Ours are shorter and end with a task. <cite>Guo, Kim &amp; Rubin, 2014</cite></li>
+                        </ul>
                     </div>
                 </article>
             </div>
@@ -131,7 +138,7 @@
                         <p>Sit with your child for one lesson and see what they make. A teacher replies within a day with times.</p>
                     </div>
                     <button class="pill pill--dark" type="button" data-lead>
-                        <span>Book a free lesson</span><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5 11 11 5M6 5h5v5"/></svg></span>
+                        <span>Book a free lesson</span><span class="pill__icon" aria-hidden="true"><i class="ph-bold ph-arrow-up-right"></i></span>
                     </button>
                 </div>
             </div>
@@ -150,14 +157,14 @@
     <dialog class="dialog" id="lead" aria-labelledby="lead-title">
         <div class="bezel">
             <form class="bezel__core dialog__box" id="lead-form" method="dialog">
-                <button class="dialog__close" type="button" data-close aria-label="Close">✕</button>
+                <button class="dialog__close" type="button" data-close aria-label="Close"><i class="ph-bold ph-x" aria-hidden="true"></i></button>
                 <h2 id="lead-title">Book a free lesson</h2>
                 <p class="dialog__course" id="lead-course"></p>
                 <label class="field"><span>Your name</span><input name="parent" type="text" autocomplete="name" required></label>
                 <label class="field"><span>Email or phone</span><input name="contact" type="text" autocomplete="email" required></label>
                 <label class="field"><span>Child’s age</span><select name="age" required><option value="" disabled selected>Choose</option></select></label>
                 <button class="pill pill--dark pill--block" type="submit">
-                    <span>Send request</span><span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5 11 11 5M6 5h5v5"/></svg></span>
+                    <span>Send request</span><span class="pill__icon" aria-hidden="true"><i class="ph-bold ph-arrow-up-right"></i></span>
                 </button>
                 <p class="dialog__note" id="lead-note" role="status"></p>
             </form>

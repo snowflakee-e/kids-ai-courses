@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,7 +33,7 @@
         <section class="hero" id="top">
             <div class="hero__text">
                 <h1>Kids don’t just use AI here. They take it apart.</h1>
-                <p>A hands-on AI workshop for ages 6 to 17. Kids train models, write prompts, break things on purpose and work out why. Every kit is built for one age band.</p>
+                <p>A hands-on AI workshop for ages 6 to 17. Kids train models, write prompts and find out why AI fails.</p>
                 <div class="hero__cta">
                     <a class="btn btn--yellow" href="#kits">Choose a kit by age</a>
                     <a class="btn btn--white" href="#bench">Free first lesson</a>
@@ -41,12 +42,6 @@
 
             <figure class="diagram" aria-labelledby="diagram-cap">
                 <svg class="diagram__lines" viewBox="0 0 1000 760" aria-hidden="true">
-                    <g class="examples">
-                        <rect x="600" y="478" width="70" height="56" rx="8" transform="rotate(-10 635 506)"/>
-                        <rect x="616" y="470" width="70" height="56" rx="8" transform="rotate(4 651 498)"/>
-                        <rect x="632" y="464" width="70" height="56" rx="8" transform="rotate(14 667 492)"/>
-                        <text x="667" y="502" text-anchor="middle" transform="rotate(14 667 492)">🐱</text>
-                    </g>
                     <path d="M330 92 L430 92 L500 186"/>
                     <path d="M300 330 L409 318"/>
                     <path d="M330 610 L430 610 L500 440"/>
@@ -56,6 +51,7 @@
                     <circle cx="669" cy="318" r="9"/><circle cx="668" cy="528" r="9"/>
                 </svg>
                 <div class="diagram__bot" id="diagram-bot" aria-hidden="true"></div>
+                <div class="examples" aria-hidden="true"><span></span><span></span><span><i class="ph-bold ph-cat"></i></span></div>
                 <p class="part" style="--x:40;--y:40;--w:290"><b>Sensors</b><span>How AI sees and hears: a camera, a microphone.</span></p>
                 <p class="part" style="--x:20;--y:282;--w:280"><b>Output</b><span>A guess, not a fact. Always check it.</span></p>
                 <p class="part" style="--x:40;--y:562;--w:290"><b>Model</b><span>The patterns it found in the examples.</span></p>
@@ -72,6 +68,7 @@
                 <p>Choose an age band. You get only the kits whose whole age range fits inside it, so a 6-year-old never lands in a course for 10-year-olds.</p>
             </div>
             <div class="tracks" id="tracks" role="group" aria-label="Age band"></div>
+            <p class="age-note" id="age-note" hidden></p>
             <p class="count" id="kit-count" aria-live="polite"></p>
             <div class="kits" id="kit-list"></div>
         </section>

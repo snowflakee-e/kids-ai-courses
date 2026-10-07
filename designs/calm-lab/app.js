@@ -7,7 +7,8 @@
     var ROOT = '../../';
     var COLORS = ['var(--g1)', 'var(--g2)', 'var(--g3)', 'var(--g4)'];
     var BLOOP = { body: '#7CC8B4', accent: '#FFDCC7', screen: '#15231F', glow: '#E2F8F0', joint: '#B3A8F2' };
-    var ARROW = '<span class="pill__icon" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5 11 11 5M6 5h5v5"/></svg></span>';
+    var ARROW = '<span class="pill__icon" aria-hidden="true"><i class="ph-bold ph-arrow-up-right"></i></span>';
+    var profile = C.loadProfile(); // ребёнок вошёл в кабинет: { name, id, min, max }
 
     var $ = function (s, r) { return (r || document).querySelector(s); };
     var bot = function (state) { return renderBobik(state, BLOOP); };
@@ -19,9 +20,17 @@
         var interest = $('#f-interest').value;
         var range = C.parseRange(groupId);
         var g = range && C.AGE_GROUPS.filter(function (x) { return x.id === groupId; })[0];
-        C.saveRange(range);
+        if (range && !profile) C.saveRange(range);
 
-        var byAge = range ? C.coursesInRange(range.min, range.max) : C.COURSES;
+        // «Всех возрастов» нет: пока возраст не выбран, курсов не показываем
+        if (!range) {
+            $('#finder-group').innerHTML = '';
+            $('#results-count').textContent = '';
+            $('#results').innerHTML = '<div class="empty"><p>Pick your child’s age in the sentence above. You’ll see only the courses made for that age.</p></div>';
+            return;
+        }
+
+        var byAge = C.coursesInRange(range.min, range.max);
         var list = C.coursesForInterest(interest, byAge);
 
         $('#f-age').style.setProperty('--pick', g ? colorOf(g) : 'var(--mint)');
@@ -29,7 +38,7 @@
             ? '<div><b>' + g.name + '</b>' + g.style + '</div><div><b>A lesson</b>' + g.session + ', ' + g.group.charAt(0).toLowerCase() + g.group.slice(1) + '</div><div><b>By the end</b>' + g.goal + '</div>'
             : '';
 
-        var where = range ? ' for ' + C.rangeLabel(range.min, range.max).toLowerCase() : ' for every age';
+        var where = ' for ' + C.rangeLabel(range.min, range.max).toLowerCase();
         var why = interest ? ' who love ' + C.INTERESTS[interest].label.toLowerCase() : '';
         $('#results-count').textContent = list.length ? plural(list.length, 'course') + where + why : '';
         $('#results').innerHTML = list.length
@@ -59,7 +68,9 @@
                 '<p class="stop__age">' + g.min + '–' + g.max + '</p><p class="stop__name">' + g.name + '</p>' +
                 '<p>' + g.goal + '</p>' +
                 '<ul class="stop__facts"><li>' + g.style + '</li><li>' + g.session + '</li><li>' + g.group + '</li></ul>' +
-                '<button class="pill pill--light pill--sm stop__link" type="button" data-pick="' + g.id + '"><span>See ' + plural(n, 'course') + '</span>' + ARROW + '</button></li>';
+                // вошедшему ребёнку — кнопка только у его возраста
+                (profile && profile.id !== g.id ? '' :
+                '<button class="pill pill--light pill--sm stop__link" type="button" data-pick="' + g.id + '"><span>See ' + plural(n, 'course') + '</span>' + ARROW + '</button>') + '</li>';
         }).join('');
     }
 
@@ -99,8 +110,20 @@
         }).join(''));
 
         var saved = C.loadRange();
-        var savedGroup = saved && C.AGE_GROUPS.filter(function (g) { return g.min === saved.min && g.max === saved.max; })[0];
-        if (savedGroup) $('#f-age').value = savedGroup.id;
+        if (profile) {
+            // Ребёнок вошёл в кабинет: возраст из кабинета, в фразе его не поменять
+            $('#f-age').value = profile.id;
+            $('#f-age').disabled = true;
+            var note = $('#finder-note');
+            note.hidden = false;
+            note.textContent = 'Age from ' + profile.name + '’s cabinet. ';
+            var link = document.createElement('a');
+            link.href = ROOT + '../kids-ai-cabinet/';
+            link.textContent = 'Change it in the cabinet';
+            note.appendChild(link);
+        } else if (saved) {
+            $('#f-age').value = saved.min + '-' + saved.max;
+        }
         renderTimeline();
         update();
 

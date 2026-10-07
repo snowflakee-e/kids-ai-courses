@@ -15,6 +15,7 @@
     var plural = function (n, one) { return n + ' ' + one + (n === 1 ? '' : 's'); };
 
     var choice = null; // { min, max, kind: 'group' | 'age' }
+    var profile = C.loadProfile(); // ребёнок вошёл в кабинет: { name, min, max }
 
     function groupIndex(course) {
         var g = C.groupOf(course);
@@ -47,7 +48,7 @@
 
     function select(next) {
         choice = next;
-        C.saveRange(next && next.kind === 'group' ? next : null);
+        if (next && next.kind === 'group' && !profile) C.saveRange(next);
         document.querySelectorAll('.band').forEach(function (b) {
             var g = C.AGE_GROUPS.filter(function (x) { return x.id === b.dataset.group; })[0];
             var on = !!(choice && choice.kind === 'group' && g.min === choice.min && g.max === choice.max);
@@ -69,9 +70,11 @@
     function renderShelf() {
         var list, intro;
         if (!choice) {
-            list = C.COURSES;
-            intro = '<div><h3>Every course, every age</h3></div>' +
-                '<p>' + plural(list.length, 'course') + ' from first picture games at 6 to real study tools at 17. Pick an age above to narrow the shelf.</p>';
+            // «Все возрасты» не показываем: без возраста полка пустая и просит выбрать его
+            $('#shelf-intro').innerHTML = '<div><h3>The shelf is waiting</h3></div>' +
+                '<p>Pick your child’s age on the chart above. Every course is planned for one age band, so you’ll only see the ones that fit.</p>';
+            $('#books').innerHTML = '';
+            return;
         } else if (choice.kind === 'group') {
             var g = C.AGE_GROUPS.filter(function (x) { return x.min === choice.min && x.max === choice.max; })[0];
             list = C.coursesInRange(choice.min, choice.max);
@@ -131,9 +134,21 @@
         }).join(''));
 
         renderChart();
-        var saved = C.loadRange();
-        var savedGroup = saved && C.AGE_GROUPS.filter(function (g) { return g.min === saved.min && g.max === saved.max; })[0];
-        select(savedGroup ? { min: savedGroup.min, max: savedGroup.max, kind: 'group' } : null);
+        if (profile) {
+            // Ребёнок вошёл в кабинет: ростомер показывает только его группу, выбрать другую нельзя
+            document.querySelectorAll('.band, .tick').forEach(function (b) { b.disabled = true; });
+            var note = $('#chart-note');
+            note.hidden = false;
+            note.textContent = 'Showing courses for ' + profile.name + ', ' + C.rangeLabel(profile.min, profile.max).toLowerCase() + ', as set in the cabinet. ';
+            var link = document.createElement('a');
+            link.href = ROOT + '../kids-ai-cabinet/';
+            link.textContent = 'Change age in the cabinet';
+            note.appendChild(link);
+            select({ min: profile.min, max: profile.max, kind: 'group' });
+        } else {
+            var saved = C.loadRange();
+            select(saved ? { min: saved.min, max: saved.max, kind: 'group' } : null);
+        }
 
         $('#growth-chart').addEventListener('click', function (e) {
             var band = e.target.closest('.band');
@@ -146,8 +161,6 @@
                 select({ min: age, max: age, kind: 'age' });
             }
         });
-        $('#show-all').addEventListener('click', function () { select(null); });
-
         document.addEventListener('click', function (e) {
             var lead = e.target.closest('[data-lead]');
             if (lead) openLead(lead.dataset.lead);

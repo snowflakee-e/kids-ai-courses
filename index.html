@@ -141,11 +141,14 @@
 
                 <div class="section-head section-head--row">
                     <div>
-                        <h2 id="home-courses-title">Popular courses</h2>
-                        <p>Pick a course by age: Bobik is already waiting for you in the first lesson.</p>
+                        <h2 id="home-courses-title">Find courses for your child’s age</h2>
+                        <p>Every course is made for one age group, so tasks are never too easy or too hard.</p>
                     </div>
-                    <a class="link-more" href="#/courses">All courses →</a>
+                    <a class="link-more" id="home-courses-more" href="#/courses" hidden>More for this age →</a>
                 </div>
+                <!-- кнопки возраста добавляет main.js; у вошедшего ребёнка возраст берётся из кабинета -->
+                <div class="chips age-chips" role="group" aria-label="Child’s age" data-age-chips></div>
+                <p class="age-note" data-age-note hidden></p>
                 <div class="course-grid" id="home-courses"></div>
 
                 <div class="steps-band">
@@ -172,10 +175,9 @@
         <section class="page" data-page="courses" hidden>
             <div class="wrap">
                 <div class="toolbar">
-                    <div class="chips" role="group" aria-label="Filter by age" id="age-filter">
-                        <button class="chip is-active" type="button" data-age="all">All courses</button>
-                        <!-- группы возраста добавляет main.js из catalog.js -->
-                    </div>
+                    <!-- кнопки возраста добавляет main.js; у вошедшего ребёнка возраст берётся из кабинета -->
+                    <div class="chips" role="group" aria-label="Child’s age" data-age-chips></div>
+                    <p class="age-note" data-age-note hidden></p>
                     <p class="results" id="results-count"></p>
                 </div>
                 <div class="course-grid" id="all-courses"></div>

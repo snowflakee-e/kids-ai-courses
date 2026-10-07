@@ -8,6 +8,7 @@ var BLOOP_CATALOG = (function () {
   var MIN_AGE = 6;
   var MAX_AGE = 17;
   var RANGE_KEY = 'bloop-age-range'; // выбранный возраст, общий для всех сайтов на домене
+  var CABINET_KEY = 'bloop-cabinet-v1'; // профиль ребёнка из кабинета: { name, age: '9-11', ... }
 
   // Сегменты по интересам (исследование, раздел 6)
   var INTERESTS = {
@@ -142,8 +143,29 @@ var BLOOP_CATALOG = (function () {
     return null;
   }
 
+  function groupRange(id) {
+    for (var i = 0; i < AGE_GROUPS.length; i++) {
+      if (AGE_GROUPS[i].id === id) return { min: AGE_GROUPS[i].min, max: AGE_GROUPS[i].max };
+    }
+    return null;
+  }
+
+  // Профиль ребёнка из личного кабинета (kids-ai-cabinet, тот же домен): имя и возрастная группа.
+  // Если ребёнок вошёл, сайты показывают курсы только для этой группы.
+  function loadProfile() {
+    try {
+      var p = JSON.parse(localStorage.getItem(CABINET_KEY));
+      var range = p && groupRange(p.age);
+      return range ? { name: String(p.name || ''), id: p.age, min: range.min, max: range.max } : null;
+    } catch (e) { return null; }
+  }
+
+  // Возраст, выбранный гостем на сайте. Принимается только целая группа: «все возрасты» сайт не показывает.
   function loadRange() {
-    try { return parseRange(localStorage.getItem(RANGE_KEY)); } catch (e) { return null; }
+    try {
+      var r = parseRange(localStorage.getItem(RANGE_KEY));
+      return r && groupRange(r.min + '-' + r.max);
+    } catch (e) { return null; }
   }
 
   function saveRange(range) {
@@ -157,7 +179,8 @@ var BLOOP_CATALOG = (function () {
     MIN_AGE: MIN_AGE, MAX_AGE: MAX_AGE, INTERESTS: INTERESTS, AGE_GROUPS: AGE_GROUPS, COURSES: COURSES,
     parseRange: parseRange, fitsRange: fitsRange, coursesInRange: coursesInRange, coursesForAge: coursesForAge,
     coursesForInterest: coursesForInterest, rangeLabel: rangeLabel, courseAges: courseAges, groupOf: groupOf,
-    findCourse: findCourse, courseHref: courseHref, loadRange: loadRange, saveRange: saveRange
+    findCourse: findCourse, courseHref: courseHref, groupRange: groupRange, loadProfile: loadProfile,
+    loadRange: loadRange, saveRange: saveRange
   };
 })();
 

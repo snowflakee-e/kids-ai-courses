@@ -50,6 +50,9 @@ p { margin: 0; }
 a { color: inherit; }
 svg { display: block; max-width: 100%; }
 :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+::selection { background: var(--yellow); color: var(--ink); }
+html { scrollbar-color: var(--ink) var(--bg); accent-color: var(--blue); }
+input, select { caret-color: var(--blue); }
 
 .skip { position: absolute; left: -999px; top: 8px; z-index: 40; background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px; }
 .skip:focus { left: 8px; }
@@ -98,8 +101,12 @@ svg { display: block; max-width: 100%; }
 .diagram__lines { position: absolute; inset: 0; width: 100%; height: 100%; }
 .diagram__lines path { fill: none; stroke: var(--ink); stroke-width: 3; stroke-dasharray: 8 6; }
 .diagram__lines circle { fill: var(--yellow); stroke: var(--ink); stroke-width: 3; }
-.examples rect { fill: var(--paper); stroke: var(--ink); stroke-width: 3; }
-.examples text { font-size: 30px; }
+/* Стопка примеров (данные) рядом с Блупом: x 600–702, y 464–534 из 1000×760 */
+.examples { position: absolute; left: 60%; top: 61%; width: 7.4%; aspect-ratio: 70 / 56; }
+.examples span { position: absolute; inset: 0; background: var(--paper); border: 2.5px solid var(--ink); border-radius: 8px; display: grid; place-items: center; font-size: clamp(12px, 3cqw, 26px); }
+.examples span:nth-child(1) { transform: translate(-22%, 12%) rotate(-10deg); }
+.examples span:nth-child(2) { transform: translate(-10%, 6%) rotate(4deg); }
+.examples span:nth-child(3) { transform: rotate(14deg); background: var(--mint); }
 /* Блуп на схеме: x 305–695, y 150 из 1000×760; координаты линий в index.html посчитаны под это */
 .diagram__bot { position: absolute; left: 30.5%; top: 19.74%; width: 39%; }
 .part {
@@ -124,7 +131,7 @@ svg { display: block; max-width: 100%; }
 .block__head p { margin-top: 16px; max-width: 40em; font-size: 1.1rem; color: var(--ink-2); }
 
 /* ---------- Выбор возраста ---------- */
-.tracks { display: grid; grid-template-columns: .8fr repeat(4, 1fr); gap: 16px; }
+.tracks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .track {
     display: grid; align-content: space-between; gap: 18px; min-height: 148px;
     padding: 16px 18px; text-align: left; cursor: pointer;
@@ -138,7 +145,13 @@ svg { display: block; max-width: 100%; }
 .track__name { font-weight: 600; }
 .track__name small { display: block; font-weight: 400; font-size: .9rem; }
 .track--blue { color: #fff; }
-.track--all .track__age { font-size: clamp(1.8rem, 3vw, 2.4rem); }
+/* Ребёнок вошёл: возраст задан в кабинете, остальные треки неактивны */
+.track:disabled { cursor: default; }
+.track:disabled:not([aria-pressed="true"]) { opacity: .4; box-shadow: none; transform: none; }
+.age-note { margin-top: 24px; padding: 12px 16px; background: var(--paper); border: var(--line); border-radius: 12px; font-weight: 500; }
+.age-note[hidden] { display: none; }
+.age-note a { font-weight: 700; text-decoration-color: var(--blue); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.empty { grid-column: 1 / -1; padding: 28px; background: var(--paper); border: var(--line); border-radius: var(--r); font-weight: 500; }
 .count { margin-top: 32px; margin-bottom: 18px; font-weight: 600; }
 
 .kits { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 26px; }
@@ -150,7 +163,7 @@ svg { display: block; max-width: 100%; }
 @keyframes drop { from { opacity: 0; transform: translateY(-14px) scale(.97); } }
 .kit__lid {
     position: relative; height: 168px; overflow: hidden;
-    background: var(--c) repeating-linear-gradient(-45deg, transparent 0 14px, rgba(255, 255, 255, .28) 14px 28px);
+    background: var(--c);
     border-bottom: var(--line); border-radius: 11px 11px 0 0;
 }
 .kit__bot { position: absolute; width: 148px; left: 12px; bottom: -14px; }
@@ -249,7 +262,6 @@ svg { display: block; max-width: 100%; }
     .hero { grid-template-columns: 1fr; }
     .diagram { margin-bottom: 40px; }
     .tracks { grid-template-columns: repeat(4, 1fr); }
-    .track--all { grid-column: 1 / -1; min-height: 0; align-content: center; }
     .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 36px; }
     .steps li:nth-child(3)::after { display: none; }
     /* таблица треков превращается в карточки */

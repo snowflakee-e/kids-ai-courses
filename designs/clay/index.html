@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School: teach Bloop, learn how AI learns</title>
+    <meta name="description" content="Playful AI lessons for kids aged 6–17. Try a 30-second lesson, then see only the courses made for your child's age.">
+    <meta name="theme-color" content="#F4F1FA">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='18' width='80' height='66' rx='30' fill='%23A78BFA'/><rect x='22' y='32' width='56' height='38' rx='18' fill='%23332F3A'/><circle cx='40' cy='50' r='6' fill='%23F3EEFF'/><circle cx='60' cy='50' r='6' fill='%23F3EEFF'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="blobs" aria-hidden="true"><span></span><span></span></div>
+
+    <header class="nav">
+        <a class="nav__brand" href="#top" aria-label="Bloop AI School, back to top"><span class="nav__bot" id="nav-bot"></span>Bloop AI School</a>
+        <nav class="nav__links" aria-label="Sections">
+            <a href="#courses">Courses</a>
+            <a href="#parents">For parents</a>
+            <a href="#book">Free lesson</a>
+        </nav>
+        <a class="clay-btn clay-btn--soft nav__cabinet" id="cabinet-link" href="../../../kids-ai-cabinet/">
+            <i class="ph-bold ph-user-circle" aria-hidden="true"></i><span id="cabinet-text">My cabinet</span>
+        </a>
+    </header>
+
+    <main id="main">
+        <!-- Первый экран: урок на 30 секунд — предскажи, проверь, исправь -->
+        <section class="hero" id="top">
+            <div class="hero__text">
+                <h1>Teach Bloop. Find out how AI learns.</h1>
+                <p>Playful AI lessons for ages 6 to 17. Try one right here: it takes thirty seconds.</p>
+                <div class="hero__cta">
+                    <a class="clay-btn" href="#courses">See courses for my child</a>
+                    <a class="clay-btn clay-btn--soft" href="#book">Book a free lesson</a>
+                </div>
+            </div>
+
+            <div class="lesson clay" id="lesson" aria-labelledby="lesson-title">
+                <ol class="lesson__steps" aria-label="Lesson steps">
+                    <li class="is-on">Guess</li><li>Test</li><li>Teach</li>
+                </ol>
+                <div class="lesson__stage">
+                    <div class="lesson__bot" id="lesson-bot" aria-hidden="true"></div>
+                    <div class="lesson__item" id="lesson-item" aria-hidden="true"></div>
+                    <p class="lesson__bubble" id="lesson-bubble" hidden></p>
+                </div>
+                <div class="lesson__seen">
+                    <span>What Bloop has seen</span>
+                    <div class="lesson__shelf" id="lesson-shelf"></div>
+                </div>
+                <h2 class="lesson__title" id="lesson-title" aria-live="polite"></h2>
+                <p class="lesson__text" id="lesson-text"></p>
+                <div class="lesson__actions" id="lesson-actions"></div>
+            </div>
+        </section>
+
+        <!-- Возраст: игрушечные кубики; у вошедшего ребёнка — возраст из кабинета -->
+        <section class="section" id="courses" aria-labelledby="courses-title">
+            <h2 class="section__title" id="courses-title">Pick your child’s age</h2>
+            <p class="section__lead">Every course is made for one age group, so tasks are never too easy or too hard.</p>
+            <div class="blocks" id="blocks" role="group" aria-label="Child’s age"></div>
+            <p class="age-note clay" id="age-note" hidden></p>
+            <p class="count" id="count" aria-live="polite"></p>
+            <div class="courses" id="course-list"></div>
+        </section>
+
+        <!-- Родителям: пример письма + правила -->
+        <section class="section parents" id="parents" aria-labelledby="parents-title">
+            <h2 class="section__title" id="parents-title">What you get as a parent</h2>
+            <div class="parents__grid">
+                <figure class="letter clay">
+                    <figcaption>Example of the weekly note you get every Friday</figcaption>
+                    <div class="letter__body">
+                        <p class="letter__hi">Hi! This week Mia (7) taught Bloop to tell apples from balls.</p>
+                        <dl>
+                            <dt><i class="ph-bold ph-chat-circle-dots" aria-hidden="true"></i>Ask at dinner</dt>
+                            <dd>Why did Bloop think the green apple wasn’t an apple?</dd>
+                            <dt><i class="ph-bold ph-house-line" aria-hidden="true"></i>Family task, 10 minutes</dt>
+                            <dd>Find three things at home that listen or watch.</dd>
+                            <dt><i class="ph-bold ph-clock" aria-hidden="true"></i>Time this week</dt>
+                            <dd>3 lessons, 72 minutes in total, all before 7 pm.</dd>
+                        </dl>
+                    </div>
+                </figure>
+                <ul class="rules">
+                    <li><i class="ph-bold ph-shield-check" aria-hidden="true"></i><div><b>Under 13, a sandbox only</b><span>No public chatbots. Bloop has filters and message limits, and keeps no personal data.</span></div></li>
+                    <li><i class="ph-bold ph-robot" aria-hidden="true"></i><div><b>Bloop says it’s a program</b><span>At the start of every chat, so younger kids don’t mistake it for a friend.</span></div></li>
+                    <li><i class="ph-bold ph-timer" aria-hidden="true"></i><div><b>You set the daily limit</b><span>After it, the next lesson waits until tomorrow. A lesson always has an end.</span></div></li>
+                    <li><i class="ph-bold ph-bell-simple-slash" aria-hidden="true"></i><div><b>No pressure tricks</b><span>No streaks that burn, no loot boxes, no notifications to your child.</span></div></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Запись -->
+        <section class="section" id="book" aria-labelledby="book-title">
+            <div class="book clay">
+                <div class="book__text">
+                    <h2 class="section__title" id="book-title">Book a free first lesson</h2>
+                    <p>Mini groups of 3 to 6, team groups from age 11, one-on-one, or a family lesson for a parent and a child of 6 to 8. A teacher replies within a day.</p>
+                    <div class="book__bot" id="book-bot" aria-hidden="true"></div>
+                </div>
+                <form class="book__form" id="lead-form">
+                    <label class="field"><span>Your name</span><input name="parent" type="text" autocomplete="name" required></label>
+                    <label class="field"><span>Email or phone</span><input name="contact" type="text" autocomplete="email" required></label>
+                    <label class="field"><span>Child’s age</span>
+                        <select name="age" id="lead-age" required><option value="" disabled selected>Choose</option></select>
+                    </label>
+                    <button class="clay-btn clay-btn--block" type="submit">Book the lesson</button>
+                    <p class="form-note" id="lead-note" role="status"></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <span>© <span id="year"></span> Bloop AI School</span>
+        <nav aria-label="Other versions">
+            <a href="../">All design versions</a>
+            <a href="../../">Current site</a>
+            <a href="../../ai-trail/">AI Trail for teens</a>
+        </nav>
+    </footer>
+
+    <script src="../../bobik.js"></script>
+    <script src="../../catalog.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

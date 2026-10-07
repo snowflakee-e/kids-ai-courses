@@ -21,13 +21,12 @@
         '14-17': 'Real tools in teen modes, with your consent'
     };
 
-    var current = null; // id группы или null — все возрасты
+    var current = null; // id группы или null — возраст ещё не выбран
+    var profile = C.loadProfile(); // ребёнок вошёл в кабинет: { name, id, min, max }
 
     // ---------- Наборы ----------
     function renderTracks() {
-        var html = '<button class="track track--all" type="button" data-group="" aria-pressed="false">' +
-            '<span class="track__age">All</span><span class="track__name">Every age<small>' + plural(C.COURSES.length, 'kit') + '</small></span></button>';
-        html += C.AGE_GROUPS.map(function (g, i) {
+        var html = C.AGE_GROUPS.map(function (g, i) {
             return '<button class="track' + (i === 3 ? ' track--blue' : '') + '" type="button" style="--c:' + COLORS[i] + '" data-group="' + g.id + '" aria-pressed="false">' +
                 '<span class="track__age">' + g.min + '–' + g.max + '</span>' +
                 '<span class="track__name">' + g.name + '<small>' + plural(C.coursesInRange(g.min, g.max).length, 'kit') + '</small></span></button>';
@@ -35,17 +34,21 @@
         $('#tracks').innerHTML = html;
     }
 
+    // Набор возраста: только курсы, чей возраст целиком внутри группы. «Всех возрастов» нет.
     function pick(groupId) {
         current = groupId || null;
         var range = C.parseRange(current);
-        C.saveRange(range);
+        if (range && !profile) C.saveRange(range);
         document.querySelectorAll('.track').forEach(function (b) {
-            b.setAttribute('aria-pressed', String((b.dataset.group || null) === current));
+            b.setAttribute('aria-pressed', String(b.dataset.group === current));
         });
-        var list = range ? C.coursesInRange(range.min, range.max) : C.COURSES;
-        $('#kit-count').textContent = range
-            ? plural(list.length, 'kit') + ' for ' + C.rangeLabel(range.min, range.max).toLowerCase()
-            : plural(list.length, 'kit') + ' for every age';
+        if (!range) {
+            $('#kit-count').textContent = '';
+            $('#kit-list').innerHTML = '<p class="empty">Press your child’s age band above. You’ll get only the kits built for that age.</p>';
+            return;
+        }
+        var list = C.coursesInRange(range.min, range.max);
+        $('#kit-count').textContent = plural(list.length, 'kit') + ' for ' + C.rangeLabel(range.min, range.max).toLowerCase();
         $('#kit-list').innerHTML = list.map(kit).join('');
     }
 
@@ -125,13 +128,24 @@
         renderTracks();
         renderSpec();
         var saved = C.loadRange();
-        var savedGroup = saved && C.AGE_GROUPS.filter(function (g) { return g.min === saved.min && g.max === saved.max; })[0];
-        pick(savedGroup ? savedGroup.id : null);
-        if (savedGroup) { $('#lead-age').value = savedGroup.id; fillCourses(savedGroup.id); }
+        var start = profile ? profile.id : (saved ? saved.min + '-' + saved.max : null);
+        if (profile) {
+            // Ребёнок вошёл в кабинет: доступен только его трек
+            document.querySelectorAll('.track').forEach(function (b) { b.disabled = b.dataset.group !== profile.id; });
+            var note = $('#age-note');
+            note.hidden = false;
+            note.textContent = 'Kits for ' + profile.name + ', ' + C.rangeLabel(profile.min, profile.max).toLowerCase() + ', as set in the cabinet. ';
+            var link = document.createElement('a');
+            link.href = ROOT + '../kids-ai-cabinet/';
+            link.textContent = 'Change age in the cabinet';
+            note.appendChild(link);
+        }
+        pick(start);
+        if (start) { $('#lead-age').value = start; fillCourses(start); }
 
         $('#tracks').addEventListener('click', function (e) {
             var b = e.target.closest('.track');
-            if (!b) return;
+            if (!b || b.disabled) return;
             pick(b.dataset.group);
             if (b.dataset.group) { $('#lead-age').value = b.dataset.group; fillCourses(b.dataset.group); }
         });

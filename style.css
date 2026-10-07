@@ -617,6 +617,14 @@ button { font: inherit; color: inherit; }
 
 .results { margin: 0; color: var(--ink-soft); font-weight: 700; white-space: nowrap; }
 
+/* Возраст: кнопки для гостя, подпись «из кабинета» для вошедшего ребёнка */
+.chips[hidden], .age-note[hidden], .link-more[hidden] { display: none; }
+.age-chips { margin-bottom: 16px; }
+.age-note { margin: 0 0 20px; padding: 12px 18px; border-radius: 16px; background: #fff; font-weight: 700; color: var(--ink); }
+.toolbar .age-note { margin: 0; }
+.age-note a { color: var(--blue); }
+.age-empty { grid-column: 1 / -1; margin: 0; padding: 28px; border-radius: var(--radius); background: #fff; color: var(--ink-soft); font-weight: 700; text-align: center; }
+
 /* Шаги урока */
 .steps-band {
     margin-top: 72px;

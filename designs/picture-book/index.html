@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Gluten:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -34,7 +35,7 @@
         <section class="cover" id="top">
             <div class="cover__text">
                 <h1>Growing up with AI, one chapter at a time</h1>
-                <p class="cover__lead">Bloop AI School teaches kids aged 6 to 17 what AI is, how it learns and how to use it wisely and safely. Every age gets its own course, its own pace and a teacher who knows your child's name.</p>
+                <p class="cover__lead">Courses for ages 6 to 17: what AI is, how it learns, and how to use it wisely and safely.</p>
                 <div class="cover__cta">
                     <a class="btn btn--ink" href="#chart">Find a course for my child</a>
                     <button class="btn btn--line" type="button" data-lead>Book a free first lesson</button>
@@ -57,7 +58,7 @@
             </div>
 
             <div class="chart" id="growth-chart" role="group" aria-label="Choose your child's age"></div>
-            <p class="chart__reset"><button class="link" type="button" id="show-all">Show courses for every age</button></p>
+            <p class="chart__note" id="chart-note" hidden></p>
 
             <div class="shelf" aria-live="polite">
                 <div class="shelf__intro" id="shelf-intro"></div>
@@ -114,38 +115,32 @@
                 <div class="promise__col">
                     <h3>We always</h3>
                     <ul class="ticks">
-                        <li>Keep children under 13 in Bloop's own sandbox, never on public chatbots.</li>
-                        <li>Have Bloop say it is a program, at the start of every chat.</li>
-                        <li>Refuse names, addresses, schools and photos. Bloop hides them and explains why.</li>
-                        <li>Send you a short weekly note: what we did and one question for dinner.</li>
-                        <li>Let you set the daily limit. After it, the next lesson waits until tomorrow.</li>
+                        <li><i class="ph-bold ph-check" aria-hidden="true"></i>Keep children under 13 in Bloop's own sandbox, never on public chatbots.</li>
+                        <li><i class="ph-bold ph-check" aria-hidden="true"></i>Have Bloop say it is a program, at the start of every chat.</li>
+                        <li><i class="ph-bold ph-check" aria-hidden="true"></i>Refuse names, addresses, schools and photos. Bloop hides them and explains why.</li>
+                        <li><i class="ph-bold ph-check" aria-hidden="true"></i>Send you a short weekly note: what we did and one question for dinner.</li>
+                        <li><i class="ph-bold ph-check" aria-hidden="true"></i>Let you set the daily limit. After it, the next lesson waits until tomorrow.</li>
                     </ul>
                 </div>
                 <div class="promise__col promise__col--never">
                     <h3>We never</h3>
                     <ul class="crosses">
-                        <li>Use streaks that burn or a sad mascot who “misses you”.</li>
-                        <li>Sell loot boxes, lives or random prizes.</li>
-                        <li>Autoplay the next video.</li>
-                        <li>Send notifications to your child, or to anyone at night.</li>
-                        <li>Rank kids under 13 on public leaderboards.</li>
+                        <li><i class="ph-bold ph-x" aria-hidden="true"></i>Use streaks that burn or a sad mascot who “misses you”.</li>
+                        <li><i class="ph-bold ph-x" aria-hidden="true"></i>Sell loot boxes, lives or random prizes.</li>
+                        <li><i class="ph-bold ph-x" aria-hidden="true"></i>Autoplay the next video.</li>
+                        <li><i class="ph-bold ph-x" aria-hidden="true"></i>Send notifications to your child, or to anyone at night.</li>
+                        <li><i class="ph-bold ph-x" aria-hidden="true"></i>Rank kids under 13 on public leaderboards.</li>
                     </ul>
                 </div>
             </div>
 
-            <aside class="notes" aria-label="From our research">
-                <figure class="note">
-                    <p class="note__big">72%</p>
-                    <figcaption>of US teens have already tried AI companions. <cite>Common Sense Media, 2025</cite></figcaption>
-                </figure>
-                <figure class="note">
-                    <p class="note__big">1 in 8</p>
-                    <figcaption>parents plan to pay for AI tutoring or camps to close the gap. <cite>EdChoice, 2025</cite></figcaption>
-                </figure>
-                <figure class="note">
-                    <p class="note__big">6 min</p>
-                    <figcaption>is where attention to a learning video drops. Our videos are shorter and end with a task. <cite>Guo, Kim &amp; Rubin, 2014</cite></figcaption>
-                </figure>
+            <aside class="notes" aria-labelledby="notes-title">
+                <h3 id="notes-title">From the research behind the course</h3>
+                <ul>
+                    <li>Seven in ten US teens have already tried AI companions, so we teach kids where a bot ends and a friend begins. <cite>Common Sense Media, 2025</cite></li>
+                    <li>One parent in eight plans to pay for AI tutoring or camps. Our first lesson is free, so you can judge before you pay. <cite>EdChoice, 2025</cite></li>
+                    <li>Attention to a learning video drops after about six minutes. Ours are shorter and end with a task, not the next video. <cite>Guo, Kim &amp; Rubin, 2014</cite></li>
+                </ul>
             </aside>
         </section>
 
@@ -208,7 +203,7 @@
 
     <dialog class="sheet" id="lead" aria-labelledby="lead-title">
         <form class="sheet__box" id="lead-form" method="dialog">
-            <button class="sheet__close" type="button" data-close aria-label="Close">✕</button>
+            <button class="sheet__close" type="button" data-close aria-label="Close"><i class="ph-bold ph-x" aria-hidden="true"></i></button>
             <h2 id="lead-title">Book a free first lesson</h2>
             <p id="lead-course" class="sheet__course"></p>
             <label class="field"><span>Your name</span><input name="parent" type="text" autocomplete="name" required></label>

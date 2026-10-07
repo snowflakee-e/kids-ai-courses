@@ -67,8 +67,7 @@ const app = {
         $('#year').textContent = new Date().getFullYear();
         $('#course-count').textContent = COURSES.length;
         this.renderAgeControls();
-        const saved = CATALOG.loadRange();
-        this.filterCourses(saved && this.groupId(saved) ? this.groupId(saved) : 'all');
+        this.renderCourses();
         this.bindEvents();
         this.updateAuthButton();
         this.drawStaticBobiks();
@@ -240,51 +239,61 @@ const app = {
             </article>`;
     },
 
-    renderCourseList(el, list) {
-        el.innerHTML = list.map(c => this.courseCard(c)).join('');
-    },
-
-    // id группы, если диапазон совпадает с одной из групп ('6-8'), иначе null
-    groupId(range) {
-        const g = CATALOG.AGE_GROUPS.find(g => g.min === range.min && g.max === range.max);
-        return g ? g.id : null;
-    },
-
-    // Кнопки фильтра и списки возрастов в формах — из одних и тех же групп каталога
+    // Кнопки возраста и списки возрастов в формах — из одних и тех же групп каталога (как в кабинете)
     renderAgeControls() {
-        $('#age-filter').insertAdjacentHTML('beforeend', CATALOG.AGE_GROUPS.map(g =>
-            `<button class="chip" type="button" data-age="${g.id}">${CATALOG.rangeLabel(g.min, g.max)}</button>`).join(''));
+        const chips = CATALOG.AGE_GROUPS.map(g =>
+            `<button class="chip" type="button" data-age="${g.id}" aria-pressed="false">${CATALOG.rangeLabel(g.min, g.max)}</button>`).join('');
+        $$('[data-age-chips]').forEach(box => { box.innerHTML = chips; });
         $$('select[name="age"]').forEach(sel => {
             sel.insertAdjacentHTML('beforeend', CATALOG.AGE_GROUPS.map(g =>
                 `<option value="${g.id}">${g.min}–${g.max} years</option>`).join(''));
         });
     },
 
-    // Выбор возраста: на странице курсов остаются только курсы, чей возраст целиком внутри диапазона.
-    // Выбор запоминается, и главная показывает курсы этого возраста.
-    filterCourses(age) {
-        const range = CATALOG.parseRange(age);
-        const list = range ? CATALOG.coursesInRange(range.min, range.max) : COURSES;
-        CATALOG.saveRange(range);
-
-        this.renderCourseList($('#all-courses'), list);
-        $('#results-count').textContent = range
-            ? `${list.length} ${plural(list.length, 'course')} for ${CATALOG.rangeLabel(range.min, range.max).toLowerCase()}`
-            : `${list.length} ${plural(list.length, 'course')} for all ages`;
-        $$('#age-filter .chip').forEach(ch => {
-            const active = ch.dataset.age === age;
-            ch.classList.toggle('is-active', active);
-            ch.setAttribute('aria-pressed', String(active));
-        });
-        this.renderHomeCourses(range);
+    // Возраст ребёнка: из кабинета, если он вошёл (тогда выбрать другой нельзя), иначе выбранный гостем.
+    // «Все возрасты» сайт не показывает: без возраста курсов нет, только просьба выбрать возраст.
+    currentAge() {
+        const fromCabinet = this.user && CATALOG.groupRange(this.user.age);
+        if (fromCabinet) return { id: this.user.age, range: fromCabinet, locked: true };
+        const saved = CATALOG.loadRange();
+        return saved ? { id: `${saved.min}-${saved.max}`, range: saved, locked: false } : null;
     },
 
-    renderHomeCourses(range) {
-        const list = range ? CATALOG.coursesInRange(range.min, range.max) : COURSES.filter(c => c.popular);
-        this.renderCourseList($('#home-courses'), list.slice(0, 3));
-        $('#home-courses-title').textContent = range
-            ? `Courses for ${CATALOG.rangeLabel(range.min, range.max).toLowerCase()}`
-            : 'Popular courses';
+    chooseAge(id) {
+        if (this.currentAge()?.locked) return;
+        CATALOG.saveRange(CATALOG.groupRange(id));
+        this.renderCourses();
+    },
+
+    // Курсы только для выбранного возраста: возраст курса целиком внутри группы (6–8 → курсы 6–7, 7–8, 6–8)
+    renderCourses() {
+        const age = this.currentAge();
+        const list = age ? CATALOG.coursesInRange(age.range.min, age.range.max) : [];
+        const label = age ? CATALOG.rangeLabel(age.range.min, age.range.max).toLowerCase() : '';
+
+        $$('[data-age-chips]').forEach(box => { box.hidden = !!age?.locked; });
+        $$('[data-age-chips] .chip').forEach(ch => {
+            const on = !!age && ch.dataset.age === age.id;
+            ch.classList.toggle('is-active', on);
+            ch.setAttribute('aria-pressed', String(on));
+        });
+        // Имя ребёнка — пользовательский текст, поэтому только textContent
+        $$('[data-age-note]').forEach(note => {
+            note.hidden = !age?.locked;
+            if (!age?.locked) return;
+            note.textContent = `Courses for ${this.user.name}, ${label}, as set in the cabinet. `;
+            const link = document.createElement('a');
+            link.href = this.cabinetLink();
+            link.textContent = 'Change age in the cabinet';
+            note.append(link);
+        });
+
+        const empty = '<p class="age-empty">Choose your child’s age above and you’ll see only the courses made for it.</p>';
+        $('#all-courses').innerHTML = age ? list.map(c => this.courseCard(c)).join('') : empty;
+        $('#results-count').textContent = age ? `${list.length} ${plural(list.length, 'course')} for ${label}` : '';
+        $('#home-courses').innerHTML = age ? list.slice(0, 3).map(c => this.courseCard(c)).join('') : empty;
+        $('#home-courses-title').textContent = age ? `Courses for ${label}` : 'Find courses for your child’s age';
+        $('#home-courses-more').hidden = !age || list.length <= 3;
     },
 
     // ---------- Авторизация ----------
@@ -383,9 +392,10 @@ const app = {
             });
         });
 
-        $('#age-filter').addEventListener('click', e => {
-            const chip = e.target.closest('.chip');
-            if (chip) this.filterCourses(chip.dataset.age);
+        // Кнопки возраста на главной и на странице курсов
+        document.addEventListener('click', e => {
+            const chip = e.target.closest('[data-age-chips] .chip');
+            if (chip) this.chooseAge(chip.dataset.age);
         });
 
         // Кнопки, открывающие модалки
@@ -396,12 +406,13 @@ const app = {
             if (e.target.closest('[data-close]')) e.target.closest('dialog').close();
         });
 
-        // Вернулись на сайт из кабинета кнопкой «назад» — обновляем прогресс
+        // Вернулись на сайт из кабинета кнопкой «назад» — обновляем прогресс и возраст (его могли сменить в кабинете)
         window.addEventListener('pageshow', e => {
             if (!e.persisted) return;
             this.user = this.loadUser();
             this.updateAuthButton();
             this.renderWelcomeBack();
+            this.renderCourses();
         });
 
         // Закрытие модалки по клику на фон

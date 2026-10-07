@@ -33,16 +33,6 @@ body {
     font: 400 1.1875rem/1.62 var(--text);
     overflow-x: hidden;
 }
-/* Бумажное зерно: фиксированный слой, не мешает кликам */
-body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 30;
-    pointer-events: none;
-    opacity: .09;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .29 0 0 0 0 .62 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
 
 h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.05; margin: 0; letter-spacing: -.01em; }
 h1 { font-size: clamp(2.6rem, 6.4vw, 5rem); font-weight: 800; text-shadow: .045em .045em 0 rgba(255, 79, 163, .55); }
@@ -53,6 +43,10 @@ a { color: inherit; }
 img, svg { display: block; max-width: 100%; }
 
 :focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; border-radius: 6px; }
+/* Поверхности браузера тоже в краске ризографа */
+::selection { background: var(--sun); color: var(--ink); }
+html { scrollbar-color: var(--ink) var(--tint); accent-color: var(--ink); }
+input, select { caret-color: var(--pink); }
 
 .skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 8px; z-index: 40; }
 .skip:focus { left: 8px; }
@@ -72,7 +66,6 @@ img, svg { display: block; max-width: 100%; }
 .btn--line:hover { background: var(--sun); }
 .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pink); }
 .btn--block { width: 100%; }
-.link { background: none; border: 0; padding: 4px 0; color: var(--ink); font: italic 500 1.05rem var(--text); text-decoration: underline; text-decoration-color: var(--pink); text-decoration-thickness: 2px; text-underline-offset: 4px; cursor: pointer; }
 
 /* ---------- Шапка ---------- */
 .top {
@@ -163,7 +156,13 @@ img, svg { display: block; max-width: 100%; }
 .tick:hover span { background: rgba(255, 255, 255, .7); }
 .tick.in-range span { background: var(--paper); }
 .tick.is-on span { background: var(--ink); color: var(--paper); }
-.chart__reset { margin-top: 16px; }
+.chart__note { margin-top: 16px; font-style: italic; font-size: 1.1rem; }
+.chart__note a { text-decoration-color: var(--pink); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+/* Ребёнок вошёл: возраст задан в кабинете, остальные полосы и метки неактивны */
+.band:disabled, .tick:disabled { cursor: default; }
+.band:disabled:not(.is-on) { opacity: .35; transform: none; box-shadow: none; }
+.tick:disabled:not(.in-range) { opacity: .45; }
+.sheet__close i { font-size: 1.1rem; }
 
 /* ---------- Полка с курсами ---------- */
 .shelf { margin-top: clamp(32px, 5vw, 56px); }
@@ -226,18 +225,18 @@ img, svg { display: block; max-width: 100%; }
 .promise h3 { font-size: 1.8rem; margin-bottom: 16px; }
 .ticks, .crosses { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
 .ticks li, .crosses li { position: relative; padding-left: 40px; }
-.ticks li::before, .crosses li::before {
-    position: absolute; left: 0; top: .1em;
+.ticks i, .crosses i {
+    position: absolute; left: 0; top: .15em;
     width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-    font: 800 1rem/1 var(--display); border: 2px solid var(--ink);
+    font-size: .95rem; border: 2px solid var(--ink);
 }
-.ticks li::before { content: '✓'; background: color-mix(in srgb, var(--leaf) 45%, var(--paper)); }
-.crosses li::before { content: '✕'; background: color-mix(in srgb, var(--pink) 45%, var(--paper)); }
-.notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: clamp(40px, 6vw, 72px); }
-.note { margin: 0; padding-top: 18px; border-top: 2.5px solid var(--ink); }
-.note__big { font: 800 clamp(2.4rem, 5vw, 3.6rem)/1 var(--display); text-shadow: 3px 3px 0 var(--sun); }
-.note figcaption { margin-top: 10px; font-size: 1.05rem; color: var(--ink-2); }
-.note cite { display: block; margin-top: 6px; font-size: .95rem; }
+.ticks i { background: color-mix(in srgb, var(--leaf) 45%, var(--paper)); }
+.crosses i { background: color-mix(in srgb, var(--pink) 45%, var(--paper)); }
+.notes { margin-top: clamp(40px, 6vw, 72px); padding-top: 24px; border-top: 2.5px solid var(--ink); }
+.notes h3 { font-size: 1.5rem; }
+.notes ul { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 40px; }
+.notes li { color: var(--ink-2); font-size: 1.08rem; }
+.notes cite { display: block; margin-top: 6px; font-size: .95rem; color: var(--ink); }
 
 /* ---------- Оглавление форматов ---------- */
 .toc { list-style: none; display: grid; gap: 4px; }
@@ -329,7 +328,7 @@ img, svg { display: block; max-width: 100%; }
 
     .shelf__intro { grid-template-columns: 1fr; }
     .panels { grid-template-columns: 1fr; }
-    .promise, .notes { grid-template-columns: 1fr; }
+    .promise, .notes ul { grid-template-columns: 1fr; }
     .toc li { flex-wrap: wrap; gap: 2px 12px; }
     .toc__lead { display: none; }
     .toc__for { text-align: left; width: 100%; }
