@@ -166,7 +166,32 @@ const UI = {
         bossWin: name => `${name} повержен!`,
         bossLose: name => `${name} пока сильнее`,
         bossLeadWin: 'Ты победил финального босса тем, что умеешь: точные промпты, проверка фактов, защита данных и честная работа.',
-        bossLeadFail: 'Сбей хотя бы половину здоровья босса. Ошибки разобраны, попробуй ещё раз.'
+        bossLeadFail: 'Сбей хотя бы половину здоровья босса. Ошибки разобраны, попробуй ещё раз.',
+        week: (d, g) => `${Math.min(d, g)}/${g}`,
+        weekProgress: (d, g) => `Недельная цель: ${Math.min(d, g)} из ${g} станций`,
+        weekGoalMet: 'Недельная цель выполнена! Пропуск дня ничего не отнимает',
+        predictKicker: '🔮 Сначала предскажи',
+        predictHit: 'Ты угадал(а)!', predictMiss: 'Неожиданно, правда?',
+        reviewKicker: (n, total) => `🔁 Разминка · вопрос ${n} из ${total}`,
+        reviewFrom: title => `Вспомни урок «${title}»`,
+        reviewSkip: 'Пропустить разминку',
+        reviewDone: 'Мозг размялся, начинаем урок',
+        teaser: text => `В следующий раз: ${text.replace(/^(Next|Дальше)[^:]*:\s*/, '')}`,
+        rest: n => `${n} ${plural(n, 'станция', 'станции', 'станций')} за сегодня. Хорошее место, чтобы остановиться: мозг учится и во время отдыха. Блуп заряжается до завтра`,
+        limitDone: n => `На сегодня всё: родитель поставил ${n} ${plural(n, 'станцию', 'станции', 'станций')} в день. До завтра`,
+        limitToast: 'Дневной лимит от родителя исчерпан. Тропа откроется завтра 🌙',
+        limitBtn: 'На сегодня всё 🌙',
+        parentTime: (today, week) => `Сегодня в уроках: ${today} мин · на этой неделе: ${week} мин`,
+        parentNoPin: 'Задай PIN из 4 цифр, чтобы лимит мог менять только взрослый.',
+        parentPinSet: 'Введи PIN, чтобы поменять лимит.',
+        pinWrong: 'Неверный PIN: лимит не изменён',
+        pinBad: 'PIN — ровно 4 цифры',
+        bloopIntro: 'Я Блуп, программа с ИИ, а не человек. Я могу ошибаться, поэтому важное проверяй, а личные данные держи при себе.',
+        chatGuessTitle: 'Перед отправкой: какой ответ ждёшь?',
+        chatGuesses: ['👍 Ровно то, что нужно', '🤷 Нормальный, но придётся уточнить', '👎 Общий или мимо'],
+        chatPickGuess: 'Сначала выбери, какой ответ ждёшь',
+        chatExpected: text => `Ты ждал(а): ${text}`,
+        chatLeft: n => (n > 0 ? `Осталось сообщений: ${n}` : 'Сообщения закончились: сравни ответы и жми «Дальше»')
     },
     en: {
         good: ['Correct!', 'Bullseye!', 'Nailed it!', 'Nice one!', 'Big brain move!', 'Keep it up!'],
@@ -287,7 +312,32 @@ const UI = {
         bossWin: name => `${name} is defeated!`,
         bossLose: name => `${name} is still standing`,
         bossLeadWin: 'You beat the final boss with real skills: clear prompts, fact-checking, guarding your data and honest work.',
-        bossLeadFail: 'Knock out at least half of the boss’s HP. You’ve seen the mistakes, so try again.'
+        bossLeadFail: 'Knock out at least half of the boss’s HP. You’ve seen the mistakes, so try again.',
+        week: (d, g) => `${Math.min(d, g)}/${g}`,
+        weekProgress: (d, g) => `Weekly goal: ${Math.min(d, g)} of ${g} stations`,
+        weekGoalMet: 'Weekly goal reached! Missing a day never takes anything away',
+        predictKicker: '🔮 Predict first',
+        predictHit: 'You called it!', predictMiss: 'Surprise!',
+        reviewKicker: (n, total) => `🔁 Warm-up · question ${n} of ${total}`,
+        reviewFrom: title => `Remember “${title}”?`,
+        reviewSkip: 'Skip the warm-up',
+        reviewDone: 'Brain warmed up, let’s start the lesson',
+        teaser: text => `Next time: ${text.replace(/^Next[^:]*:\s*/, '')}`,
+        rest: n => `${n} ${n === 1 ? 'station' : 'stations'} today. Great place to stop: your brain keeps learning while you rest. Bloop is recharging until tomorrow`,
+        limitDone: n => `That’s it for today: your parent set ${n} ${n === 1 ? 'station' : 'stations'} a day. See you tomorrow`,
+        limitToast: 'Today’s limit from your parent is reached. The trail opens again tomorrow 🌙',
+        limitBtn: 'Done for today 🌙',
+        parentTime: (today, week) => `Time in lessons today: ${today} min · this week: ${week} min`,
+        parentNoPin: 'Set a 4-digit PIN so only an adult can change the limit.',
+        parentPinSet: 'Enter the PIN to change the limit.',
+        pinWrong: 'Wrong PIN: the limit didn’t change',
+        pinBad: 'The PIN must be exactly 4 digits',
+        bloopIntro: 'I’m Bloop, an AI program, not a person. I can make mistakes, so check what matters and keep personal info to yourself.',
+        chatGuessTitle: 'Before you send: what answer do you expect?',
+        chatGuesses: ['👍 Exactly what I need', '🤷 OK, but needs a follow-up', '👎 Generic or off target'],
+        chatPickGuess: 'First pick what answer you expect',
+        chatExpected: text => `You expected: ${text}`,
+        chatLeft: n => (n > 0 ? `${n} ${n === 1 ? 'message' : 'messages'} left` : 'No messages left: compare the answers and tap Next')
     }
 }[LANG];
 
@@ -354,7 +404,9 @@ const Tutor = {
     // Лента сообщений + форма. Вся переписка уходит в воркер, у ученика не больше maxTurns сообщений.
     // guard(text) может не пустить сообщение (например, с незаполненными [скобками]).
     // Сообщение с грубыми словами воркер не отправляет в модель (blocked): эта пара не остаётся в переписке.
-    chat({ log, form, mode, lesson, context, maxTurns, maxLength = 500, guard, onReply, onFail }) {
+    // Тревожное сообщение (crisis) тоже не уходит в модель: воркер отвечает заготовкой с телефонами помощи.
+    // Первое сообщение каждого чата — Блуп говорит, что он программа (требование прозрачности EU AI Act, ст. 50).
+    chat({ log, form, mode, lesson, context, maxTurns, maxLength = 500, guard, onReply, onFail, onTurn }) {
         const input = $('textarea', form);
         const sendBtn = $('button[type="submit"]', form);
         const placeholder = input.placeholder;
@@ -371,6 +423,15 @@ const Tutor = {
             return p;
         };
         const lock = on => { input.disabled = sendBtn.disabled = on; };
+        const intro = () => {
+            const p = document.createElement('p');
+            p.className = 'bubble bubble--ai is-note';
+            p.innerHTML = `<span class="bubble__who">${UI.bloop}</span>`;
+            p.appendChild(document.createTextNode(UI.bloopIntro));
+            log.insertBefore(p, log.firstChild);
+        };
+        const turned = () => { if (onTurn) onTurn(maxTurns - turns); };
+        intro();
 
         const send = async text => {
             text = String(text || '').trim().slice(0, maxLength);
@@ -388,6 +449,12 @@ const Tutor = {
                 const data = await Tutor.ask({ mode, lesson, context, messages: history });
                 if (my !== epoch) return;
                 typing.remove();
+                if (data.crisis) {
+                    history.pop();
+                    turns--;
+                    add('ai', data.reply, 'is-crisis');
+                    return;
+                }
                 if (data.blocked) {
                     history.pop();
                     add('ai', data.reply, 'is-error');
@@ -408,19 +475,23 @@ const Tutor = {
                     busy = false;
                     lock(turns >= maxTurns);
                     if (turns >= maxTurns) input.placeholder = UI.tutorLimit;
+                    turned();
                 }
             }
         };
 
-        // Новый чат: Блуп забывает переписку, лимит сообщений начинается заново
-        const reset = () => {
+        // Новый чат: Блуп забывает переписку. keepTurns — лимит сообщений на задание общий для всех чатов,
+        // иначе он начинается заново.
+        const reset = keepTurns => {
             epoch++;
             history = [];
-            turns = 0;
+            if (!keepTurns) turns = 0;
             busy = false;
             log.innerHTML = '';
-            lock(false);
-            input.placeholder = placeholder;
+            intro();
+            lock(turns >= maxTurns);
+            input.placeholder = turns >= maxTurns ? UI.tutorLimit : placeholder;
+            turned();
         };
 
         form.addEventListener('submit', e => { e.preventDefault(); send(input.value); });
@@ -719,7 +790,7 @@ function mapSvg(L) {
     </svg>`;
 }
 
-const KIND = { cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', order: 'practice', poll: 'practice', talk: 'ai', chat: 'ai' };
+const KIND = { predict: 'practice', cards: 'theory', video: 'video', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', order: 'practice', poll: 'practice', talk: 'ai', chat: 'ai' };
 
 // ---------- Приложение ----------
 const app = {
@@ -780,7 +851,9 @@ const app = {
                 pill.classList.add('is-bump');
             }
         };
-        set('#stat-streak', Game.currentStreak(this.state));
+        const w = Game.week(this.state);
+        set('#stat-week', UI.week(w.done, w.goal));
+        $('#stat-week').closest('.pill').title = UI.weekProgress(w.done, w.goal);
         set('#stat-stars', t.stars);
         set('#stat-xp', this.state.xp);
         const btn = $('#sound-btn');
@@ -803,7 +876,9 @@ const app = {
         $('#level-bar').setAttribute('aria-valuenow', String(Math.round(lv.progress * 100)));
 
         const btn = $('#continue-btn');
-        if (resume) btn.textContent = UI.resume(resume.lesson.title);
+        // Начатый урок можно закончить и после лимита, а открытый без единого ответа — уже нет
+        if (Game.limitReached(s) && !(resume && s.current.step > 0)) btn.textContent = UI.limitBtn;
+        else if (resume) btn.textContent = UI.resume(resume.lesson.title);
         else if (t.lessonsDone === t.mainTotal) btn.textContent = UI.blockDone;
         else btn.textContent = (t.lessonsDone ? UI.next : UI.start)(st.lesson.title);
     },
@@ -1126,6 +1201,11 @@ const app = {
         const st = Game.findStation(lessonId);
         const cur = this.state.current;
         const resume = !fresh && cur && cur.lessonId === lessonId && cur.step > 0 && cur.step < st.lesson.tasks.length;
+        // Лимит родителя закрывает новые станции до завтра, начатый урок можно закончить
+        if (!resume && Game.limitReached(this.state)) {
+            this.toast(UI.limitToast);
+            return;
+        }
 
         this.run = {
             st, lesson: st.lesson,
@@ -1146,8 +1226,79 @@ const app = {
         document.body.classList.add('is-overlay');
         $('#combo').hidden = true;
         this.renderSteps();
-        this.renderTask();
+        // Разминка: 1–3 вопроса из прошлых уроков по интервалам повторения. В тестах и при продолжении — нет.
+        const review = resume || st.lesson.test ? [] : Game.reviewFor(this.state, lessonId);
+        if (review.length) this.renderReview(review);
+        else this.renderTask();
         if (resume) this.toast(UI.resumed(cur.step + 1));
+    },
+
+    // Сброс панели урока перед новым экраном
+    clearTask() {
+        const r = this.run;
+        r.token++;
+        r.mistake = null;
+        $('#ask-btn').hidden = true;
+        if ($('#tutor-sheet').open) $('#tutor-sheet').close();
+        $('#feedback').hidden = true;
+        // иначе анимация «+XP» повторится, когда панель снова станет видимой
+        $('#xp-pop').classList.remove('is-on');
+        $('#skip-btn').hidden = true;
+        const box = $('#task');
+        box.innerHTML = '';
+        box.style.animation = 'none';
+        void box.offsetWidth;
+        box.style.animation = '';
+        $('.lesson__body').scrollTop = 0;
+        return box;
+    },
+
+    // Разминка перед уроком: вопросы из тестов пройденных уроков. На звёзды и XP урока не влияет,
+    // двигает только график повторения: верно — вопрос вернётся позже, ошибка — завтра.
+    renderReview(items) {
+        const r = this.run;
+        const results = [];
+        let k = 0;
+        const finish = () => {
+            this.state = Game.applyReview(this.state, results);
+            this.save();
+            r.review = null;
+            if (results.length) this.toast(UI.reviewDone);
+            this.renderTask();
+        };
+        const draw = () => {
+            const it = items[k], t = it.task;
+            const box = this.clearTask();
+            $('#boss').hidden = true;
+            $('#skip-btn').hidden = false;
+            const opts = shuffle(t.options.map((text, i) => ({ text, ok: i === 0 })));
+            box.innerHTML = `<p class="eyebrow task__kicker">${UI.reviewKicker(k + 1, items.length)}</p>
+                <p class="review-from">${esc(UI.reviewFrom(it.lessonTitle))}</p>
+                <h2 class="question">${esc(t.q)}</h2>
+                <div class="options">${opts.map((o, i) =>
+                    `<button class="option" type="button" data-i="${i}"><span class="option__key">${UI.letters[i]}</span><span>${esc(o.text)}</span></button>`).join('')}
+                </div>`;
+            this.setNext(UI.btn.choose, false);
+            r.onNext = () => { k++; if (k < items.length) draw(); else finish(); };
+            const buttons = $$('.option', box);
+            buttons.forEach(btn => btn.addEventListener('click', () => {
+                const chosen = opts[+btn.dataset.i];
+                const right = opts.find(o => o.ok);
+                buttons.forEach((b, i) => {
+                    b.disabled = true;
+                    if (opts[i].ok) b.classList.add('is-right');
+                    else if (b !== btn) b.classList.add('is-dim');
+                });
+                if (!chosen.ok) btn.classList.add('is-wrong');
+                results.push({ lessonId: it.lessonId, ok: chosen.ok, due: it.due });
+                Sound.play(chosen.ok ? 'good' : 'bad');
+                this.showFeedback(chosen.ok ? 'good' : 'bad', chosen.ok ? pick(UI.good) : pick(UI.bad),
+                    chosen.ok ? t.explain : UI.correctIs(right.text, t.explain));
+                this.setNext(UI.btn.next, true);
+            }));
+        };
+        r.review = { skip: finish };
+        draw();
     },
 
     closeLesson() {
@@ -1172,21 +1323,8 @@ const app = {
     renderTask() {
         const r = this.run;
         const t = r.lesson.tasks[r.step];
-        r.token++;
+        const box = this.clearTask();
         r.onNext = () => this.nextTask();
-        r.mistake = null;
-        $('#ask-btn').hidden = true;
-        if ($('#tutor-sheet').open) $('#tutor-sheet').close();
-        $('#feedback').hidden = true;
-        // иначе анимация «+XP» повторится, когда панель снова станет видимой
-        $('#xp-pop').classList.remove('is-on');
-        $('#skip-btn').hidden = true;
-        const box = $('#task');
-        box.innerHTML = '';
-        box.style.animation = 'none';
-        void box.offsetWidth;
-        box.style.animation = '';
-        $('.lesson__body').scrollTop = 0;
         this.renderBoss();
         this.setNext(UI.btn.next, true);
         this.tasks[t.type].call(this, t, box, r.token);
@@ -1259,6 +1397,26 @@ const app = {
 
     // Отрисовка заданий по типам
     tasks: {
+        // Предсказание в начале урока: ставка → что на самом деле → удивление. Без оценки:
+        // ошибка предсказания тут не промах, а то, ради чего задание есть.
+        predict(t, box) {
+            box.innerHTML = this.head(UI.predictKicker, t.title, t.text) + `<div class="options">${t.options.map((o, i) =>
+                `<button class="option" type="button" data-i="${i}"><span class="option__key">${UI.letters[i]}</span><span>${esc(o)}</span></button>`).join('')}
+            </div>`;
+            this.setNext(UI.btn.choose, false);
+            const buttons = $$('.option', box);
+            buttons.forEach(btn => btn.addEventListener('click', () => {
+                const i = +btn.dataset.i;
+                buttons.forEach((b, j) => {
+                    b.disabled = true;
+                    if (j === t.answer) b.classList.add('is-right');
+                    else if (j === i) b.classList.add('is-mine');
+                    else b.classList.add('is-dim');
+                });
+                this.answered(null, { title: i === t.answer ? UI.predictHit : UI.predictMiss, text: t.reveal });
+            }));
+        },
+
         cards(t, box) {
             let k = 0;
             const draw = () => {
@@ -1786,11 +1944,18 @@ const app = {
                 return;
             }
 
+            const maxTurns = t.maxTurns || 4;
             box.innerHTML = this.head(UI.chatKicker, t.title, t.text) + steps +
                 (prompts.length > 1 ? `<p class="eyebrow">${UI.chatPrompts}</p>
                     <div class="chat-chips">${prompts.map((x, i) => `<button class="chat-chip" type="button" data-i="${i}"><span>${esc(x)}</span></button>`).join('')}</div>` : '') + `
                 <div class="chat-log chat-log--task" aria-live="polite"></div>
+                <div class="guess" role="group" aria-label="${esc(UI.chatGuessTitle)}">
+                    <p class="eyebrow">${UI.chatGuessTitle}</p>
+                    <div class="guess__row">${UI.chatGuesses.map((g, i) =>
+                        `<button class="chip-btn" type="button" data-g="${i}" aria-pressed="false">${esc(g)}</button>`).join('')}</div>
+                </div>
                 ${chatForm(UI.chatPlaceholder, 1200)}
+                <p class="chat-left" aria-live="polite">${UI.chatLeft(maxTurns)}</p>
                 <div class="chat-tools">
                     <p class="chat-note">${UI.chatHint}</p>
                     <button class="link-btn chat-new" type="button">${UI.chatNew}</button>
@@ -1799,6 +1964,20 @@ const app = {
             const input = $('textarea', form);
             const alive = () => this.run && this.run.token === token;
             input.value = prompts[0] || '';
+
+            // Перед каждым сообщением ученик выбирает, какой ответ ждёт: ставка делает результат заметным
+            const guessBox = $('.guess', box);
+            const guessBtns = $$('.guess .chip-btn', box);
+            let guess = null, pending = null;
+            const markGuess = () => guessBtns.forEach((b, i) => {
+                b.classList.toggle('is-on', i === guess);
+                b.setAttribute('aria-pressed', String(i === guess));
+            });
+            guessBtns.forEach(b => b.addEventListener('click', () => {
+                guess = +b.dataset.g;
+                markGuess();
+                Sound.play('tap');
+            }));
 
             $$('.chat-chip', box).forEach(chip => chip.addEventListener('click', () => {
                 input.value = prompts[+chip.dataset.i];
@@ -1809,25 +1988,45 @@ const app = {
             // Незаполненные [скобки] из шаблона: выделяем первую и просим заменить
             const guard = () => {
                 const m = input.value.match(/\[[^\]\n]{1,60}\]/);
-                if (!m) return true;
-                this.toast(UI.chatFill);
-                input.focus();
-                input.setSelectionRange(m.index, m.index + m[0].length);
-                return false;
+                if (m) {
+                    this.toast(UI.chatFill);
+                    input.focus();
+                    input.setSelectionRange(m.index, m.index + m[0].length);
+                    return false;
+                }
+                if (guess === null) {
+                    this.toast(UI.chatPickGuess);
+                    guessBox.classList.remove('is-shake');
+                    void guessBox.offsetWidth;
+                    guessBox.classList.add('is-shake');
+                    return false;
+                }
+                pending = guess;
+                guess = null;
+                markGuess();
+                return true;
             };
 
+            // Лимит сообщений общий на задание: «Новый чат» не начинает его заново
             const chat = Tutor.chat({
                 log, form, mode: 'chat', lesson: this.run.lesson.title,
                 context: { task: t.title, goal: t.text || '', steps: t.steps || [] },
-                maxTurns: t.maxTurns || 6, maxLength: 1200, guard,
-                onReply: () => {
+                maxTurns, maxLength: 1200, guard,
+                onReply: (data, bubble) => {
                     if (!alive()) return;
+                    if (pending !== null) bubble.insertAdjacentHTML('beforeend', `<span class="bubble__guess">${esc(UI.chatExpected(UI.chatGuesses[pending]))}</span>`);
+                    pending = null;
                     Sound.play('pop');
                     this.setNext(UI.btn.next, true);
+                },
+                onTurn: left => {
+                    if (!alive()) return;
+                    $('.chat-left', box).textContent = UI.chatLeft(left);
+                    guessBox.hidden = left <= 0;
                 }
             });
             $('.chat-new', box).addEventListener('click', () => {
-                chat.reset();
+                chat.reset(true);
                 this.toast(UI.chatNewDone);
                 Sound.play('tap');
                 input.focus();
@@ -1943,7 +2142,7 @@ const app = {
 
     finishLesson() {
         const r = this.run;
-        const res = Game.applyLesson(this.state, r.lesson.id, r.scores);
+        const res = Game.applyLesson(this.state, r.lesson.id, r.scores, undefined, (Date.now() - r.startedAt) / 1000);
         this.state = res.state;
         this.save();
         this.sendResult(r, res);
@@ -2011,6 +2210,13 @@ const app = {
         if (res.blockCompleted) extra.push(['🌳', UI.blockCompleted(r.st.block.title, res.blockBonus)]);
         if (res.levelUp) extra.push(['🆙', UI.levelUp(res.levelUp.level, res.levelUp.title)]);
         res.badges.forEach(b => extra.push([b.icon, UI.badge(b.title, b.desc)]));
+        if (res.weekGoalMet) extra.push(['📅', UI.weekGoalMet]);
+        else if (res.passed) extra.push(['📅', UI.weekProgress(res.week.done, res.week.goal)]);
+        // Естественная точка остановки: тизер следующей станции, а после нескольких станций за день — отдых
+        const limited = Game.limitReached(this.state);
+        if (res.passed && lesson.teaser) extra.push(['🔮', UI.teaser(lesson.teaser)]);
+        if (limited) extra.push(['🌙', UI.limitDone(this.state.dailyLimit)]);
+        else if (res.rest) extra.push(['🌙', UI.rest(Game.dayStats(this.state).runs)]);
         $('#result-extra').innerHTML = extra.map(([icon, text], i) =>
             `<li style="animation-delay:${1.4 + i * .3}s"><span aria-hidden="true">${icon}</span>${esc(text)}</li>`).join('');
 
@@ -2020,6 +2226,7 @@ const app = {
             mapBtn.onclick = () => this.backToMap(res);
             retry.textContent = UI.replay;
             retry.onclick = () => this.startLesson(lesson.id, { fresh: true });
+            retry.hidden = limited;
             this.confetti(res.stars === 3 ? 180 : 110);
             if (res.levelUp || res.blockCompleted) setTimeout(() => this.confetti(160), 1500);
             Sound.play('win');
@@ -2028,6 +2235,12 @@ const app = {
             mapBtn.onclick = () => this.startLesson(lesson.id, { fresh: true });
             retry.textContent = UI.map;
             retry.onclick = () => this.backToMap(res);
+            retry.hidden = false;
+            if (limited) {
+                mapBtn.textContent = UI.toMap;
+                mapBtn.onclick = () => this.backToMap(res);
+                retry.hidden = true;
+            }
             Sound.play('bad');
         }
         mapBtn.focus();
@@ -2068,6 +2281,13 @@ const app = {
         $('#settings-sound').checked = s.sound;
         $('#settings-unlock').checked = s.unlockAll;
         $('#reset-confirm').hidden = true;
+        const min = sec => Math.round(sec / 60);
+        $('#parent-time').textContent = UI.parentTime(min(Game.dayStats(s).sec), min(Game.weekSec(s)));
+        const limit = $('#settings-limit'), pin = $('#settings-pin');
+        limit.value = String(s.dailyLimit || 0);
+        pin.value = '';
+        limit.disabled = !!s.parentPin;
+        $('#parent-note').textContent = s.parentPin ? UI.parentPinSet : UI.parentNoPin;
         $('#badges').innerHTML = BADGES.map(b =>
             `<span class="badge${s.badges[b.id] ? '' : ' is-off'}" title="${esc(b.title + ': ' + b.desc)}" role="img" aria-label="${esc(b.title + (s.badges[b.id] ? UI.badgeHave : UI.badgeMissing))}">${b.icon}</span>`).join('');
         $('#settings-sheet').showModal();
@@ -2167,6 +2387,7 @@ const app = {
             const s = this.state;
             const resume = s.current && Game.findStation(s.current.lessonId);
             if (resume) { this.startLesson(resume.lesson.id); return; }
+            if (Game.limitReached(s)) { this.toast(UI.limitToast); return; }
             const st = Game.stations()[Game.currentIndex(s)];
             if (Game.passed(s, st.lesson.id)) this.openStation(this.nodeByIndex(st.index));
             else this.startLesson(st.lesson.id);
@@ -2184,6 +2405,7 @@ const app = {
         $('#next-btn').addEventListener('click', () => { if (this.run && this.run.onNext) this.run.onNext(); });
         $('#skip-btn').addEventListener('click', () => {
             if (!this.run) return;
+            if (this.run.review) { this.run.review.skip(); return; }
             this.run.scores[this.run.step] = null;
             this.nextTask();
         });
@@ -2207,15 +2429,33 @@ const app = {
             s.name = $('#settings-name').value.trim() || s.name;
             s.sound = Sound.on = $('#settings-sound').checked;
             s.unlockAll = $('#settings-unlock').checked;
+            // Лимит от родителя: без PIN меняется свободно и PIN можно задать, с PIN — только после его ввода
+            const limit = +$('#settings-limit').value, pin = $('#settings-pin').value.trim();
+            if (pin && !/^\d{4}$/.test(pin)) { this.toast(UI.pinBad); return; }
+            if (!s.parentPin) {
+                s.dailyLimit = limit;
+                if (pin) s.parentPin = pin;
+            } else if (pin === s.parentPin) {
+                s.dailyLimit = limit;
+            } else if (pin || limit !== s.dailyLimit) {
+                this.toast(UI.pinWrong);
+                return;
+            }
             this.save();
             $('#settings-sheet').close();
             this.renderAll();
             this.toast(UI.savedSettings);
         });
         $('#reset-btn').addEventListener('click', () => { $('#reset-confirm').hidden = false; });
+        $('#settings-pin').addEventListener('input', e => {
+            const s = this.state;
+            if (s.parentPin) $('#settings-limit').disabled = e.target.value.trim() !== s.parentPin;
+        });
         $('#reset-no').addEventListener('click', () => { $('#reset-confirm').hidden = true; });
+        // Сброс прогресса не снимает лимит и PIN родителя
         $('#reset-yes').addEventListener('click', () => {
-            this.state = Game.newState(this.state.name);
+            const { dailyLimit, parentPin } = this.state;
+            this.state = Object.assign(Game.newState(this.state.name), { dailyLimit, parentPin });
             Sound.on = this.state.sound;
             this.save();
             $('#settings-sheet').close();

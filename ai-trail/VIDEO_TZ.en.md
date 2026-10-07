@@ -4,7 +4,7 @@
 
 ## Формат
 
-- Аудитория: англоязычные подростки 14–18 лет. Тон «старший брат или сестра»: быстро, с юмором, без сюсюканья.
+- Аудитория: англоязычные подростки 14–17 лет. Тон «старший брат или сестра»: быстро, с юмором, без сюсюканья.
 - Голос: носитель английского, темп около 150 слов в минуту. Выбери один акцент на весь курс, американский или британский, и не смешивай.
 - Субтитры и текст на экране — на английском. Маскот — Bloop (русский Блуп).
 - Уже есть русские ролики с живым ведущим? В HeyGen есть перевод видео с синхроном губ. Для анимации Блупа проще переозвучить по колонке «Голос».
@@ -91,3 +91,27 @@
 | 3 | 9 | 6.5 | point | Step 2: a real plan | Ask it to break your idea into steps with deadlines. A huge project becomes a to-do list. | The mountain turns into a staircase of small steps with dates, checkboxes appear next to each step |
 | 4 | 9 | 5.8 | think | Step 3: you make, AI reviews | You do the actual work. AI gives feedback: what’s unclear, what’s missing, what to cut. | Teen building a cardboard model, robot holds a magnifying glass and points at one part with a sticky note |
 | 5 | 7 | 5.4 | victory | Your project, your call | AI helps. But the ideas you choose and the work you do are yours. | Teen stands on top of the mountain with a flag, robot cheers below, sunrise |
+
+## 6. Real or fake?: «How a voice-clone scam works»
+
+38 сек по раскадровке · голос ≈ 32 сек · 16:9 · файл `ai-trail/en/videos/l11.mp4`
+
+| # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|---|
+| 1 | 7 | 6.5 | hello | The call that sounds like family | Your phone rings. It sounds exactly like your brother. He’s in trouble and needs money, right now. | Teen holding a ringing phone, caller ID shows an unknown number, worried cartoon face, flat 2D style |
+| 2 | 8 | 6.2 | think | A few seconds of voice | Scammers can copy a voice from a short clip someone posted online. AI does the rest. | A short video clip turns into a sound wave that flows into a robot, which prints out a copy of the wave |
+| 3 | 8 | 5.8 | surprise | Urgent + secret + money | Notice the pattern: it’s urgent, it’s secret, and it’s about money. That’s the scam script. | Three red flags pop up one by one, labeled URGENT, SECRET, MONEY |
+| 4 | 8 | 7.3 | point | Hang up, call back | So hang up and call back on the number you already know. Or ask for your family code word. | Teen ends the call and taps a saved contact, a shield icon with a secret word appears |
+| 5 | 7 | 5.8 | wink | Pause beats panic | A real person in trouble can wait one minute while you check. A scam can’t. | A one-minute timer, the scam call dissolves into pixels, the robot mascot gives a thumbs up |
+
+## 7. Whose picture of the world?: «Why AI repeats stereotypes»
+
+39 сек по раскадровке · голос ≈ 33 сек · 16:9 · файл `ai-trail/en/videos/l12.mp4`
+
+| # | Сек | Голос, с | Блуп | Экран | Голос | Визуал (промпт Kling) |
+|---|---|---|---|---|---|---|
+| 1 | 9 | 8.8 | hello | Same picture every time? | Ask AI for a CEO, a nurse or a gamer, and you might get the same type of person again and again. Why? | A grid of nearly identical cartoon CEOs in suits, the robot mascot scratches its head |
+| 2 | 9 | 8.8 | think | It learned from the past | AI learned from millions of old pictures and texts. If most of them showed one kind of person, AI treats that as normal. | Robot reading a huge stack of old photos, most look alike, a few different ones slide off the pile |
+| 3 | 7 | 5.8 | surprise | Patterns become rules | So a pattern from the past turns into a rule for the future. That’s bias. | The stack of photos turns into a rubber stamp that prints the same face over and over |
+| 4 | 9 | 6.2 | point | Ask better, check more | You can push back: describe who you want to see, compare answers and notice who’s missing. | Teen types a detailed prompt, the grid fills with people of different ages, genders and backgrounds |
+| 5 | 5 | 3.5 | wink | Notice it, name it | Spotting bias is a skill. Now you have it. | Robot hands the teen a magnifying glass badge, confetti |

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AI Trail</title>
-    <meta name="description" content="A practical AI course for teens aged 14–18: use AI for studying and your own projects. A forest trail of short hands-on lessons with Bloop.">
+    <meta name="description" content="A practical AI course for teens aged 14–17: use AI for studying and your own projects. A forest trail of short hands-on lessons with Bloop.">
     <meta name="theme-color" content="#C9EBA6">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +20,7 @@
             <span class="brand__name">AI <b>Trail</b></span>
         </button>
         <ul class="pills" aria-label="Your progress">
-            <li class="pill pill--fire" title="Days in a row"><span aria-hidden="true">🔥</span> <b id="stat-streak">0</b><span class="sr-only"> days in a row</span></li>
+            <li class="pill pill--fire" title="Weekly goal"><span aria-hidden="true">📅</span> <b id="stat-week">0/3</b><span class="sr-only"> stations this week</span></li>
             <li class="pill pill--star" title="Stars"><span aria-hidden="true">⭐</span> <b id="stat-stars">0</b><span class="sr-only"> stars</span></li>
             <li class="pill pill--xp" title="XP"><span aria-hidden="true">💎</span> <b id="stat-xp">0</b><span class="sr-only"> XP</span></li>
         </ul>
@@ -143,6 +143,26 @@
                 <span>Author mode: unlock all stations</span>
             </label>
             <div class="badges" id="badges"></div>
+            <fieldset class="parent">
+                <legend>For parents</legend>
+                <p class="parent__time" id="parent-time"></p>
+                <label class="field">
+                    <span>Daily limit</span>
+                    <select id="settings-limit">
+                    <option value="0">No limit</option>
+                    <option value="1">1 station a day</option>
+                    <option value="2">2 stations a day</option>
+                    <option value="3">3 stations a day</option>
+                    <option value="4">4 stations a day</option>
+                    <option value="5">5 stations a day</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Parent PIN</span>
+                    <input id="settings-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 digits">
+                </label>
+                <p class="parent__note" id="parent-note"></p>
+            </fieldset>
             <div class="danger" id="reset-box">
                 <button class="link-btn link-btn--danger" id="reset-btn" type="button">Reset progress</button>
                 <div class="danger__confirm" id="reset-confirm" hidden>

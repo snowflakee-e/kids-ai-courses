@@ -418,7 +418,9 @@ var XP_RULES = {
   comboFrom: 3,
   lessonDone: 20,   // урок пройден (от 50%)
   perfect: 30,      // урок без единой ошибки
-  blockDone: 100    // все станции блока пройдены, один раз
+  blockDone: 100,   // все станции блока пройдены, один раз
+  weekGoal: 3,      // недельная цель: станций в неделю (пропуск ничего не отнимает)
+  restAfter: 3      // после стольких станций за день итог урока предлагает остановиться
 };
 
 // Награды: check(s, t) получает состояние и итоги из Game.totals
@@ -426,7 +428,7 @@ var BADGES = [
   { id: 'first-step', icon: '👣', title: 'Первый шаг',       desc: 'Пройди первую станцию',             check: function (s, t) { return t.lessonsDone >= 1; } },
   { id: 'sniper',     icon: '🎯', title: 'Снайпер',          desc: 'Пройди урок без единой ошибки',     check: function (s, t) { return t.perfectLessons >= 1; } },
   { id: 'on-fire',    icon: '🔥', title: 'В ударе',          desc: '5 заданий подряд без ошибок',       check: function (s) { return s.bestCombo >= 5; } },
-  { id: 'streak-3',   icon: '📅', title: 'Три дня подряд',   desc: 'Занимайся 3 дня подряд',            check: function (s) { return s.bestStreak >= 3; } },
+  { id: 'week-goal',  icon: '📅', title: 'Ровный темп',      desc: 'Выполни недельную цель: 3 станции', check: function (s, t) { return t.weeksMet >= 1; } },
   { id: 'block-b1',   icon: '🌳', title: 'Следопыт опушки',  desc: 'Пройди испытание Большого дуба',    check: function (s, t) { return t.blocksDone.indexOf('b1') >= 0; } }
 ];
 

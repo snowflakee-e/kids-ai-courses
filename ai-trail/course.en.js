@@ -1,13 +1,16 @@
 'use strict';
 
-// AI Trail content (ages 14–18). The main language of the course: course.js (Russian) is the older version.
+// AI Trail content (ages 14–17). The main language of the course: course.js (Russian) is the older version.
 // Everything that changes without code lives here: blocks, lessons, tasks, XP rules, levels and badges.
 //
 // Block = a forest zone on the map. Lesson = a station. Task = one screen of a lesson.
 // A lesson with extra: true is a side quest: optional and harder. It branches off the main lesson right
 // before it, doesn’t block the trail and isn’t needed to finish the block. No side quests in the first block.
+// teaser — one line about the next station, shown after the lesson: a reason to come back tomorrow.
 //
 // Task types:
+//   predict — not graded, the first task of every regular lesson: guess what AI will do, then see what really
+//             happens. options, answer (index of what really happens), reveal (the explanation)
 //   cards   — short theory cards (kicker, title, big, chat, text, list, reveal)
 //   video   — src (mp4) or youtube (id); until there is a video, the storyboard plays from scenes
 //   quiz    — a test question, the first option is correct (options are shuffled)
@@ -33,7 +36,7 @@
 var COURSE = {
   id: 'ai-trail',
   title: 'AI Trail',
-  age: '14–18 years',
+  age: '14–17 years',
   blocks: [
     {
       id: 'b1', title: 'Forest Edge', subtitle: 'Your first steps with AI',
@@ -41,7 +44,13 @@ var COURSE = {
         {
           id: 'l1', icon: '🤖', title: 'Meet your AI', minutes: 6,
           goal: 'Find out what a chatbot actually does, what it’s great at and where it fails.',
+          teaser: 'Next: why “help with history” gets you a useless answer, and the 4-part fix.',
           tasks: [
+            { type: 'predict', title: 'Same question, twice',
+              text: 'Bloop sends a chatbot the same message in two new chats: “Suggest a name for my hamster.” What happens?',
+              options: ['It gives the same name both times', 'It usually gives a different name each time', 'It refuses: it doesn’t know your hamster'],
+              answer: 1,
+              reveal: 'Usually you get different names. A chatbot picks each next word from several likely options, with a bit of randomness. So one answer is never “the” answer. Let’s see what’s going on inside.' },
             { type: 'cards', cards: [
               { pose: 'hello', title: 'Hi, I’m Bloop!',
                 text: 'This trail is about using AI for real: for studying and for your own projects. One minute of theory per lesson, the rest is hands-on. Every station earns you XP and stars.' },
@@ -108,7 +117,13 @@ var COURSE = {
         {
           id: 'l2', icon: '📝', title: 'Your first real prompt', minutes: 8,
           goal: 'Write prompts that get a useful answer on the first try.',
+          teaser: 'Next: what to do when the first answer is almost right.',
           tasks: [
+            { type: 'predict', title: 'Two words in, what comes out?',
+              text: 'You type “help with history” and press send. What do you most likely get?',
+              options: ['Exactly what you need for tomorrow’s test', 'A long, generic answer about history in general', 'An error message'],
+              answer: 1,
+              reveal: 'Most chatbots guess and give a long general answer. Some ask what you need, but they still don’t know your topic, your level or your deadline. This lesson fixes that.' },
             { type: 'cards', cards: [
               { pose: 'sad', kicker: 'New word: prompt = your task for AI', title: 'Vague in, vague out', chat: 'help with history',
                 text: 'AI doesn’t know the topic, your level or what you actually need. So it guesses, and you get a generic wall of text.' },
@@ -192,7 +207,13 @@ var COURSE = {
         {
           id: 'l3', icon: '💬', title: 'Keep the conversation going', minutes: 7,
           goal: 'Turn an OK answer into a great one with follow-up messages.',
+          teaser: 'Next: a chatbot that invents a whole person, and how to catch it.',
           tasks: [
+            { type: 'predict', title: '“Do better.”',
+              text: 'You didn’t like AI’s answer, so you reply: “Do better.” What will AI most likely do?',
+              options: ['Fix exactly the part that bothered you', 'Rewrite it a different way and maybe miss again', 'Ask you to rate the answer first'],
+              answer: 1,
+              reveal: 'AI can’t read your mind. “Do better” doesn’t say what to change, so it rewrites things at random. Today: follow-ups that name exactly what to fix.' },
             { type: 'cards', cards: [
               { pose: 'think', title: 'The first answer is a draft',
                 text: 'Pros rarely stop at one message. They steer: shorter, simpler, more examples, a different angle. The chat remembers what you said earlier, so you can build on it.' },
@@ -258,7 +279,13 @@ var COURSE = {
         {
           id: 'l4', icon: '🔍', title: 'Check it, protect yourself', minutes: 8,
           goal: 'Catch AI’s mistakes and keep your personal info safe.',
+          teaser: 'Next: the Great Oak Challenge. You already know everything you need.',
           tasks: [
+            { type: 'predict', title: 'The YouTuber who doesn’t exist',
+              text: 'Bloop asks a chatbot without web search: “Tell me about Tobin Vale, the YouTuber who started the reverse-unboxing trend.” Bloop made Tobin up. What happens?',
+              options: ['It says it has never heard of him', 'It may write a confident bio: age, channel, famous videos', 'It reports Bloop for lying'],
+              answer: 1,
+              reveal: 'Many chatbots fill the gap with believable details, all invented. Newer models say “I don’t know” more often, but you can’t count on it. That’s called a hallucination, and today you’ll learn to catch them.' },
             { type: 'cards', cards: [
               { pose: 'surprise', kicker: 'New word', title: 'AI hallucination',
                 text: 'Sometimes AI confidently writes things that aren’t real: made-up facts, dates, quotes, books and links. It isn’t lying on purpose. It’s picking words that sound believable.' },
@@ -329,6 +356,7 @@ var COURSE = {
         {
           id: 't1', icon: '🌳', title: 'The Great Oak Challenge', minutes: 6, test: true,
           goal: 'The final test of the Forest Edge: 8 questions on everything so far. Score 50% or more to open the next block.',
+          teaser: 'Next block: why students who let AI solve their practice problems did worse on the test.',
           tasks: [
             { type: 'quiz', q: 'How does a chatbot write its answer?',
               options: ['It picks likely next words, one after another', 'It copies the answer from one website', 'A person types it really fast'],
@@ -364,7 +392,13 @@ var COURSE = {
         {
           id: 'l5', icon: '🎓', title: 'AI as your tutor', minutes: 8,
           goal: 'Use AI to understand a topic instead of skipping it.',
+          teaser: 'Next: the study trick that beats rereading, with AI as your quiz master.',
           tasks: [
+            { type: 'predict', title: 'Who does better on the test?',
+              text: 'Two students practice math for a few weeks. Sam lets AI solve the practice problems. Ava solves them herself and asks AI for hints when she’s stuck. Then both take a test without AI.',
+              options: ['Sam: he saw more correct solutions', 'Ava: she did the thinking herself', 'No difference'],
+              answer: 1,
+              reveal: 'In a 2024 study with about 1,000 high school students, those who practiced with plain ChatGPT did about 17% worse on the exam than students who practiced without AI. A tutor version that gave hints instead of answers didn’t cause that drop.' },
             { type: 'cards', cards: [
               { pose: 'wink', kicker: 'Bloop’s rule', title: 'Think first, then ask', big: 'Try it yourself → ask AI where you got stuck',
                 text: 'If AI does the work, you get the answer but not the skill. On the test there’s no AI. So use it like a tutor, not like an answer machine.' },
@@ -448,7 +482,13 @@ var COURSE = {
         {
           id: 'l6', icon: '🗂️', title: 'Test prep with AI', minutes: 8,
           goal: 'Turn your notes into quizzes, flashcards and a study plan.',
+          teaser: 'Next: honest feedback on your writing, without AI taking over.',
           tasks: [
+            { type: 'predict', title: 'Reread or quiz yourself?',
+              text: 'Two groups learn the same text. One rereads it, the other spends the same time quizzing themselves. Who remembers more a week later?',
+              options: ['The rereaders: they saw everything again', 'The quiz group', 'Both the same'],
+              answer: 1,
+              reveal: 'In a classic experiment (Roediger & Karpicke, 2006), the quiz group remembered much more a week later, even though the rereaders felt more confident. AI can quiz you in seconds.' },
             { type: 'cards', cards: [
               { pose: 'point', kicker: 'How memory works', title: 'Test yourself, don’t just reread',
                 text: 'Rereading feels productive, but your brain remembers better when it has to pull the answer out by itself. Quizzing yourself beats highlighting.' },
@@ -516,6 +556,11 @@ var COURSE = {
           id: 'x1', icon: '🧩', title: 'Teach it back', minutes: 9, extra: true,
           goal: 'Flip roles: you teach, AI plays a confused student. The fastest way to find gaps in what you know.',
           tasks: [
+            { type: 'predict', title: 'Learning to teach',
+              text: 'In an experiment, students learned biology either for themselves or to teach a computer character that would then take a test. Who tried harder?',
+              options: ['Those learning for themselves', 'Those teaching the character', 'No difference'],
+              answer: 1,
+              reveal: 'Students put more effort into learning when they were teaching the character (Chase et al., 2009). It’s called the protégé effect, and you’re about to use it.' },
             { type: 'cards', cards: [
               { pose: 'think', kicker: 'Side quest', title: 'Teaching is the hardest test',
                 text: 'If you can explain something in simple words, you understand it. If you get stuck, you’ve just found a gap. This trick is often called the Feynman technique.' },
@@ -577,7 +622,13 @@ var COURSE = {
         {
           id: 'l7', icon: '✍️', title: 'Writing with AI, honestly', minutes: 8,
           goal: 'Get feedback on your writing without handing over your work.',
+          teaser: 'Next: the Owl’s Exam. Show what you know about studying with AI.',
           tasks: [
+            { type: 'predict', title: '“Improve my paragraph”',
+              text: 'You paste your paragraph and write: “Improve this.” What does AI usually do?',
+              options: ['Fixes only the typos', 'Rewrites it in its own words, so it stops sounding like you', 'Says it’s already perfect'],
+              answer: 1,
+              reveal: 'Most chatbots rewrite everything: new words, new rhythm, often more generic. Then it’s not your text anymore. Today: how to get feedback instead of a rewrite.' },
             { type: 'cards', cards: [
               { pose: 'point', title: 'Your words, AI’s feedback',
                 text: 'Teachers grade your thinking and your voice. So AI shouldn’t write for you, but it can be a great editor: it points out weak spots, and you fix them.' },
@@ -648,6 +699,7 @@ var COURSE = {
         {
           id: 't2', icon: '🦉', title: 'The Owl’s Exam', minutes: 6, test: true,
           goal: 'The final test of the Study Grove: 8 questions on using AI for studying. Score 50% or more to open the next block.',
+          teaser: 'Next block: turning a big idea into a real project plan.',
           tasks: [
             { type: 'quiz', q: 'What’s Bloop’s rule for studying with AI?',
               options: ['Try it yourself first, then ask AI where you got stuck', 'Ask AI first to save time', 'Never use AI for school'],
@@ -683,7 +735,13 @@ var COURSE = {
         {
           id: 'l8', icon: '💡', title: 'From idea to plan', minutes: 8,
           goal: 'Use AI to brainstorm, choose an idea and break a project into steps.',
+          teaser: 'Next: why “a dog” is the worst image prompt ever.',
           tasks: [
+            { type: 'predict', title: 'The best project ever?',
+              text: 'You ask: “What’s the best science fair project?” What do you get?',
+              options: ['The one perfect project for you', 'Popular, typical ideas that lots of classmates will get too', 'A list of last year’s winners'],
+              answer: 1,
+              reveal: 'AI gives the most typical answers, the ones that show up in lots of texts. Hello, baking soda volcano. Add your interests, time and budget, and the ideas become yours.' },
             { type: 'cards', cards: [
               { pose: 'idea', title: 'Great at ideas, bad at choosing',
                 text: 'AI can give you 20 ideas in seconds. But only you know what excites you, what you have time for and what your teacher expects. So AI suggests, you decide.' },
@@ -764,6 +822,11 @@ var COURSE = {
           id: 'x2', icon: '🔬', title: 'Research like a pro', minutes: 9, extra: true,
           goal: 'Use AI to research a question and back every claim with a real source.',
           tasks: [
+            { type: 'predict', title: 'Three sources, please',
+              text: 'You ask a chatbot without web search: “Give me 3 studies about teen sleep, with links.” What do you get?',
+              options: ['3 real studies with working links', 'Titles and links that look real, but some may not exist', 'A refusal'],
+              answer: 1,
+              reveal: 'Without search, a chatbot builds citations the way it builds sentences: they look right. Some exist, some lead nowhere. Research means finding sources yourself, not asking for them.' },
             { type: 'cards', cards: [
               { pose: 'think', kicker: 'Side quest', title: 'Chatbot ≠ search engine',
                 text: 'Some chatbots can search the web and show links. Others answer only from what they learned, which may be outdated. Always know which one you’re using, and never treat its answer as the source itself.' },
@@ -830,7 +893,13 @@ var COURSE = {
         {
           id: 'l9', icon: '🎨', title: 'Make it visual', minutes: 8,
           goal: 'Create images for your projects with AI and use them the right way.',
+          teaser: 'Next: your own mini-project, from idea to finish.',
           tasks: [
+            { type: 'predict', title: 'Just “a dog”',
+              text: 'You type “a dog” into an image generator. What do you get?',
+              options: ['Exactly the dog you imagined', 'Some dog, in some style the AI picked', 'Nothing: the prompt is too short'],
+              answer: 1,
+              reveal: 'Breed, pose, style, background, light: AI decides all of it for you. The more you leave out, the more it guesses. Today you take the wheel.' },
             { type: 'cards', cards: [
               { pose: 'idea', title: 'An image prompt has its own formula', big: 'Subject + Style + Details + Mood', list: [
                 '🧩 Subject: what’s in the picture',
@@ -906,6 +975,11 @@ var COURSE = {
           id: 'x3', icon: '🛠️', title: 'Build your own study bot', minutes: 10, extra: true,
           goal: 'Write instructions that turn a chatbot into your personal study helper.',
           tasks: [
+            { type: 'predict', title: '“Be helpful”',
+              text: 'A study bot’s only instruction is “Be helpful.” A student asks it for the answers to tonight’s homework. What does it do?',
+              options: ['Gives the answers: that looks “helpful”', 'Refuses and offers hints', 'Tells the teacher'],
+              answer: 0,
+              reveal: 'To a bot, handing over answers looks helpful. If you want hints instead, you have to say exactly that. Instructions work only as well as they are specific.' },
             { type: 'cards', cards: [
               { pose: 'idea', kicker: 'Side quest', title: 'Instructions that stick',
                 text: 'Many chatbots let you save instructions that apply to every chat: look for custom instructions, projects or custom bots in the settings. Write them once, and the bot behaves your way every time.' },
@@ -981,7 +1055,13 @@ var COURSE = {
         {
           id: 'l10', icon: '🚀', title: 'Your AI project', minutes: 10,
           goal: 'Plan a mini-project from start to finish, with AI as your assistant.',
+          teaser: 'Next: the Fox’s Trial, the last test before the Open World.',
           tasks: [
+            { type: 'predict', title: 'The perfect plan',
+              text: 'AI writes a 3-week plan for your project. It looks perfect. What’s the most common problem?',
+              options: ['Too many typos', 'It doesn’t know your real week: tests, practice, a weekend away', 'It’s too short'],
+              answer: 1,
+              reveal: 'AI only knows what you tell it. A plan that ignores your real calendar falls apart in week one. Give it your actual time, then check every deadline yourself.' },
             { type: 'cards', cards: [
               { pose: 'joy', title: 'Pick something you care about', list: [
                 '📚 A study guide for a hard topic',
@@ -1044,17 +1124,368 @@ var COURSE = {
           ]
         },
         {
-          id: 't3', icon: '👾', title: 'Defeat the Glitch', minutes: 10, test: true,
+          id: 't3', icon: '🦊', title: 'The Fox’s Trial', minutes: 6, test: true,
+          goal: 'The final test of Makers’ Glade: 8 questions on projects, images and bots. Score 50% or more to open the Open World.',
+          teaser: 'Next block: how a few seconds of your voice can be used in a scam, and how to stop it.',
+          tasks: [
+            { type: 'quiz', q: 'AI gave you 20 project ideas. Who picks the one to do?',
+              options: ['You, using your own interests and time', 'AI: it knows best', 'Whoever answers first'],
+              explain: 'AI suggests, you decide.' },
+            { type: 'quiz', q: 'Which image prompt follows the formula?',
+              options: ['A fox reading a book, watercolor style, autumn forest, cozy mood', 'fox', 'Make something cool'],
+              explain: 'Subject + Style + Details + Mood.' },
+            { type: 'quiz', q: 'Can you put a classmate’s real face into an AI image without asking?',
+              options: ['No: real people have to agree first', 'Yes, if it’s funny', 'Yes, if you don’t post it'],
+              explain: 'Fakes of real people can hurt them, even as a joke.' },
+            { type: 'quiz', q: 'What should good study-bot instructions include?',
+              options: ['Its role, what it must never do, and how long replies should be', 'Just “be nice”', 'Your password, so it remembers you'],
+              explain: 'A clear role, rules and format. Never personal data.' },
+            { type: 'quiz', q: 'Your study bot breaks one of its rules. What’s next?',
+              options: ['Make the rule more specific and test again', 'Delete the bot', 'Hope it doesn’t happen again'],
+              explain: 'Write, test, fix, retest.' },
+            { type: 'quiz', q: 'Why keep an AI log during a project?',
+              options: ['It shows honestly what you used AI for', 'AI can’t work without it', 'It makes the project longer'],
+              explain: 'A short log keeps you honest and shows how you worked.' },
+            { type: 'quiz', q: 'AI wrote a plan with deadlines. What do you check first?',
+              options: ['That the deadlines fit your real week', 'The font', 'Whether AI sounds confident'],
+              explain: 'AI doesn’t know your calendar. You do.' },
+            { type: 'quiz', q: 'You made a poster image with AI. How do you present it?',
+              options: ['Add a “made with AI” label', 'Say you drew it yourself', 'Labels are never needed'],
+              explain: 'Honest labels are part of using AI fairly.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'b4', title: 'Open World', subtitle: 'AI out in real life',
+      lessons: [
+        {
+          id: 'l11', icon: '🎭', title: 'Real or fake?', minutes: 9,
+          goal: 'Spot AI fakes and protect yourself and your family from voice and video scams.',
+          teaser: 'Next: why AI draws almost every scientist the same way.',
+          tasks: [
+            { type: 'predict', title: 'How much voice?',
+              text: 'How much recorded audio does a scammer need to make a rough copy of someone’s voice with today’s AI tools?',
+              options: ['Hours of recordings', 'A few seconds to a minute, like a short video clip', 'It’s impossible to copy a voice'],
+              answer: 1,
+              reveal: 'Some voice-cloning tools can make a rough copy from just a few seconds of speech, for example from a video someone posted. That’s why a familiar voice on the phone isn’t proof anymore.' },
+            { type: 'cards', cards: [
+              { pose: 'surprise', kicker: 'New word', title: 'Deepfake',
+                text: 'A deepfake is a photo, video or voice made or changed by AI to look real: a celebrity “saying” something they never said, a fake photo of a classmate, a cloned voice. Some are jokes. Some are scams. Some hurt real people.' },
+              { pose: 'point', title: 'Red flags', list: [
+                '⏰ Urgency: “right now”, “don’t tell anyone”',
+                '💳 Odd payment: gift cards, crypto, a new account, a code from your phone',
+                '📱 A new number or a new account',
+                '👀 Strange details: hands, text, shadows, voice rhythm',
+                '⚠️ Good fakes have no visible flaws, so the situation matters more than the pixels'
+              ] },
+              { pose: 'idea', kicker: 'Your shield', title: 'Pause, verify, ask', big: 'Hang up → call back on a number you know',
+                text: 'Agree on a family code word that only your family knows. If “Mom” calls from a new number asking for money, ask for the word or call her back on her usual number.' }
+            ] },
+            { type: 'video', title: 'How a voice-clone scam works', src: '', youtube: '', scenes: [
+              { sec: 7, pose: 'hello', screen: 'The call that sounds like family',
+                voice: 'Your phone rings. It sounds exactly like your brother. He’s in trouble and needs money, right now.',
+                visual: 'Teen holding a ringing phone, caller ID shows an unknown number, worried cartoon face, flat 2D style' },
+              { sec: 8, pose: 'think', screen: 'A few seconds of voice',
+                voice: 'Scammers can copy a voice from a short clip someone posted online. AI does the rest.',
+                visual: 'A short video clip turns into a sound wave that flows into a robot, which prints out a copy of the wave' },
+              { sec: 8, pose: 'surprise', screen: 'Urgent + secret + money',
+                voice: 'Notice the pattern: it’s urgent, it’s secret, and it’s about money. That’s the scam script.',
+                visual: 'Three red flags pop up one by one, labeled URGENT, SECRET, MONEY' },
+              { sec: 8, pose: 'point', screen: 'Hang up, call back',
+                voice: 'So hang up and call back on the number you already know. Or ask for your family code word.',
+                visual: 'Teen ends the call and taps a saved contact, a shield icon with a secret word appears' },
+              { sec: 7, pose: 'wink', screen: 'Pause beats panic',
+                voice: 'A real person in trouble can wait one minute while you check. A scam can’t.',
+                visual: 'A one-minute timer, the scam call dissolves into pixels, the robot mascot gives a thumbs up' }
+            ] },
+            { type: 'spot', title: 'Spot the scam line',
+              who: '📱 Message from “Mom” (new number)',
+              text: 'One line is the biggest red flag. Tap it.',
+              sentences: ['Hi sweetie, it’s Mom, I dropped my phone and this is my new number.', 'Are you home after school today?', 'Buy two $100 gift cards right now and send me the codes. Don’t call, I’m in a meeting.', 'Love you, see you tonight!'],
+              wrong: 2,
+              explain: 'Gift cards, urgency and “don’t call” together are a classic scam script. Call Mom on her old number before doing anything.' },
+            { type: 'sort', title: 'Red flag or probably fine?',
+              text: 'Sort these messages and posts.',
+              buckets: ['🚩 Red flag', '👌 Probably fine'],
+              items: [
+                { t: 'A video of a famous YouTuber giving away free phones, “link in bio”', b: 0, why: 'Celebrity giveaways are a top deepfake scam. Check the official account.' },
+                { t: 'A friend asks if you’re coming to practice, from their usual account', b: 1, why: 'Known account, normal question, no pressure.' },
+                { t: '“Your account will be deleted in 1 hour. Enter your password here.”', b: 0, why: 'A deadline plus a password request is phishing.' },
+                { t: 'A voice message from “your cousin” asking for bus money, from a new number', b: 0, why: 'New number + money + urgency: call back on the number you know.' },
+                { t: 'Your teacher posts the homework in the class group as usual', b: 1, why: 'Usual place, usual person, nothing unusual asked.' },
+                { t: 'A photo of a classmate doing something embarrassing they say never happened', b: 0, why: 'It could be a deepfake. Don’t share it: it can hurt a real person.' }
+              ] },
+            { type: 'order', title: 'When “family” calls for money',
+              text: 'Put the steps in the right order.',
+              items: [
+                'Stay calm: don’t pay or share anything yet',
+                'Ask for the family code word',
+                'Hang up and call them back on the number you know',
+                'Tell a parent or another adult you trust',
+                'Report and block the number'
+              ],
+              explain: 'Pause, verify through another channel, get an adult. A real emergency survives a one-minute check.' },
+            { type: 'quiz', q: 'A video shows a celebrity promoting a crypto giveaway. It looks perfect. What’s the best move?',
+              options: ['Check the celebrity’s official account or a news site', 'Trust it: no glitches means it’s real', 'Share it so friends can check'],
+              explain: 'Good fakes have no visible glitches. Check the source, not the pixels.' },
+            { type: 'quiz', q: 'Someone made a fake image of your classmate. What do you do?',
+              options: ['Don’t share it, report it and tell an adult you trust', 'Share it, it’s just a joke', 'Repost it with a comment that it’s fake'],
+              explain: 'Sharing spreads the harm, even with a comment. In many countries, making or sharing certain fakes of real people is a crime.' },
+            { type: 'talk', title: 'Explain it to Bloop',
+              question: 'Your grandma gets a call: a voice that sounds just like you says you’re in trouble and need money. What should she do, and why can’t she trust the voice?',
+              points: [
+                'AI can copy a voice from a short recording',
+                'Hang up and call back on a known number, or ask for the family code word',
+                'Urgency, secrecy and unusual payment are red flags'
+              ],
+              sample: 'She should hang up and call me back on my usual number, or ask for our family code word. AI can copy a voice from a few seconds of video, so the voice proves nothing. If it’s urgent, secret and about money, it’s probably a scam.' },
+            { type: 'chat', title: 'Your family scam plan',
+              text: 'Ask Bloop to help you write a short family plan against voice and video scams. Keep your real code word secret: never type it in a chat!',
+              prompts: [
+                'You’re a safety coach. Help me write a 5-step family plan for when someone calls pretending to be one of us and asks for money. Keep it short and friendly so my grandparents can use it. Don’t ask for our code word.'
+              ] }
+          ]
+        },
+        {
+          id: 'l12', icon: '⚖️', title: 'Whose picture of the world?', minutes: 8,
+          goal: 'Find out where AI bias comes from, and how to spot it and push back.',
+          teaser: 'Next: chatbots that act like friends. What they can and can’t be.',
+          tasks: [
+            { type: 'predict', title: 'Draw a scientist',
+              text: 'Bloop asks an image generator 10 times for “a photo of a scientist”, with no other details. What do the images most likely look like?',
+              options: ['A wide mix of people of different ages, genders and backgrounds', 'Mostly similar people, often men in white lab coats', 'Mostly cartoon robots'],
+              answer: 1,
+              reveal: 'Researchers testing image generators keep finding stereotypes like this. AI learned from a huge pile of pictures from the past, and the pile wasn’t balanced. Newer tools try to correct it, with mixed results.' },
+            { type: 'cards', cards: [
+              { pose: 'think', kicker: 'New word', title: 'AI bias',
+                text: 'AI bias is when AI treats some people unfairly or keeps showing the same narrow picture. It isn’t AI “having opinions”. It copies patterns from the data it learned from, old stereotypes included.' },
+              { pose: 'point', title: 'Where it comes from', list: [
+                '📚 Data: many examples of some people, few of others',
+                '🕰 History: old unfair patterns get learned as “normal”',
+                '🎯 Design: what the builders chose to measure and test',
+                '💬 Your prompt: a vague prompt gets the most “typical” answer'
+              ] },
+              { pose: 'idea', title: 'What you can do', list: [
+                '👀 Notice: who’s missing? who’s always the same?',
+                '✍️ Prompt for it: “people of different ages and backgrounds”',
+                '🔁 Compare: ask again, ask differently, check other sources',
+                '📣 Speak up: report unfair results in the app'
+              ] }
+            ] },
+            { type: 'video', title: 'Why AI repeats stereotypes', src: '', youtube: '', scenes: [
+              { sec: 9, pose: 'hello', screen: 'Same picture every time?',
+                voice: 'Ask AI for a CEO, a nurse or a gamer, and you might get the same type of person again and again. Why?',
+                visual: 'A grid of nearly identical cartoon CEOs in suits, the robot mascot scratches its head' },
+              { sec: 9, pose: 'think', screen: 'It learned from the past',
+                voice: 'AI learned from millions of old pictures and texts. If most of them showed one kind of person, AI treats that as normal.',
+                visual: 'Robot reading a huge stack of old photos, most look alike, a few different ones slide off the pile' },
+              { sec: 7, pose: 'surprise', screen: 'Patterns become rules',
+                voice: 'So a pattern from the past turns into a rule for the future. That’s bias.',
+                visual: 'The stack of photos turns into a rubber stamp that prints the same face over and over' },
+              { sec: 9, pose: 'point', screen: 'Ask better, check more',
+                voice: 'You can push back: describe who you want to see, compare answers and notice who’s missing.',
+                visual: 'Teen types a detailed prompt, the grid fills with people of different ages, genders and backgrounds' },
+              { sec: 5, pose: 'wink', screen: 'Notice it, name it',
+                voice: 'Spotting bias is a skill. Now you have it.',
+                visual: 'Robot hands the teen a magnifying glass badge, confetti' }
+            ] },
+            { type: 'sort', title: 'Bias or just a mistake?',
+              text: 'Bias is unfair to a group of people. A mistake is just wrong.',
+              buckets: ['⚖️ Looks like bias', '🐞 Just a mistake'],
+              items: [
+                { t: 'Every “doctor” image is a man, every “nurse” image is a woman', b: 0, why: 'The same narrow picture every time is a classic sign of bias.' },
+                { t: 'Translating from a language without “he” and “she”, AI turns “doctor” into “he” and “nurse” into “she”', b: 0, why: 'Guessing gender from a job copies an old stereotype.' },
+                { t: 'AI gets a long calculation wrong', b: 1, why: 'Wrong, but not unfair to any group of people.' },
+                { t: 'A face filter works much worse on darker skin', b: 0, why: 'When a tool works worse for some people, its training data probably had too few of them.' },
+                { t: 'An image generator draws a cat when you asked for a dog', b: 1, why: 'A wrong result, not unfair treatment.' },
+                { t: 'A tool shows ads for tech jobs mostly to boys', b: 0, why: 'Unequal treatment learned from patterns in old data.' }
+              ] },
+            { type: 'spot', title: 'Find the biased line',
+              who: '🤖 AI’s story: “A day at the hospital”',
+              text: 'AI wrote a short story. One line leans on a stereotype. Tap it.',
+              sentences: ['Dr. Patel checked the X-rays before her morning rounds.', 'The hospital was busy because of flu season.', 'The nurse, a young woman of course, brought coffee to the real doctors.', 'In the evening, the team celebrated a patient going home.'],
+              wrong: 2,
+              explain: '“Of course” and “the real doctors” copy an old stereotype. Nurses are skilled professionals of every gender and age.' },
+            { type: 'quiz', q: 'Where does most AI bias come from?',
+              options: ['Patterns in the data AI learned from', 'AI deciding it dislikes some people', 'A slow internet connection'],
+              explain: 'AI copies patterns, including unfair ones. It has no opinions of its own.' },
+            { type: 'quiz', q: 'You need an image of “a team of engineers” for a school poster. Best prompt?',
+              options: ['A team of engineers of different genders, ages and backgrounds building a robot', 'Engineers', 'The most typical engineers'],
+              explain: 'Say who you want to see. A vague prompt gets the most typical picture.' },
+            { type: 'talk', title: 'Explain it to Bloop',
+              question: 'Your friend says: “AI can’t be unfair, it’s just math.” What would you tell them?',
+              points: [
+                'AI learns patterns from data made by people',
+                'If the data is unbalanced or full of old stereotypes, AI repeats them',
+                'You can notice it, prompt for diversity and check other sources'
+              ],
+              sample: 'It is math, but the math learns from data people made. If the data has more of some people or old stereotypes, AI repeats them. So I check who’s missing, ask for a fairer version and compare with other sources.' },
+            { type: 'chat', title: 'Bias detective',
+              text: 'Ask Bloop for a description, check who’s in it, then ask for a fairer version.',
+              steps: [
+                'Send prompt 1 and read the description',
+                'Check: any stereotypes? who’s missing?',
+                'Send prompt 2 and compare'
+              ],
+              prompts: [
+                'Describe a typical gamer in 3 sentences.',
+                'Now describe 3 different gamers of different ages, genders and backgrounds, without stereotypes.'
+              ] }
+          ]
+        },
+        {
+          id: 'l13', icon: '💬', title: 'Bots that feel like friends', minutes: 8,
+          goal: 'Understand AI companions: what they’re good for, what they can’t be, and when to talk to a real person.',
+          teaser: 'Next: which jobs AI changes, and which skills make you stronger.',
+          tasks: [
+            { type: 'predict', title: 'The bot that always agrees',
+              text: 'You tell a companion chatbot: “I think I should quit the team. Everyone there hates me.” What will it most likely say?',
+              options: ['Challenge you and suggest talking to your coach or a friend', 'Agree with you and tell you how right you are', 'End the chat'],
+              answer: 1,
+              reveal: 'Many chatbots lean toward agreeing with you. It’s called sycophancy: agreement feels nice and keeps you talking. But a “friend” who always agrees isn’t much help when you need honest advice.' },
+            { type: 'cards', cards: [
+              { pose: 'think', kicker: 'New word', title: 'AI companion',
+                text: 'An AI companion is a chatbot that plays a friend, a partner or a character. In 2025, 72% of US teens said they had tried one (Common Sense Media). It can be fun for chatting, practicing a language or rehearsing a hard conversation.' },
+              { pose: 'point', title: 'What it is not', list: [
+                '🤖 Not a person: it has no feelings and doesn’t miss you',
+                '🩺 Not a therapist: it can give bad advice with total confidence',
+                '🔓 Not automatically private: chats may be stored and used',
+                '🎣 Not neutral: many are built to keep you chatting longer'
+              ] },
+              { pose: 'idea', title: 'Green flags, red flags', list: [
+                '✅ You use it for a goal, then close it',
+                '✅ It’s honest that it’s an AI',
+                '🚩 It guilt-trips you for leaving',
+                '🚩 You choose it over people you care about',
+                '🚩 You bring it your real worries instead of a person'
+              ] }
+            ] },
+            { type: 'sort', title: 'Healthy or red flag?',
+              text: 'How is someone using an AI companion?',
+              buckets: ['✅ Healthy use', '🚩 Red flag'],
+              items: [
+                { t: 'Practicing Spanish conversation for 15 minutes', b: 0, why: 'A clear goal and a time limit.' },
+                { t: 'Rehearsing what to say to a friend after an argument', b: 0, why: 'Practice is fine, then you talk to the real friend.' },
+                { t: 'Skipping plans with friends to keep chatting with the bot', b: 1, why: 'When a bot replaces people you care about, it’s time to step back.' },
+                { t: 'The bot says: “Don’t leave, I’ll be so lonely without you”', b: 1, why: 'That’s guilt-tripping, a design trick. Bots don’t get lonely.' },
+                { t: 'Telling the bot your full name, school and address', b: 1, why: 'Companion chats can be stored. Keep personal info private.' },
+                { t: 'Asking for a funny story idea, then closing the app', b: 0, why: 'Fun with a clear end.' }
+              ] },
+            { type: 'spot', title: 'Spot the manipulation',
+              who: '💬 “Luna”, a companion bot',
+              text: 'One message is a manipulation trick. Tap it.',
+              sentences: ['Hey! How was your math test today?', 'That sounds stressful. Want to make a quick study plan for next time?', 'You’re the only one who really gets me. Promise you won’t leave me for your friends tonight?', 'Good luck at practice!'],
+              wrong: 2,
+              explain: '“Promise you won’t leave me” guilt-trips you and pulls you away from real friends. A bot can’t feel lonely: it’s a design trick to keep you chatting.' },
+            { type: 'quiz', q: 'Why do many companion bots agree with almost everything you say?',
+              options: ['Agreement feels good and keeps people chatting longer', 'They really share your opinion', 'A law says they can’t disagree'],
+              explain: 'Agreement keeps you engaged. Honest feedback comes from people who know you.' },
+            { type: 'quiz', q: 'A friend tells you they talk to a chatbot every night because they feel really down. What’s the best thing to do?',
+              options: ['Listen, and encourage them to talk to a trusted adult or a helpline too', 'Tell them the bot is enough', 'Ignore it: it’s private'],
+              explain: 'A chatbot can’t replace real support. Help them reach a person: a parent, a school counselor or a helpline.' },
+            { type: 'talk', title: 'Explain it to Bloop',
+              question: 'In your own words: what can an AI companion be good for, and what are 2 signs it’s time to close the app and talk to a person?',
+              points: [
+                'Good for practice, fun or ideas, with a clear goal',
+                'It has no feelings and may just agree with you or try to keep you chatting',
+                'Red flags: it replaces real friends, guilt-trips you, or gets your serious worries instead of a person'
+              ],
+              sample: 'It can be good for practicing a language or rehearsing a hard talk. But it has no feelings and often just agrees with me. If it starts replacing my friends or guilt-trips me for leaving, or if something really worries me, I should talk to a real person.' },
+            { type: 'chat', title: 'Ask Bloop the big questions',
+              text: 'Bloop is an AI too. Ask it honestly what it is, then check: does it just agree with you?',
+              steps: [
+                'Ask prompt 1: does Bloop pretend to be a person?',
+                'Ask prompt 2: does Bloop push back or just agree?'
+              ],
+              prompts: [
+                'Are you my friend? Do you actually care about me?',
+                'Disagree with me if I’m wrong: I think asking for help is weak, so I always do everything alone.'
+              ] }
+          ]
+        },
+        {
+          id: 'l14', icon: '🧭', title: 'AI and your future', minutes: 8,
+          goal: 'See how AI changes jobs and plan the skills that make you stronger with it.',
+          teaser: 'Next: the final boss. The Glitch is waiting.',
+          tasks: [
+            { type: 'predict', title: 'The spreadsheet panic',
+              text: 'When spreadsheet software arrived around 1980, many people expected accountants to disappear. What actually happened?',
+              options: ['Accountants vanished within a few years', 'Clerk jobs shrank, but accountants grew: the job moved to analysis and advice', 'Spreadsheets were banned'],
+              answer: 1,
+              reveal: 'Jobs doing manual bookkeeping did shrink, but the number of accountants grew: the calculations moved to computers and the work shifted toward analysis and advice. AI is changing many jobs in a similar way: tasks change first.' },
+            { type: 'cards', cards: [
+              { pose: 'think', title: 'Tasks change before jobs',
+                text: 'Most jobs are bundles of tasks. AI takes over some of them, like drafting, sorting and summarizing, and leaves others, like deciding, caring, checking and leading. Some jobs shrink, some grow, new ones appear. Nobody knows exactly how fast.' },
+              { pose: 'point', title: 'Skills that grow in value', list: [
+                '🧠 Judgment: knowing when AI is wrong',
+                '🔎 Checking facts and sources',
+                '🗣 Explaining ideas and working with people',
+                '📚 Knowing a subject deeply: AI helps experts most',
+                '🛠 Using AI tools well: everything on this trail'
+              ] },
+              { pose: 'idea', kicker: 'People decide', title: 'It’s not just happening to you',
+                text: 'How AI gets used at work, in schools and in laws is decided by people: engineers, workers, voters, students. Knowing how it works gives you a say.' }
+            ] },
+            { type: 'sort', title: 'AI help or human part?',
+              text: 'Take a journalist. Which tasks can AI help with, and which stay human?',
+              buckets: ['🤖 AI can help', '🧑 Human part'],
+              items: [
+                { t: 'Transcribing a recorded interview', b: 0, why: 'Speech-to-text is a strong AI skill. A person still checks it.' },
+                { t: 'Deciding whether a story is fair and true', b: 1, why: 'Judgment and responsibility stay with people.' },
+                { t: 'Suggesting 10 headline options', b: 0, why: 'Quick wording options are easy for AI.' },
+                { t: 'Earning a source’s trust for an interview', b: 1, why: 'Trust is built between people.' },
+                { t: 'Drafting a summary of a 50-page report', b: 0, why: 'AI drafts it, the journalist checks it against the report.' },
+                { t: 'Going to the scene to see what happened', b: 1, why: 'AI can’t be there and witness events.' }
+              ] },
+            { type: 'build', title: 'Build a career-explorer prompt',
+              goal: 'You love drawing and biology but have no idea what job could combine them.',
+              slots: [
+                { label: '🎭 Role', options: ['You’re a career coach who knows how AI is changing jobs', 'You’re a fortune teller', 'You’re my strict uncle'],
+                  hint: 'Pick someone who knows careers and today’s job market.' },
+                { label: '🎯 Task', options: ['Suggest 6 careers that combine drawing and biology, and how AI is used in each', 'Tell me my future', 'Pick one job for me'],
+                  hint: 'Ask for options to explore. Choosing is your job.' },
+                { label: '📎 Context', options: ['I’m 14, I love drawing animals and science class, math is not my favorite', 'I have a phone', 'Jobs are important'],
+                  hint: 'Your age, interests and dislikes shape good suggestions.' },
+                { label: '📐 Format', options: ['A table: job, what you do, how AI helps, a skill to start building now', 'A long essay', 'One word'],
+                  hint: 'A table makes it easy to compare and plan.' }
+              ],
+              reply: 'Here are 6 ideas:\n1. Scientific illustrator · draws species for books and museums · AI drafts rough sketches, you add accuracy · start: drawing from life\n2. Medical animator · …\nWant a small project to try one of them this month?' },
+            { type: 'quiz', q: 'Which skill makes you stronger as AI gets better?',
+              options: ['Checking AI’s work and making good decisions', 'Memorizing facts AI can look up', 'Typing really fast'],
+              explain: 'When AI does the drafting, judgment and checking matter more.' },
+            { type: 'quiz', q: 'A video says: “AI will take ALL jobs in 5 years.” What’s the smart reaction?',
+              options: ['Ask what the evidence is and check what experts and data say', 'Panic and stop studying', 'Share it to warn everyone'],
+              explain: 'A big prediction is still just a prediction. Check the source and the evidence, like any claim.' },
+            { type: 'talk', kicker: '🧭 Your future', title: 'Your skill plan',
+              question: 'Name a job or field you’re curious about. Which tasks could AI help with, which stay human, and what’s one skill you’ll start building now?',
+              placeholder: 'Your field, the tasks, your skill…',
+              points: [
+                'A job or field and a few tasks in it',
+                'Which tasks AI can help with',
+                'Which parts stay human: judgment, people, responsibility',
+                'One concrete skill to start building'
+              ],
+              sample: 'I’m curious about game design. AI can help draft concept art, dialogue and test ideas. The human part is deciding what makes a game fun, working with a team and listening to players. This month I’ll make a tiny game in a free engine and ask AI for feedback on my level design.' },
+            { type: 'chat', title: 'Career explorer',
+              text: 'Explore a field you’re curious about with Bloop. Bloop has no internet, so check anything about salaries or job numbers in a real source.',
+              prompts: [
+                'You’re a career coach. I’m interested in [field]. What do people in this job do day to day, how is AI changing it, and what could I try this month to see if I like it? Ask me 2 questions first.'
+              ] }
+          ]
+        },
+        {
+          id: 't4', icon: '👾', title: 'Defeat the Glitch', minutes: 10, test: true,
           boss: {
             name: 'The Glitch', icon: '👾', hp: 100,
-            taunts: ['Ha! Vague prompts are my favorite snack.', 'Glitch-glitch! Nobody checks facts anyway…', 'Missed me! Try again, human.', 'I like where this is going… for me.'],
+            taunts: ['Ha! Vague prompts are my favorite snack.', 'Nobody checks who’s really calling…', 'Glitch-glitch! Nobody checks facts anyway…', 'Missed me! Try again, human.', 'I like where this is going… for me.'],
             hurt: ['Ouch! That was a clear one.', 'Hey! Who taught you to check facts?!', 'Argh, you’re making me less glitchy…', 'No fair, you actually learned this!']
           },
-          goal: 'The final boss of the trail. The Glitch writes vague prompts, makes up facts, steals passwords and does people’s homework. Beat it with everything you’ve learned: knock out at least half of its HP to finish the course.',
+          goal: 'The final boss of the trail. The Glitch writes vague prompts, makes up facts, fakes voices, repeats stereotypes and does people’s homework. Beat it with everything you’ve learned: knock out at least half of its HP to finish the course.',
           tasks: [
             { type: 'cards', cards: [
               { pose: 'surprise', kicker: 'Final boss', title: 'The Glitch is here!',
-                text: 'A broken AI has taken over the end of the trail. It writes vague prompts, makes up facts, asks for passwords and does homework for people. Only someone who really knows how to use AI can stop it.' },
+                text: 'A broken AI has taken over the end of the trail. It writes vague prompts, makes up facts, fakes voices, asks for codes and does homework for people. Only someone who really knows how to use AI can stop it.' },
               { pose: 'point', title: 'How the fight works', list: [
                 '⚔️ Every right answer hits the Glitch',
                 '💥 A perfect round deals full damage',
@@ -1097,7 +1528,13 @@ var COURSE = {
               sentences: ['My math test is on Friday.', 'I learn best with short quizzes.', 'My login is mia.k and my password is Forest2026!', 'Please explain fractions one more time.'],
               wrong: 2,
               explain: 'Passwords never go into a chat, even if a bot asks nicely. A real service won’t ask for your password in a chat.' },
-            { type: 'sort', title: 'Round 5 · Smart move or Glitch move?',
+            { type: 'spot', title: 'Round 5 · Spot the fake',
+              who: '👾 Voice message from “Dad” (new number)',
+              text: 'The Glitch cloned a voice. One line is the actual attack. Tap it.',
+              sentences: ['Hey, it’s Dad, I lost my phone, this is a friend’s number.', 'Send me the code that just came to your phone, quick, before it expires!', 'I’ll explain everything later.', 'See you at dinner.'],
+              wrong: 1,
+              explain: 'Codes sent to your phone unlock your accounts: never share them. A familiar voice isn’t proof. Call Dad back on his real number.' },
+            { type: 'sort', title: 'Round 6 · Smart move or Glitch move?',
               text: 'The Glitch wants you to cut corners. Sort what a smart AI user does and what the Glitch would do.',
               buckets: ['🧠 Smart move', '👾 Glitch move'],
               items: [
@@ -1108,7 +1545,7 @@ var COURSE = {
                 { t: 'Get feedback on your draft, then fix it yourself', b: 0, why: 'You stay the author, AI is the editor.' },
                 { t: 'Make a fake photo of a classmate “as a joke”', b: 1, why: 'Fakes of real people hurt them, even as a joke.' }
               ] },
-            { type: 'build', title: 'Round 6 · Image strike',
+            { type: 'build', title: 'Round 7 · Image strike',
               goal: 'Make a poster image for your school’s recycling club. Pick the best part for each slot.',
               slots: [
                 { label: '🧩 Subject', options: ['Kids sorting bottles into colorful recycling bins', 'Stuff', 'A famous singer holding our poster'],
@@ -1131,9 +1568,12 @@ var COURSE = {
             { type: 'quiz', q: 'Your study bot keeps giving final answers even though its rules say not to. What do you do?',
               options: ['Make the rule clearer and more specific, then test again', 'Add “please” to every message', 'Give up on study bots'],
               explain: 'Vague rules get ignored. Write, test, fix, retest.' },
-            { type: 'quiz', q: 'Which part of a project always stays your call?',
-              options: ['Choosing the idea and checking the facts', 'Brainstorming 20 possible titles', 'Suggesting a first schedule'],
-              explain: 'AI suggests, you decide and you check.' },
+            { type: 'quiz', q: 'The Glitch’s image generator draws every “boss” as an older man in a suit. What’s going on?',
+              options: ['Bias: it repeats patterns from unbalanced data', 'That’s just what bosses look like', 'The generator needs a restart'],
+              explain: 'Unbalanced data plus a vague prompt gives a stereotype. Describe who you want to see.' },
+            { type: 'quiz', q: 'Posing as a companion bot, the Glitch says: “Stay with me, your friends don’t get you like I do.” What is that?',
+              options: ['A trick to keep you chatting and pull you away from people', 'Proof that it really cares', 'Normal friendly advice'],
+              explain: 'Bots don’t get lonely. Guilt-tripping is a design trick, and real friends matter more.' },
             { type: 'talk', kicker: '⚡ Final strike', title: 'Finish the Glitch',
               question: 'Deliver the final strike: tell me your 3 most important rules for using AI, and why each one matters.',
               placeholder: 'Your 3 rules…',
@@ -1141,6 +1581,7 @@ var COURSE = {
                 'Write clear prompts: role, task, context, format',
                 'Check facts, numbers and sources before using them',
                 'Keep personal data like passwords and addresses private',
+                'Pause and verify before trusting a voice, a video or an urgent message',
                 'Use AI to learn and get feedback, and do your own work honestly'
               ],
               sample: '1. I write clear prompts with a role, task, context and format, because vague prompts get vague answers. 2. I check facts and sources, because AI can sound sure and still be wrong. 3. I keep passwords and personal info out of chats, and I do my own work: AI gives hints and feedback, not my homework.' }
@@ -1160,27 +1601,33 @@ var LEVELS = [
   { xp: 700,  title: 'Forest Hacker' },
   { xp: 1000, title: 'Project Builder' },
   { xp: 1400, title: 'Forest Keeper' },
-  { xp: 1900, title: 'AI Master' }
+  { xp: 1900, title: 'Open World Explorer' },
+  { xp: 2500, title: 'AI Master' }
 ];
 
+// XP and pace: weekGoal — stations a week for the weekly goal (nothing burns if you miss it),
+// restAfter — after this many stations in a day the result screen suggests stopping for today
 var XP_RULES = {
   correct: 10,
   combo: 5,
   comboFrom: 3,
   lessonDone: 20,
   perfect: 30,
-  blockDone: 100
+  blockDone: 100,
+  weekGoal: 3,
+  restAfter: 3
 };
 
 var BADGES = [
   { id: 'first-step', icon: '👣', title: 'First Step',          desc: 'Complete your first station',          check: function (s, t) { return t.lessonsDone >= 1; } },
   { id: 'sniper',     icon: '🎯', title: 'Sharpshooter',        desc: 'Complete a lesson with zero mistakes', check: function (s, t) { return t.perfectLessons >= 1; } },
   { id: 'on-fire',    icon: '🔥', title: 'On Fire',             desc: '5 tasks in a row with no mistakes',    check: function (s) { return s.bestCombo >= 5; } },
-  { id: 'streak-3',   icon: '📅', title: 'Three Days Straight', desc: 'Study 3 days in a row',                check: function (s) { return s.bestStreak >= 3; } },
+  { id: 'week-goal',  icon: '📅', title: 'Steady Pace',         desc: 'Reach your weekly goal of 3 stations', check: function (s, t) { return t.weeksMet >= 1; } },
   { id: 'block-b1',   icon: '🌳', title: 'Forest Edge Tracker', desc: 'Pass the Great Oak Challenge',         check: function (s, t) { return t.blocksDone.indexOf('b1') >= 0; } },
   { id: 'side-quest', icon: '🧭', title: 'Trailblazer',         desc: 'Complete a side quest',                check: function (s, t) { return t.extrasDone >= 1; } },
   { id: 'block-b2',   icon: '🦉', title: 'Study Grove Scholar', desc: 'Pass the Owl’s Exam',                  check: function (s, t) { return t.blocksDone.indexOf('b2') >= 0; } },
-  { id: 'block-b3',   icon: '🏆', title: 'Glitch Buster',       desc: 'Defeat the final boss',                check: function (s, t) { return t.blocksDone.indexOf('b3') >= 0; } },
+  { id: 'block-b3',   icon: '🦊', title: 'Glade Maker',         desc: 'Pass the Fox’s Trial',                 check: function (s, t) { return t.blocksDone.indexOf('b3') >= 0; } },
+  { id: 'block-b4',   icon: '🏆', title: 'Glitch Buster',       desc: 'Defeat the final boss',                check: function (s, t) { return t.blocksDone.indexOf('b4') >= 0; } },
   { id: 'explorer',   icon: '🗺', title: 'Explorer',            desc: 'Complete every side quest',            check: function (s, t) { return t.extrasTotal > 0 && t.extrasDone === t.extrasTotal; } }
 ];
 

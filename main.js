@@ -14,7 +14,7 @@ const CONFIG = {
 };
 
 const COURSES = [
-    // playable: курс уже есть в кабинете, кнопка ведёт сразу в урок
+    // playable: курс уже есть в кабинете, кнопка ведёт сразу в урок; url: курс живёт отдельной страницей
     { id: 'hello-ai', title: 'Hello, AI!', age: '6-8', lessons: 8, minutes: 30, level: 'Starter',
       desc: 'Meet artificial intelligence through games and fun experiments.',
       palette: 'mint', pose: 'hello', thumb: '#DDF6EF', playable: true },
@@ -32,15 +32,18 @@ const COURSES = [
       palette: 'sky', pose: 'victory', thumb: '#FFF1C9' },
     { id: 'ai-games', title: 'Games and AI', age: '12-14', lessons: 10, minutes: 60, level: 'Intermediate',
       desc: 'Make a simple game where the characters think with artificial intelligence.',
-      palette: 'mint', pose: 'run', thumb: '#FFE0EA' }
+      palette: 'mint', pose: 'run', thumb: '#FFE0EA' },
+    { id: 'ai-trail', title: 'AI Trail', age: '14-17', lessons: 18, minutes: 8, level: 'Advanced',
+      desc: 'Use AI for real: studying, projects, spotting fakes and bias. Short hands-on lessons with Bloop.',
+      palette: 'peach', pose: 'point', thumb: '#E3F5D6', url: 'ai-trail/en/' }
 ];
 
-const AGE_LABEL = { '6-8': 'Ages 6–8', '9-11': 'Ages 9–11', '12-14': 'Ages 12–14' };
+const AGE_LABEL = { '6-8': 'Ages 6–8', '9-11': 'Ages 9–11', '12-14': 'Ages 12–14', '14-17': 'Ages 14–17' };
 
 // Шапка для каждой страницы: тексты и поза Бобика
 const ROUTES = {
     home: {
-        kicker: 'AI school for kids aged 6–14',
+        kicker: 'AI school for kids and teens aged 6–17',
         title: 'Bloop <span>AI School</span>',
         lead: 'We learn to be friends with AI: drawing pictures, writing fairy tales and building our own robot helpers together with Bobik.',
         pose: 'hello', bubble: "Hi! I'm Bobik 👋"
@@ -247,9 +250,9 @@ const app = {
                         <li>${c.level}</li>
                     </ul>
                     <div class="course__foot">
-                        ${c.playable
+                        ${c.url || c.playable
                             ? `<span class="course__free">Try it right now</span>
-                               <a class="btn" href="${this.cabinetLink(c.id)}">Play now ▶</a>`
+                               <a class="btn" href="${c.url || this.cabinetLink(c.id)}">Play now ▶</a>`
                             : `<span class="course__free">First lesson free</span>
                                <button class="btn" type="button" data-open="lead" data-course="${c.id}">Start</button>`}
                     </div>

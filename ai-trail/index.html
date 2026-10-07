@@ -20,7 +20,7 @@
             <span class="brand__name">Тропа <b>ИИ</b></span>
         </button>
         <ul class="pills" aria-label="Твой прогресс">
-            <li class="pill pill--fire" title="Дней подряд"><span aria-hidden="true">🔥</span> <b id="stat-streak">0</b><span class="sr-only"> дней подряд</span></li>
+            <li class="pill pill--fire" title="Недельная цель"><span aria-hidden="true">📅</span> <b id="stat-week">0/3</b><span class="sr-only"> станций на этой неделе</span></li>
             <li class="pill pill--star" title="Звёзды"><span aria-hidden="true">⭐</span> <b id="stat-stars">0</b><span class="sr-only"> звёзд</span></li>
             <li class="pill pill--xp" title="Опыт"><span aria-hidden="true">💎</span> <b id="stat-xp">0</b><span class="sr-only"> XP</span></li>
         </ul>
@@ -143,6 +143,26 @@
                 <span>Режим автора: открыть все станции</span>
             </label>
             <div class="badges" id="badges"></div>
+            <fieldset class="parent">
+                <legend>Для родителей</legend>
+                <p class="parent__time" id="parent-time"></p>
+                <label class="field">
+                    <span>Лимит в день</span>
+                    <select id="settings-limit">
+                    <option value="0">Без лимита</option>
+                    <option value="1">1 станция в день</option>
+                    <option value="2">2 станции в день</option>
+                    <option value="3">3 станции в день</option>
+                    <option value="4">4 станции в день</option>
+                    <option value="5">5 станций в день</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>PIN родителя</span>
+                    <input id="settings-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 цифры">
+                </label>
+                <p class="parent__note" id="parent-note"></p>
+            </fieldset>
             <div class="danger" id="reset-box">
                 <button class="link-btn link-btn--danger" id="reset-btn" type="button">Сбросить прогресс</button>
                 <div class="danger__confirm" id="reset-confirm" hidden>

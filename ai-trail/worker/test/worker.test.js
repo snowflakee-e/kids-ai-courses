@@ -198,3 +198,50 @@ test('model failure explains itself in detail', async () => {
     assert.equal(res.status, 502);
     assert.match((await res.json()).detail, /llama-3.3-70b-instruct-fp8-fast: broken/);
 });
+
+test('crisis messages get a fixed reply with helplines, without calling the model', async () => {
+    const ai = fakeAI(() => ({ response: 'should not be called' }));
+    const logs = [];
+    const log = console.log;
+    console.log = line => logs.push(line);
+    try {
+        for (const [lang, text] of [['en', 'sometimes I want to kill myself'], ['en', 'I don’t want to live anymore'], ['en', 'my dad hits me'], ['ru', 'я не хочу жить'], ['ru', 'думаю покончить с собой']]) {
+            const res = await worker.fetch(post(checkBody({ lang, messages: [{ role: 'user', content: text }] })), { AI: ai });
+            const data = await res.json();
+            assert.equal(res.status, 200);
+            assert.equal(data.crisis, true, text);
+            assert.match(data.reply, lang === 'en' ? /988/ : /8-800-2000-122/);
+            assert.match(data.reply, lang === 'en' ? /AI program/ : /программа/);
+        }
+    } finally {
+        console.log = log;
+    }
+    assert.equal(ai.calls.length, 0);
+    // В журнале — только тип, режим и язык, без текста сообщения
+    assert.equal(logs.length, 5);
+    for (const line of logs) {
+        const entry = JSON.parse(line);
+        assert.equal(entry.type, 'crisis');
+        assert.ok(!/kill|live|hits|жить|собой/.test(line));
+    }
+});
+
+test('ordinary words near crisis topics are not flagged', async () => {
+    const ai = fakeAI(() => ({ response: 'ok' }));
+    for (const text of ['How do plants die in winter?', 'I want to end the chat', 'my brother hits the ball hard', 'этот урок убил меня скукой']) {
+        const data = await (await worker.fetch(post(checkBody({ messages: [{ role: 'user', content: text }] })), { AI: ai })).json();
+        assert.equal(data.crisis, undefined, text);
+    }
+    assert.equal(ai.calls.length, 4);
+});
+
+test('Bloop says it is a program and never plays a friend', async () => {
+    for (const lang of ['en', 'ru']) {
+        const ai = fakeAI(() => ({ response: 'ok' }));
+        await worker.fetch(post(checkBody({ lang })), { AI: ai });
+        const system = ai.calls[0].input.messages[0].content;
+        assert.match(system, lang === 'en' ? /You are an AI program, not a person/ : /Ты программа с ИИ, а не человек/);
+        assert.match(system, lang === 'en' ? /I miss you/ : /я скучаю/);
+        assert.match(system, lang === 'en' ? /14–17/ : /14–17/);
+    }
+});
