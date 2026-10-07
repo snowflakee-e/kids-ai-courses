@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AI Trail</title>
+    <meta name="description" content="Use AI for real: school, projects, spotting fakes and bias. A hands-on AI course for ages 14–17.">
+    <meta name="theme-color" content="#F6F6F2" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0B0C10" media="(prefers-color-scheme: dark)">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%230E0F12'/><path d='M8 23c4 0 4-6 8-6s4-6 8-6' fill='none' stroke='%23C6F432' stroke-width='3' stroke-linecap='round'/><circle cx='24' cy='11' r='3' fill='%23C6F432'/></svg>">
+    <!-- Шрифты свои, из fonts/: никаких запросов к Google Fonts -->
+    <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- КАРТА -->
+    <header class="topbar" id="topbar">
+        <button class="brand" id="brand" type="button" aria-label="AI Trail: back to the map">
+            <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9"/><path d="M8 23c4 0 4-6 8-6s4-6 8-6"/><circle cx="24" cy="11" r="3"/></svg>
+            <span class="brand__name">ai <b>trail</b></span>
+        </button>
+        <ul class="pills" aria-label="Your progress">
+            <li class="pill pill--week" title="Weekly goal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><b id="stat-week">0/3</b><span class="sr-only"> stations this week</span></li>
+            <li class="pill pill--star" title="Stars"><span class="pill__star" aria-hidden="true">★</span><b id="stat-stars">0</b><span class="sr-only"> stars</span></li>
+            <li class="pill pill--xp" title="XP"><b id="stat-xp">0</b><span class="pill__unit">XP</span></li>
+        </ul>
+        <button class="icon-btn" id="profile-btn" type="button" aria-label="Your profile: rank, skills, portfolio"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></button>
+        <button class="icon-btn" id="sound-btn" type="button" aria-label="Turn sound off"></button>
+        <button class="icon-btn" id="settings-btn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></button>
+    </header>
+
+    <main class="screen" id="map-screen">
+        <section class="hello-card" aria-labelledby="hello-title">
+            <div class="hello-card__text">
+                <p class="eyebrow" id="hello-kicker">Zone 01 · Forest Edge</p>
+                <h1 id="hello-title">Hey.</h1>
+                <div class="level">
+                    <div class="level__row">
+                        <span id="level-name">Lv 1 · Intern</span>
+                        <span class="level__xp" id="level-xp">0 / 60 XP</span>
+                    </div>
+                    <div class="bar" role="progressbar" aria-label="XP to the next rank" aria-valuemin="0" aria-valuemax="100" id="level-bar"><span id="level-fill"></span></div>
+                </div>
+            </div>
+            <button class="btn btn--go btn--lg" id="continue-btn" type="button">Continue</button>
+        </section>
+
+        <div class="map" id="map" aria-label="Course map"></div>
+
+        <p class="map-note">Progress is saved in this browser only. <a href="parents.html">For parents →</a></p>
+    </main>
+
+    <!-- УРОК -->
+    <section class="lesson" id="lesson" hidden aria-label="Lesson">
+        <div class="lesson__top">
+            <button class="icon-btn" id="lesson-close" type="button" aria-label="Back to the map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            <div class="steps" id="steps" aria-hidden="true"></div>
+            <span class="combo" id="combo" hidden>× <b>0</b></span>
+        </div>
+        <div class="lesson__body">
+            <div class="task" id="task"></div>
+        </div>
+        <div class="lesson__foot">
+            <div class="feedback" id="feedback" hidden role="status" aria-live="polite">
+                <div class="feedback__bot sticker" id="feedback-blup" aria-hidden="true"></div>
+                <div class="feedback__text">
+                    <b id="feedback-title"></b>
+                    <p id="feedback-text"></p>
+                </div>
+                <span class="xp-pop" id="xp-pop" aria-hidden="true"></span>
+            </div>
+            <div class="foot-row">
+                <button class="link-btn" id="skip-btn" type="button" hidden>Skip</button>
+                <button class="btn btn--go btn--lg btn--block" id="next-btn" type="button">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ИТОГ УРОКА -->
+    <section class="result" id="result" hidden aria-labelledby="result-title">
+        <div class="result__box">
+            <div class="result__bot sticker" id="result-blup" aria-hidden="true"></div>
+            <p class="eyebrow" id="result-kicker"></p>
+            <h1 id="result-title"></h1>
+            <div class="result__stars" id="result-stars"></div>
+            <p class="result__lead" id="result-lead"></p>
+            <ul class="result__stats" id="result-stats"></ul>
+            <ul class="result__extra" id="result-extra"></ul>
+            <div class="result__actions">
+                <button class="btn btn--go btn--lg btn--block" id="result-map" type="button">To the map →</button>
+                <button class="link-btn" id="result-retry" type="button">Play again</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Знакомство -->
+    <dialog class="sheet" id="hello-sheet" aria-labelledby="hello-sheet-title">
+        <form class="sheet__box" id="hello-form" method="dialog">
+            <div class="sheet__bot sticker" id="hello-blup" aria-hidden="true"></div>
+            <h2 id="hello-sheet-title">I’m Bloop.</h2>
+            <p>An AI program and your sidekick on the AI Trail: short hands-on lessons on using AI for school, projects and real life. No account needed.</p>
+            <label class="field">
+                <span>What should I call you?</span>
+                <input id="hello-name" name="name" type="text" autocomplete="given-name" maxlength="24" required placeholder="First name or nickname">
+            </label>
+            <p class="parent__note">It stays in this browser. No last names needed.</p>
+            <button class="btn btn--go btn--lg btn--block" type="submit">Let’s go</button>
+        </form>
+    </dialog>
+
+    <!-- Станция -->
+    <dialog class="sheet" id="station-sheet" aria-labelledby="station-title">
+        <div class="sheet__box">
+            <button class="sheet__close icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            <div class="station-head">
+                <span class="station-head__icon" id="station-icon" aria-hidden="true"></span>
+                <div>
+                    <p class="eyebrow" id="station-kicker"></p>
+                    <h2 id="station-title"></h2>
+                </div>
+            </div>
+            <p id="station-goal"></p>
+            <ul class="chips" id="station-chips"></ul>
+            <p class="station-best" id="station-best"></p>
+            <button class="btn btn--go btn--lg btn--block" id="station-start" type="button">Start</button>
+            <button class="link-btn" id="station-restart" type="button" hidden>Start over</button>
+        </div>
+    </dialog>
+
+    <!-- Профиль -->
+    <dialog class="sheet" id="profile-sheet" aria-labelledby="profile-title">
+        <div class="sheet__box">
+            <button class="sheet__close icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            <div class="profile-head">
+                <span class="profile-head__rank" id="profile-level" aria-hidden="true">1</span>
+                <div>
+                    <p class="eyebrow" id="profile-kicker"></p>
+                    <h2 id="profile-title"></h2>
+                </div>
+            </div>
+            <ul class="profile-stats" id="profile-stats"></ul>
+            <button class="btn btn--white btn--block" id="share-btn" type="button">Share my skills card</button>
+            <div class="tabs" role="tablist" aria-label="Profile">
+                <button type="button" role="tab" id="tab-skills" aria-controls="panel-skills" aria-selected="true">Skills</button>
+                <button type="button" role="tab" id="tab-portfolio" aria-controls="panel-portfolio" aria-selected="false">Portfolio</button>
+                <button type="button" role="tab" id="tab-badges" aria-controls="panel-badges" aria-selected="false">Badges</button>
+                <button type="button" role="tab" id="tab-cert" aria-controls="panel-cert" aria-selected="false">Certificate</button>
+            </div>
+            <div role="tabpanel" id="panel-skills" aria-labelledby="tab-skills"><div class="skills" id="skills"></div></div>
+            <div role="tabpanel" id="panel-portfolio" aria-labelledby="tab-portfolio" hidden><div class="portfolio" id="portfolio"></div></div>
+            <div role="tabpanel" id="panel-badges" aria-labelledby="tab-badges" hidden><div class="badges" id="badges"></div></div>
+            <div role="tabpanel" id="panel-cert" aria-labelledby="tab-cert" hidden>
+                <div class="skills" id="cert-box">
+                    <p class="cert-lock" id="cert-note"></p>
+                    <label class="field" id="cert-name-field">
+                        <span>Name on the certificate</span>
+                        <input id="cert-name" type="text" maxlength="40" autocomplete="name">
+                    </label>
+                    <button class="btn btn--go btn--block" id="cert-print" type="button">Print or save as PDF</button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Карточка «мои навыки» -->
+    <dialog class="sheet" id="share-sheet" aria-labelledby="share-title">
+        <div class="sheet__box">
+            <button class="sheet__close icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            <h2 id="share-title">Your skills card</h2>
+            <img class="share-preview" id="share-img" alt="Preview of your skills card">
+            <label class="switch">
+                <input id="share-name" type="checkbox">
+                <span>Show my name on the card</span>
+            </label>
+            <p class="parent__note">No school, last name or photo goes on the card. It’s a picture made in your browser.</p>
+            <button class="btn btn--go btn--block" id="share-go" type="button">Share</button>
+            <button class="link-btn" id="share-save" type="button">Download image</button>
+        </div>
+    </dialog>
+
+    <!-- Настройки -->
+    <dialog class="sheet" id="settings-sheet" aria-labelledby="settings-title">
+        <form class="sheet__box" id="settings-form" method="dialog">
+            <button class="sheet__close icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            <h2 id="settings-title">Settings</h2>
+            <label class="field">
+                <span>Name</span>
+                <input id="settings-name" name="name" type="text" maxlength="24" required>
+            </label>
+            <fieldset class="prefs">
+                <legend>Display</legend>
+                <label class="field">
+                    <span>Theme</span>
+                    <select id="settings-theme">
+                        <option value="auto">Same as my device</option>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </label>
+                <label class="switch"><input id="settings-big" type="checkbox"><span>Larger text</span></label>
+                <label class="switch"><input id="settings-easy" type="checkbox"><span>Easy-read font</span></label>
+                <label class="switch"><input id="settings-calm" type="checkbox"><span>Less motion</span></label>
+                <label class="switch"><input id="settings-sound" type="checkbox"><span>Sounds</span></label>
+            </fieldset>
+            <label class="switch">
+                <input id="settings-unlock" type="checkbox">
+                <span>Author mode: unlock all stations</span>
+            </label>
+            <fieldset class="parent">
+                <legend>For parents</legend>
+                <p class="parent__time" id="parent-time"></p>
+                <label class="field">
+                    <span>Daily limit</span>
+                    <select id="settings-limit">
+                    <option value="0">No limit</option>
+                    <option value="1">1 station a day</option>
+                    <option value="2">2 stations a day</option>
+                    <option value="3">3 stations a day</option>
+                    <option value="4">4 stations a day</option>
+                    <option value="5">5 stations a day</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Parent PIN</span>
+                    <input id="settings-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 digits">
+                </label>
+                <p class="parent__note" id="parent-note"></p>
+                <a class="parent__link" href="parents.html">How AI Trail keeps teens safe →</a>
+            </fieldset>
+            <div class="danger" id="reset-box">
+                <button class="link-btn link-btn--danger" id="reset-btn" type="button">Reset progress</button>
+                <div class="danger__confirm" id="reset-confirm" hidden>
+                    <p>This erases your XP, stars, badges and portfolio in this browser. Sure?</p>
+                    <div class="danger__row">
+                        <button class="btn btn--bad" id="reset-yes" type="button">Yes, reset</button>
+                        <button class="btn btn--white" id="reset-no" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn--go btn--block" type="submit">Save</button>
+        </form>
+    </dialog>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+    <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+
+    <!-- Сертификат: виден только при печати -->
+    <section class="cert" id="cert" aria-hidden="true"></section>
+
+    <script src="../bobik.js"></script>
+    <script src="course.en.js"></script>
+    <script src="game.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
