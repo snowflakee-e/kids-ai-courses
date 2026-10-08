@@ -2093,11 +2093,15 @@ const app = {
             <button class="arena__leave" type="button">${A.leave}</button>
             <p class="arena__turn">${A.turn}</p>`;
         document.body.appendChild(el);
+        // Пока идёт бой, страница под ним не прокручивается: иначе сбивается прицел
+        document.documentElement.classList.add('is-arena');
+        el.addEventListener('wheel', e => e.preventDefault(), { passive: false });
         let game = null;
         const close = () => {
             if (game) game.destroy();
             game = null;
             el.remove();
+            document.documentElement.classList.remove('is-arena');
             this.leaveArena = this.arena = null;
         };
         this.leaveArena = close;

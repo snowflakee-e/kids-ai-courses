@@ -1028,6 +1028,7 @@ a.brand { text-decoration: none; color: inherit; }
     padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
 }
 .arena__stage { width: 100%; height: 100%; }
+html.is-arena, html.is-arena body { overflow: hidden; overscroll-behavior: none; }
 .arena__stage canvas { display: block; touch-action: none; }
 .arena__leave {
     position: absolute;
