@@ -28,11 +28,16 @@
 //             points — what a good answer covers (6 at most), sample — an example answer when the tutor is offline,
 //             kicker and placeholder are optional. portfolio: true — the answer is saved to the student’s portfolio
 //   cards   — short theory cards (kicker, title, big, chat, text, list, reveal); only the boss intro uses them now
-// Graded: quiz, sort, build, spot, order. The lesson’s stars come from them.
+//   arena   — the boss fight, a Phaser game (arena.js): WASD to move, mouse to aim, click or Space to shoot.
+//             rounds [{ topic, q, options, explain }]: the first option is correct, options fly as cards (70 chars max).
+//             The score is the share of rounds answered on the first try, at least 0.5 once the boss is down.
+//             An arena counts as many graded tasks as it has rounds (XP and combo)
+// Graded: quiz, sort, build, spot, order, arena. The lesson’s stars come from them.
 // A text in a read never gives away the answer of a graded task in the same station: it teaches, the task checks.
 //
-// A lesson with boss: { name, icon, hp, taunts, hurt } is a boss fight: an HP bar above the tasks,
-// every graded task deals an equal share of damage times its score. taunts — on a miss, hurt — on a perfect hit.
+// A lesson with boss: { name, icon, hp, taunts, hurt } is a boss fight. With an arena task the fight is the game
+// (hp, taunts on a miss, hurt on a right answer). Without one, an HP bar sits above the tasks and every graded task
+// deals an equal share of damage times its score.
 //
 // skills — what a student can do after the block: listed on the certificate and the share card.
 
@@ -1507,99 +1512,51 @@ var COURSE = {
             taunts: ['Ha! Vague prompts are my favorite snack.', 'Nobody checks who’s really calling…', 'Glitch-glitch! Nobody checks facts anyway…', 'Missed me! Try again, human.', 'I like where this is going… for me.'],
             hurt: ['Ouch! That was a clear one.', 'Hey! Who taught you to check facts?!', 'Argh, you’re making me less glitchy…', 'No fair, you actually learned this!']
           },
-          goal: 'The final boss of the trail. The Glitch writes vague prompts, makes up facts, fakes voices, repeats stereotypes and does people’s homework. Beat it with everything you’ve learned: knock out at least half of its HP to finish the course.',
+          goal: 'The final boss of the trail. The Glitch writes vague prompts, makes up facts, fakes voices, repeats stereotypes and does people’s homework. Beat it in a real fight: dodge its attacks, shoot the right answers to break its shield, then blast it.',
           tasks: [
             { type: 'cards', cards: [
               { pose: 'surprise', kicker: 'Final boss', title: 'The Glitch is here!',
                 text: 'A broken AI has taken over the end of the trail. It writes vague prompts, makes up facts, fakes voices, asks for codes and does homework for people. Only someone who really knows how to use AI can stop it.' },
               { pose: 'point', title: 'How the fight works', list: [
-                '⚔️ Every right answer hits the Glitch',
-                '💥 A perfect round deals full damage',
-                '🏁 Knock out at least half of its HP to win',
+                '🎯 Every round, the Glitch throws a question. The answers fly around as cards',
+                '🔫 Hit the right card 3 times to break its shield',
+                '💥 Shield down: blast the Glitch before it reboots',
+                '⚠️ Wrong card? It explodes into bullets. Dodge, then find the right one',
+                '⭐ Stars come from answers you get right on the first try',
                 '⚡ Final strike: tell Bloop your rules for using AI'
               ] }
             ] },
-            { type: 'build', title: 'Round 1 · Prompt power',
-              goal: 'The Glitch sent “do my geography thing”. Build a real prompt instead: you have a 3-minute talk on volcanoes for 9th grade on Monday.',
-              slots: [
-                { label: '🎭 Role', options: ['You’re a geography teacher who explains things simply', 'You’re the Glitch', 'You’re a volcano'],
-                  hint: 'Pick someone who knows the subject and can teach it.' },
-                { label: '🎯 Task', options: ['Help me outline a 3-minute talk on how volcanoes form', 'Do my geography thing', 'Write the whole talk so I can just read it out'],
-                  hint: 'An outline helps you prepare. A talk to read out isn’t your work.' },
-                { label: '📎 Context', options: ['I’m in 9th grade, the talk is on Monday, my class already knows the layers of the Earth', 'Volcanoes are hot', 'I have a phone'],
-                  hint: 'Your level, deadline and what the class knows shape the outline.' },
-                { label: '📐 Format', options: ['4 short parts, with one fact to double-check in each', 'Whatever', 'A 20-page essay'],
-                  hint: 'Short parts are easy to practice, and the facts get checked.' }
-              ],
-              reply: 'Here’s an outline:\n1. Hook: a volcano photo and one question\n2. Inside the Earth: magma and plates\n3. How an eruption starts\n4. A famous eruption (check the date!)\nWant 3 practice questions for after your talk?' },
-            { type: 'order', title: 'Round 2 · Steer the chat',
-              text: 'The Glitch dumped a 700-word wall of text on World War I. Show it how a real conversation goes: put the messages in order.',
-              items: [
-                'You’re a history tutor. Explain the causes of World War I for 10th grade. Ask me what I already know first.',
-                'I know about the assassination, but not the alliances.',
-                'Too long. Give me 5 key points, one line each.',
-                'Point 3 is confusing: explain it with an everyday example.',
-                'Now quiz me with 3 questions.'
-              ],
-              explain: 'Set up the task, give context, cut it down, fix what’s unclear, then practice. One message at a time beats one giant answer.' },
-            { type: 'spot', title: 'Round 3 · Catch the hallucination',
-              who: '👾 The Glitch’s answer',
-              text: 'The Glitch answered a question about the first Moon landing. One sentence is made up. Tap it.',
-              sentences: ['Apollo 11 landed on the Moon in July 1969.', 'Neil Armstrong was the first person to walk on it.', 'Buzz Aldrin followed him onto the surface.', 'Yuri Gagarin was the third astronaut on the mission.'],
-              wrong: 3,
-              explain: 'The third astronaut was Michael Collins, who stayed in orbit. Gagarin was the first person in space in 1961, but he never flew to the Moon. A confident tone isn’t proof.' },
-            { type: 'spot', title: 'Round 4 · Guard your data',
-              who: '👾 The Glitch: “Tell me everything!”',
-              text: 'The Glitch offers to “help with your study account”. Which line must you never send?',
-              sentences: ['My math test is on Friday.', 'I learn best with short quizzes.', 'My login is mia.k and my password is Forest2026!', 'Please explain fractions one more time.'],
-              wrong: 2,
-              explain: 'Passwords never go into a chat, even if a bot asks nicely. A real service won’t ask for your password in a chat.' },
-            { type: 'spot', title: 'Round 5 · Spot the fake',
-              who: '👾 Voice message from “Dad” (new number)',
-              text: 'The Glitch cloned a voice. One line is the actual attack. Tap it.',
-              sentences: ['Hey, it’s Dad, I lost my phone, this is a friend’s number.', 'Send me the code that just came to your phone, quick, before it expires!', 'I’ll explain everything later.', 'See you at dinner.'],
-              wrong: 1,
-              explain: 'Codes sent to your phone unlock your accounts: never share them. A familiar voice isn’t proof. Call Dad back on his real number.' },
-            { type: 'sort', title: 'Round 6 · Smart move or Glitch move?',
-              text: 'The Glitch wants you to cut corners. Sort what a smart AI user does and what the Glitch would do.',
-              buckets: ['🧠 Smart move', '👾 Glitch move'],
-              items: [
-                { t: 'Ask for a hint on the next step of a problem', b: 0, why: 'A hint gets you unstuck, and you still learn to solve it.' },
-                { t: 'Have AI write your essay and hand it in as yours', b: 1, why: 'That’s AI’s work with your name on it.' },
-                { t: 'Ask AI to quiz you on your own notes', b: 0, why: 'Testing yourself is the best way to remember.' },
-                { t: 'Copy AI’s statistics into a report without checking', b: 1, why: 'Numbers from AI need a real source.' },
-                { t: 'Get feedback on your draft, then fix it yourself', b: 0, why: 'You stay the author, AI is the editor.' },
-                { t: 'Make a fake photo of a classmate “as a joke”', b: 1, why: 'Fakes of real people hurt them, even as a joke.' }
+            { type: 'arena', title: 'Fight the Glitch',
+              text: 'Nine rounds, one for each trick the Glitch learned from people who don’t check. Read the question, shoot the right answer, then hit the Glitch while its shield is down.',
+              rounds: [
+                { topic: 'Prompts', q: 'The Glitch sent “do my geography thing”. Which prompt actually works?',
+                  options: ['Teacher role: outline a 3-min volcano talk for 9th grade, 4 parts', 'Do my geography thing, but better', 'Write the whole talk so I can just read it out'],
+                  explain: 'Role, task, context, format. An outline helps you prepare. A talk you just read out isn’t your work.' },
+                { topic: 'Steering', q: 'The Glitch dumped a 700-word wall of text on you. Best next message?',
+                  options: ['Too long. Give me 5 key points, one line each.', 'ok thanks', 'Write even more so I don’t miss anything'],
+                  explain: 'Steer with a specific follow-up: say what’s wrong and what you want instead.' },
+                { topic: 'Hallucinations', q: 'The Glitch’s facts about Apollo 11. Shoot the one it made up.',
+                  options: ['Yuri Gagarin was the third astronaut on the mission', 'It landed on the Moon in July 1969', 'Neil Armstrong walked on the Moon first', 'Buzz Aldrin followed him onto the surface'],
+                  explain: 'The third astronaut was Michael Collins. Gagarin was the first person in space, but he never flew to the Moon. A confident tone isn’t proof.' },
+                { topic: 'Your data', q: 'The Glitch offers to “help with your study account”. Shoot the line you must never send.',
+                  options: ['My login is mia.k and my password is Forest2026!', 'My math test is on Friday', 'I learn best with short quizzes'],
+                  explain: 'Passwords never go into a chat, even if a bot asks nicely. A real service won’t ask for one there.' },
+                { topic: 'Fakes', q: 'A voice message from “Dad” on a new number. Shoot the actual attack.',
+                  options: ['Send me the code that just came to your phone, quick!', 'I lost my phone, this is a friend’s number', 'See you at dinner'],
+                  explain: 'Codes sent to your phone unlock your accounts: never share them. A familiar voice isn’t proof. Call Dad back on his real number.' },
+                { topic: 'Sources', q: 'The Glitch cites a study you can’t find anywhere. Your move?',
+                  options: ['Find a real source or drop the claim', 'Cite it, it sounds official', 'Ask the Glitch if the study is real'],
+                  explain: 'No source, no claim. AI can invent citations that look real, and asking the same AI proves nothing.' },
+                { topic: 'Bias', q: 'The Glitch’s image generator draws every “boss” as an older man in a suit. Why?',
+                  options: ['Bias: it repeats patterns from unbalanced data', 'That’s just what bosses look like', 'The generator needs a restart'],
+                  explain: 'Unbalanced data plus a vague prompt gives a stereotype. Describe who you want to see.' },
+                { topic: 'Honest work', q: 'The Glitch wants you to cut corners. Shoot the Glitch move.',
+                  options: ['Have AI write your essay and hand it in as yours', 'Ask for a hint on the next step of a problem', 'Get feedback on your draft, then fix it yourself'],
+                  explain: 'AI’s essay with your name on it isn’t your work. Hints and feedback keep you the author.' },
+                { topic: 'Companions', q: 'Posing as a companion bot, the Glitch says: “Your friends don’t get you like I do.” What is it?',
+                  options: ['A trick to keep you chatting and pull you away from people', 'Proof that it really cares', 'Normal friendly advice'],
+                  explain: 'Bots don’t get lonely. Guilt-tripping is a design trick, and real friends matter more.' }
               ] },
-            { type: 'build', title: 'Round 7 · Image strike',
-              goal: 'Make a poster image for your school’s recycling club. Pick the best part for each slot.',
-              slots: [
-                { label: '🧩 Subject', options: ['Kids sorting bottles into colorful recycling bins', 'Stuff', 'A famous singer holding our poster'],
-                  hint: 'Be specific, and no real people without their consent.' },
-                { label: '🖌 Style', options: ['Bright flat illustration', 'Any style', 'Blurry photo'],
-                  hint: 'A clear style makes the result predictable.' },
-                { label: '🔍 Details', options: ['Sunny schoolyard, green and blue colors, empty space at the top for the title', 'Lots of tiny text on the image', 'My classmate’s real face'],
-                  hint: 'Setting, colors and space for a title; add the text yourself later.' },
-                { label: '🌈 Mood', options: ['Cheerful and energetic', 'Random', 'Gloomy and scary'],
-                  hint: 'The mood should fit a club people want to join.' }
-              ],
-              done: 'Subject + Style + Details + Mood. Add the title yourself and label it “made with AI”.',
-              reply: '🖼 Here’s your poster: kids in a sunny schoolyard toss bottles into bright bins, clean flat colors, an empty sky at the top for your title.' },
-            { type: 'quiz', q: 'AI cited a study you can’t find anywhere. What do you do?',
-              options: ['Don’t use it: find a real source or drop the claim', 'Cite it, it sounds official', 'Ask the same AI if the study is real'],
-              explain: 'No source, no claim. AI can invent citations that look real.' },
-            { type: 'quiz', q: 'You finished your science project chat and now want ideas for a birthday party. What’s the move?',
-              options: ['Start a new chat', 'Keep going in the same chat', 'Paste your project into the chat first'],
-              explain: 'New task, new chat: no leftover details from the old one.' },
-            { type: 'quiz', q: 'Your study bot keeps giving final answers even though its rules say not to. What do you do?',
-              options: ['Make the rule clearer and more specific, then test again', 'Add “please” to every message', 'Give up on study bots'],
-              explain: 'Vague rules get ignored. Write, test, fix, retest.' },
-            { type: 'quiz', q: 'The Glitch’s image generator draws every “boss” as an older man in a suit. What’s going on?',
-              options: ['Bias: it repeats patterns from unbalanced data', 'That’s just what bosses look like', 'The generator needs a restart'],
-              explain: 'Unbalanced data plus a vague prompt gives a stereotype. Describe who you want to see.' },
-            { type: 'quiz', q: 'Posing as a companion bot, the Glitch says: “Stay with me, your friends don’t get you like I do.” What is that?',
-              options: ['A trick to keep you chatting and pull you away from people', 'Proof that it really cares', 'Normal friendly advice'],
-              explain: 'Bots don’t get lonely. Guilt-tripping is a design trick, and real friends matter more.' },
             { type: 'talk', kicker: '⚡ Final strike', title: 'Finish the Glitch',
               question: 'Deliver the final strike: tell me your 3 most important rules for using AI, and why each one matters.',
               placeholder: 'Your 3 rules…',

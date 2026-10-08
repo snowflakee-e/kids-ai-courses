@@ -72,10 +72,11 @@ const UI = {
     minutes: n => `${n} min`,
     tasks: n => `${n} ${n === 1 ? 'task' : 'tasks'}`,
     questions: n => `${n} ${n === 1 ? 'question' : 'questions'}`,
+    rounds: n => `${n} ${n === 1 ? 'round' : 'rounds'}`,
     newStation: 'Unlocked',
     soonToast: title => `“${title}” opens soon`,
     firstPass: title => `Finish “${title}” first`,
-    kind: { theory: 'Reading', practice: 'Practice', ai: 'With Bloop', test: 'Test' },
+    kind: { theory: 'Reading', practice: 'Practice', ai: 'With Bloop', test: 'Test', fight: 'Boss fight' },
     parts: 'What’s inside',
     part: (n, title) => `Part ${n}: ${title}`,
     best: (stars, pct) => `Best: ${stars} · ${pct}%`,
@@ -173,6 +174,45 @@ const UI = {
     bossLose: name => `${name} is still standing`,
     bossLeadWin: 'You beat it with real skills: clear prompts, fact-checking, guarding your data, spotting fakes, honest work.',
     bossLeadFail: 'Knock out at least half its HP. You know where it got you, so go again.',
+    // Бой на Phaser (arena.js): строки внутри игры и вокруг неё
+    arena: {
+        kicker: 'Boss fight',
+        start: 'Start the fight',
+        loading: 'Loading the arena…',
+        failed: 'The arena didn’t load. Check your connection and try again, or answer without shooting.',
+        noShoot: 'Answer without shooting',
+        noShootKicker: (n, total) => `Round ${n}/${total}`,
+        locked: 'Beat the Glitch first',
+        nextRound: 'Next round',
+        leave: 'Leave the fight',
+        turn: 'Turn your phone sideways to fight',
+        keys: [['W A S D', 'move'], ['Mouse', 'aim'], ['Click / Space', 'shoot'], ['Esc', 'pause']],
+        touchKeys: [['Left thumb', 'move'], ['Right thumb', 'shoot where you tap']],
+        // в игре
+        boss: 'The Glitch',
+        fight: 'FIGHT!',
+        round: (n, total) => `Round ${n}/${total}`,
+        shieldUp: 'SHIELD UP', exposedShort: 'EXPOSED',
+        exposed: 'Shield down · blast it',
+        shieldDown: 'SHIELD DOWN',
+        blast: 'Blast the Glitch before it reboots!',
+        reboot: 'The Glitch reboots its shield…',
+        hitsHint: 'Hit the right answer card 3 times to break the shield.',
+        wrong: '✗ Glitch move. That card was a trap: find the right one.',
+        final: 'Final phase', finalShort: 'Final', finalSub: 'No more shield. Finish it!',
+        down: 'Bloop is down', retry: 'Enter, Space or tap to jump back in. Your answers are kept.',
+        paused: 'Paused', resume: 'Esc or tap to resume',
+        won: 'THE GLITCH: DOWN', wonKicker: 'Victory',
+        controls: 'WASD moves · the mouse aims · click or Space shoots · Esc pauses',
+        touchControls: 'Left thumb moves · right thumb shoots where you tap',
+        // итог
+        recapKicker: 'Fight recap',
+        recapTitle: (c, n) => (c === n ? 'Flawless: every round on the first try' : `${c} of ${n} rounds on the first try`),
+        recapText: 'The Glitch is down. Here’s every round: the ones marked ↺ tricked you once, so read why.',
+        firstTry: 'first try', retried: 'took another try',
+        doneTitle: (c, n) => (c === n ? 'Flawless fight.' : `${c} of ${n} on the first try.`),
+        doneText: deaths => `The Glitch is down${deaths ? ` (Bloop got knocked out ${deaths} ${deaths === 1 ? 'time' : 'times'}, that never costs stars)` : ''}. One last thing: the final strike.`
+    },
     week: (d, g) => `${Math.min(d, g)}/${g}`,
     weekProgress: (d, g) => `Weekly goal: ${Math.min(d, g)} of ${g} stations`,
     weekGoalMet: 'Weekly goal done. Missing a day never costs you anything.',
@@ -231,7 +271,13 @@ const Sound = {
         pop:  [[880, 0, .06], [1320, .05, .1]],
         star: [[1046, 0, .12], [1568, .08, .22]],
         win:  [[523, 0, .12], [659, .1, .12], [784, .2, .12], [1046, .3, .35]],
-        step: [[320, 0, .04, 'triangle', .03]]
+        step: [[320, 0, .04, 'triangle', .03]],
+        // бой с Глитчем
+        zap:  [[1500, 0, .025, 'square', .006]],
+        hit:  [[200, 0, .05, 'square', .02]],
+        hurt: [[160, 0, .18, 'sawtooth', .05], [110, .08, .2, 'sawtooth', .04]],
+        break: [[660, 0, .08], [990, .06, .1], [1320, .12, .16]],
+        boom: [[90, 0, .5, 'sawtooth', .07], [60, .15, .6, 'sawtooth', .06]]
     },
     play(name) {
         if (!this.on) return;
@@ -670,7 +716,10 @@ function mapSvg(L) {
     </svg>`;
 }
 
-const KIND = { predict: 'practice', cards: 'theory', read: 'theory', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', order: 'practice', poll: 'practice', talk: 'ai', chat: 'ai' };
+const KIND = { predict: 'practice', cards: 'theory', read: 'theory', quiz: 'test', sort: 'practice', build: 'practice', spot: 'practice', order: 'practice', poll: 'practice', talk: 'ai', chat: 'ai', arena: 'fight' };
+
+// Урок с боем на Phaser: полоска здоровья над заданиями не нужна, здоровье Глитча живёт в игре
+const hasArena = lesson => lesson.tasks.some(t => t.type === 'arena');
 
 // ---------- Приложение ----------
 const app = {
@@ -1069,10 +1118,10 @@ const app = {
         $('#station-sheet').classList.toggle('is-extra', n.extra);
 
         const counts = {};
-        lesson.tasks.forEach(t => { const k = KIND[t.type]; counts[k] = (counts[k] || 0) + 1; });
+        lesson.tasks.forEach(t => { const k = KIND[t.type]; counts[k] = (counts[k] || 0) + (t.type === 'arena' ? t.rounds.length : 1); });
         $('#station-chips').innerHTML = (n.extra ? `<li class="chip--extra">${UI.extraChip}</li>` : '') +
-            ['theory', 'practice', 'ai', 'test'].filter(k => counts[k]).map(k =>
-            `<li>${UI.kind[k]}${k === 'test' ? ` · ${UI.questions(counts[k])}` : ''}</li>`).join('') +
+            ['theory', 'practice', 'ai', 'test', 'fight'].filter(k => counts[k]).map(k =>
+            `<li>${UI.kind[k]}${k === 'test' ? ` · ${UI.questions(counts[k])}` : k === 'fight' ? ` · ${UI.rounds(counts[k])}` : ''}</li>`).join('') +
             `<li>⏱ ${UI.minutes(lesson.minutes)}</li>`;
 
         // Большая станция: оглавление по частям (заголовки текстов урока)
@@ -1201,6 +1250,7 @@ const app = {
     },
 
     closeLesson() {
+        if (this.leaveArena) this.leaveArena();
         this.run = null;
         $('#lesson').hidden = true;
         document.body.classList.remove('is-overlay');
@@ -1267,7 +1317,7 @@ const app = {
             Sound.play('pop');
         }
         this.showFeedback(tone, title, text);
-        if (r.lesson.boss && typeof score === 'number') this.hitBoss(score);
+        if (r.lesson.boss && !hasArena(r.lesson) && typeof score === 'number') this.hitBoss(score);
         this.setNext(UI.btn.next, true);
         $('#ask-btn').hidden = !(Tutor.enabled && typeof score === 'number' && score < 1 && r.mistake);
     },
@@ -1314,6 +1364,139 @@ const app = {
                 });
                 this.answered(null, { title: i === t.answer ? UI.predictHit : UI.predictMiss, text: t.reveal });
             }));
+        },
+
+        // Бой с Глитчем: экран перед боем → игра на весь экран (arena.js + Phaser) → разбор раундов.
+        // Без клавиатуры или без желания стрелять — те же раунды обычными вопросами, оценка та же.
+        // Балл — доля раундов с ответом с первой попытки, но не меньше 0.5: Глитч побеждён, станция пройдена.
+        arena(t, box) {
+            const r = this.run, A = UI.arena, N = t.rounds.length;
+            const touch = window.matchMedia('(pointer: coarse)').matches;
+            const token = r.token;
+
+            const done = (results, deaths) => {
+                if (this.run !== r) return;
+                const c = results.filter(Boolean).length;
+                box.innerHTML = this.head(A.recapKicker, A.recapTitle(c, N), A.recapText) +
+                    `<ol class="recap">${t.rounds.map((rd, i) => `<li class="${results[i] ? 'is-ok' : 'is-miss'}">
+                        <span class="recap__mark" aria-hidden="true">${results[i] ? '✓' : '↺'}</span>
+                        <div>
+                            <p class="recap__q"><span class="sr-only">${results[i] ? A.firstTry : A.retried}: </span>${esc(rd.q)}</p>
+                            <p class="recap__a">${esc(rd.options[0])}</p>
+                            <p class="recap__x">${esc(rd.explain)}</p>
+                        </div>
+                    </li>`).join('')}</ol>`;
+                r.onNext = () => this.nextTask();
+                this.answered(c === N ? 1 : Math.max(.5, c / N), { title: A.doneTitle(c, N), text: A.doneText(deaths) });
+            };
+
+            const intro = () => {
+                const keys = touch ? A.touchKeys : A.keys;
+                box.innerHTML = this.head(A.kicker, t.title, t.text) + `
+                    <ul class="arena-keys">${keys.map(([k, v]) => `<li><kbd>${esc(k)}</kbd><span>${esc(v)}</span></li>`).join('')}</ul>
+                    <button class="btn btn--go btn--lg btn--block arena-start" type="button">${A.start}</button>
+                    <p class="arena-note" hidden>${A.failed}</p>
+                    <button class="link-btn arena-quiz" type="button">${A.noShoot}</button>`;
+                this.setNext(A.locked, false);
+                const start = $('.arena-start', box);
+                start.addEventListener('click', () => fight(start));
+                $('.arena-quiz', box).addEventListener('click', quiz);
+            };
+
+            const fight = async start => {
+                start.disabled = true;
+                start.textContent = A.loading;
+                Sound.play('tap');
+                try {
+                    await Arena.load('vendor/phaser.min.js');
+                } catch (e) {
+                    start.disabled = false;
+                    start.textContent = A.start;
+                    $('.arena-note', box).hidden = false;
+                    return;
+                }
+                if (this.run !== r || r.token !== token) return;
+                const el = document.createElement('div');
+                el.className = 'arena';
+                el.setAttribute('role', 'dialog');
+                el.setAttribute('aria-label', t.title);
+                el.innerHTML = `<div class="arena__stage"></div>
+                    <button class="arena__leave" type="button">${A.leave}</button>
+                    <p class="arena__turn">${A.turn}</p>`;
+                document.body.appendChild(el);
+                let game = null;
+                const close = () => {
+                    if (game) game.destroy();
+                    game = null;
+                    el.remove();
+                    this.leaveArena = this.arena = null;
+                };
+                this.leaveArena = close;
+                $('.arena__leave', el).addEventListener('click', () => { close(); intro(); });
+                try {
+                    game = await Arena.play({
+                        parent: $('.arena__stage', el),
+                        boss: r.lesson.boss, rounds: t.rounds, text: A,
+                        calm: REDUCED, touch,
+                        sfx: name => Sound.play(name),
+                        bloop: size => bob(STATES.neutral, { body: '#C6F432', accent: '#7C5CFF', screen: '#15171D', glow: '#E9FFB0', joint: '#7C5CFF' }, size),
+                        onEnd: res => { close(); done(res.results, res.deaths); }
+                    });
+                    if (!this.leaveArena) { game.destroy(); return; }
+                    this.arena = game;
+                } catch (e) {
+                    console.warn('Arena:', e);
+                    close();
+                    intro();
+                    $('.arena-note', box).hidden = false;
+                }
+            };
+
+            // Те же раунды без стрельбы: неверный вариант гаснет, ищешь дальше, верный — разбор и следующий раунд
+            const quiz = () => {
+                const results = [];
+                let k = 0;
+                const draw = () => {
+                    const rd = t.rounds[k];
+                    const opts = shuffle(rd.options.map((text, i) => ({ text, ok: i === 0 })));
+                    $('#feedback').hidden = true;
+                    box.innerHTML = `<p class="eyebrow task__kicker">${A.noShootKicker(k + 1, N)}${rd.topic ? ` · ${esc(rd.topic)}` : ''}</p>
+                        <h2 class="question">${esc(rd.q)}</h2>
+                        <div class="options">${opts.map((o, i) =>
+                            `<button class="option" type="button" data-i="${i}"><span class="option__key">${UI.letters[i]}</span><span>${esc(o.text)}</span></button>`).join('')}
+                        </div>`;
+                    this.setNext(UI.btn.choose, false);
+                    $('.lesson__body').scrollTop = 0;
+                    const buttons = $$('.option', box);
+                    buttons.forEach(btn => btn.addEventListener('click', () => {
+                        const chosen = opts[+btn.dataset.i];
+                        if (results[k] === undefined) results[k] = chosen.ok;
+                        if (!chosen.ok) {
+                            btn.disabled = true;
+                            btn.classList.add('is-wrong');
+                            Sound.play('bad');
+                            this.showFeedback('bad', pick(UI.bad), A.wrong.replace(/^✗\s*/, ''));
+                            return;
+                        }
+                        buttons.forEach((b, i) => {
+                            b.disabled = true;
+                            if (opts[i].ok) b.classList.add('is-right');
+                            else if (!b.classList.contains('is-wrong')) b.classList.add('is-dim');
+                        });
+                        Sound.play('good');
+                        this.showFeedback('good', pick(UI.good), rd.explain);
+                        this.setNext(k < N - 1 ? A.nextRound : UI.btn.next, true);
+                    }));
+                };
+                r.onNext = () => {
+                    k++;
+                    if (k < N) draw();
+                    else done(results, 0);
+                };
+                draw();
+            };
+
+            intro();
         },
 
         cards(t, box) {
@@ -1927,7 +2110,7 @@ const app = {
 
     renderBoss() {
         const el = $('#boss'), B = this.run.lesson.boss;
-        el.hidden = !B;
+        el.hidden = !B || hasArena(this.run.lesson);
         if (!B) return;
         const { hp } = this.bossHp();
         $('.boss__face', el).textContent = hp > 0 ? B.icon : '💥';
