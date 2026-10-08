@@ -746,11 +746,22 @@ const Arena = (() => {
             scene: Fight
         });
 
+        // Phaser запоминает положение холста вместе с прокруткой страницы. Если страница сдвинется
+        // (колесо мыши, адресная строка на телефоне), прицел уедет от курсора — поэтому пересчитываем
+        const sync = () => { if (game) game.scale.updateBounds(); };
+        const vv = window.visualViewport;
+        window.addEventListener('scroll', sync, { passive: true, capture: true });
+        window.addEventListener('resize', sync);
+        if (vv) { vv.addEventListener('scroll', sync); vv.addEventListener('resize', sync); }
+
         return {
             // Сцена боя — для отладки и автотестов
             get scene() { return game && game.scene.getScene('fight'); },
             destroy() {
                 ended = true;
+                window.removeEventListener('scroll', sync, { capture: true });
+                window.removeEventListener('resize', sync);
+                if (vv) { vv.removeEventListener('scroll', sync); vv.removeEventListener('resize', sync); }
                 if (game) game.destroy(true);
                 game = null;
             }
