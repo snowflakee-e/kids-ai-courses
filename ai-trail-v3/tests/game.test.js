@@ -126,7 +126,7 @@ test('the course ends with a boss fight game that mixes the skills', () => {
   const arenas = l.tasks.filter(t => t.type === 'arena');
   assert.equal(arenas.length, 1, 'one arena fight');
   const topics = arenas[0].rounds.map(r => r.topic);
-  for (const topic of ['Prompts', 'Hallucinations', 'Your data', 'Fakes', 'Sources', 'Bias', 'Honest work', 'Companions']) {
+  for (const topic of ['How AI works', 'Fluent vs true', 'Context', 'Prompts', 'Steering', 'Hallucinations', 'AI as a tutor', 'Research', 'Image prompts', 'Bias']) {
     assert.ok(topics.includes(topic), 'boss round: ' + topic);
   }
   assert.equal(l.tasks[l.tasks.length - 1].type, 'talk', 'the final strike comes after the fight');
@@ -137,12 +137,24 @@ test('an arena counts as one graded task per round', () => {
   const comboFor = run => Math.max(0, run - XP_RULES.comboFrom + 1) * XP_RULES.combo;
   const x = G.lessonXp(l, scores(l));
   assert.equal(x.graded, n);
-  assert.equal(x.total, n * XP_RULES.correct + comboFor(n) + XP_RULES.lessonDone + XP_RULES.perfect);
+  assert.equal(x.boss, XP_RULES.bossDone);
+  assert.equal(x.total, n * XP_RULES.correct + comboFor(n) + XP_RULES.lessonDone + XP_RULES.perfect + XP_RULES.bossDone);
   // Глитч побеждён, но с первой попытки меньше половины: станция пройдена на 1 звезду
   assert.equal(G.lessonXp(l, scores(l, .5)).stars, 1);
-  assert.equal(G.lessonXp(l, scores(l, 7 / 9)).stars, 2);
+  assert.equal(G.lessonXp(l, scores(l, .8)).stars, 2);
   const r = G.applyLesson(G.newState(), 'boss', scores(l), '2026-10-01');
   assert.equal(r.state.bestCombo, n, 'a perfect fight is a combo of all its rounds');
+});
+
+test('beating the boss pays a big bonus once, losing pays nothing', () => {
+  const l = lesson('boss');
+  assert.ok(XP_RULES.bossDone >= 150, 'the boss bonus is bigger than any regular station');
+  assert.equal(G.lessonXp(l, scores(l, 0)).boss, 0);
+  assert.equal(G.lessonXp(lesson('s1'), scores(lesson('s1'))).boss, 0, 'regular stations get no boss bonus');
+  const first = G.applyLesson(G.newState(), 'boss', scores(l, .5), '2026-10-01');
+  assert.ok(first.earned >= XP_RULES.bossDone);
+  const again = G.applyLesson(first.state, 'boss', scores(l, .5), '2026-10-02');
+  assert.equal(again.earned, 0, 'no second bonus on a replay');
 });
 
 test('no side quests and no zone tests: only the boss is a test', () => {

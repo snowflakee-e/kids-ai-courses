@@ -174,6 +174,23 @@ const UI = {
     bossLose: name => `${name} is still standing`,
     bossLeadWin: 'You beat it with real skills: clear prompts, fact-checking, guarding your data, spotting fakes, honest work.',
     bossLeadFail: 'Knock out at least half its HP. You know where it got you, so go again.',
+    bossBonus: xp => `Glitch defeated: +${xp} XP bonus`,
+    finaleBtn: 'Finish the trail →',
+    // Финальный экран курса
+    finale: {
+        kicker: 'AI Trail · complete',
+        title: name => (name ? `You did it, ${name}.` : 'You did it.'),
+        lead: (stations, zones) => `${stations} stations, ${zones} zones, one Glitch down. You know how AI works and how to make it work for you.`,
+        leadPartial: (done, total) => `The Glitch is down. ${done} of ${total} stations cleared: finish the rest for the full certificate.`,
+        stats: { xp: 'XP', rank: 'rank', stars: 'stars', badges: 'badges' },
+        next: [
+            'Write prompts with Role, Task, Context and Format',
+            'Treat the first answer as a draft and steer it',
+            'Check facts, numbers and sources before you use them',
+            'Use AI as a tutor and editor, not a ghostwriter',
+            'Notice bias and describe the picture you want'
+        ]
+    },
     // Бой на Phaser (arena.js): строки внутри игры и вокруг неё
     arena: {
         kicker: 'Boss fight',
@@ -203,6 +220,8 @@ const UI = {
         down: 'Bloop is down', retry: 'Enter, Space or tap to jump back in. Your answers are kept.',
         paused: 'Paused', resume: 'Esc or tap to resume',
         won: 'THE GLITCH: DOWN', wonKicker: 'Victory',
+        victory: (c, n, sec, deaths) => `${c} of ${n} on the first try  ·  ${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}  ·  ${deaths} ${deaths === 1 ? 'knockout' : 'knockouts'}`,
+        cont: 'Continue  ›',
         controls: 'WASD moves · the mouse aims · click or Space shoots · Esc pauses',
         touchControls: 'Left thumb moves · right thumb shoots where you tap',
         // итог
@@ -2265,6 +2284,7 @@ const app = {
         ].map(([v, l]) => `<li><b>${v}</b><span>${l}</span></li>`).join('');
 
         const extra = [];
+        if (lesson.boss && res.firstPass && x.boss) extra.push(['🏆', UI.bossBonus(x.boss)]);
         if (res.blockCompleted) extra.push(['🌳', UI.blockCompleted(r.st.block.title, res.blockBonus)]);
         if (res.levelUp) extra.push(['🆙', UI.levelUp(res.levelUp.level, res.levelUp.title)]);
         res.badges.forEach(b => extra.push([b.icon, UI.badge(b.title, b.desc)]));
@@ -2280,8 +2300,8 @@ const app = {
 
         const mapBtn = $('#result-map'), retry = $('#result-retry');
         if (res.passed) {
-            mapBtn.textContent = UI.toMap;
-            mapBtn.onclick = () => this.backToMap(res);
+            mapBtn.textContent = lesson.boss ? UI.finaleBtn : UI.toMap;
+            mapBtn.onclick = () => (lesson.boss ? this.showFinale(res) : this.backToMap(res));
             retry.textContent = UI.replay;
             retry.onclick = () => this.startLesson(lesson.id, { fresh: true });
             retry.hidden = limited;
@@ -2308,6 +2328,7 @@ const app = {
     async backToMap(res) {
         this.run = null;
         $('#result').hidden = true;
+        $('#finale').hidden = true;
         $('#lesson').hidden = true;
         document.body.classList.remove('is-overlay');
         const from = this.state.blupAt || 0;
@@ -2352,6 +2373,47 @@ const app = {
         limit.disabled = !!s.parentPin;
         $('#parent-note').textContent = s.parentPin ? UI.parentPinSet : UI.parentNoPin;
         $('#settings-sheet').showModal();
+    },
+
+    // ---------- Финал курса: после победы над боссом и по кнопке «Trail complete» на карте ----------
+    // Итоги, все навыки по зонам, правила ученика из «Final strike», что делать дальше, сертификат и карточка.
+    showFinale(res) {
+        const s = this.state, t = Game.totals(s), lv = Game.levelFor(s.xp), F = UI.finale;
+        const complete = this.courseComplete();
+        $('#result').hidden = true;
+        $('#lesson').hidden = true;
+        $('#finale').hidden = false;
+        $('#finale').scrollTop = 0;
+        document.body.classList.add('is-overlay');
+
+        $('#finale-blup').innerHTML = blup('victory');
+        $('#finale-kicker').textContent = F.kicker;
+        $('#finale-title').textContent = F.title(s.name);
+        $('#finale-lead').textContent = complete ? F.lead(t.mainTotal, COURSE.blocks.length) : F.leadPartial(t.lessonsDone, t.mainTotal);
+        $('#finale-stats').innerHTML = [
+            [s.xp, F.stats.xp],
+            [`Lv ${lv.level}`, lv.title],
+            [`${t.stars}/${t.maxStars}`, F.stats.stars],
+            [`${BADGES.filter(b => s.badges[b.id]).length}/${BADGES.length}`, F.stats.badges]
+        ].map(([v, l]) => `<li><b>${esc(v)}</b><span>${esc(l)}</span></li>`).join('');
+
+        $('#finale-skills').innerHTML = COURSE.blocks.map(b => {
+            const done = Game.blockDone(s, b);
+            return `<section class="finale__zone${done ? '' : ' is-off'}"><h3>${esc(b.title)}</h3>
+                <ul>${(b.skills || []).map(k => `<li>${esc(k)}</li>`).join('')}</ul></section>`;
+        }).join('');
+
+        const rules = Object.keys(s.portfolio || {}).filter(id => id.split(':')[0] === 'boss').map(id => s.portfolio[id].text).pop();
+        $('#finale-rules-box').hidden = !rules;
+        $('#finale-rules').textContent = rules || '';
+        $('#finale-next').innerHTML = F.next.map(li => `<li>${esc(li)}</li>`).join('');
+
+        $('#finale-cert').onclick = () => { this.openProfile(); this.profileTab('cert'); };
+        $('#finale-share').onclick = () => this.openShare();
+        $('#finale-map').onclick = () => this.backToMap(res || {});
+        this.confetti(220);
+        Sound.play('win');
+        $('#finale-cert').focus({ preventScroll: true });
     },
 
     // ---------- Профиль: звание, навыки, портфолио, награды, сертификат ----------
@@ -2648,6 +2710,8 @@ const app = {
             const s = this.state;
             const resume = s.current && Game.findStation(s.current.lessonId);
             if (resume) { this.startLesson(resume.lesson.id); return; }
+            const t = Game.totals(s);
+            if (t.lessonsDone === t.mainTotal) { this.showFinale(); return; }
             if (Game.limitReached(s)) { this.toast(UI.limitToast); return; }
             const st = Game.stations()[Game.currentIndex(s)];
             if (Game.passed(s, st.lesson.id)) this.openStation(this.nodeByIndex(st.index));

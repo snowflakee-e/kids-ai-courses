@@ -1228,6 +1228,36 @@ a.brand { text-decoration: none; color: inherit; }
 .result__extra li > span { font-size: 24px; }
 .result__actions { display: grid; gap: 6px; }
 
+/* Финал курса */
+.finale__box { max-width: 640px; }
+.finale #finale-kicker { color: var(--accent-ink); }
+.finale__stats { grid-template-columns: repeat(4, 1fr); margin-bottom: 28px; }
+.finale__stats b { font-size: 22px; }
+.finale__part { margin: 0 0 24px; text-align: left; }
+.finale__part h2 { margin: 0 0 10px; font-size: 22px; }
+.finale__zones { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.finale__zone { padding: 14px; border: 1px solid var(--line); border-top: 4px solid var(--accent-deep); border-radius: var(--radius-sm); background: var(--surface); }
+.finale__zone.is-off { border-top-color: var(--line-strong); opacity: .6; }
+.finale__zone h3 { margin: 0 0 8px; font-size: 16px; }
+.finale__zone ul, .finale__next { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.finale__zone li { position: relative; padding-left: 22px; color: var(--ink-soft); font-size: 14px; }
+.finale__zone li::before { content: '✓'; position: absolute; left: 0; color: var(--accent-ink); font-weight: 700; }
+.finale__zone.is-off li::before { content: '·'; color: var(--ink-soft); }
+.finale__rules {
+    margin: 0;
+    padding: 14px 16px;
+    border-left: 4px solid var(--violet);
+    border-radius: var(--radius-sm);
+    background: var(--violet-soft);
+    white-space: pre-wrap;
+}
+.finale__next li { counter-increment: next; display: flex; gap: 10px; align-items: baseline; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); font-weight: 500; }
+.finale__next li::before { content: counter(next); flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 700 13px/1 var(--font-display); }
+@media (max-width: 559px) {
+    .finale__stats { grid-template-columns: repeat(2, 1fr); }
+    .finale__zones { grid-template-columns: 1fr; }
+}
+
 /* ---------- Окна ---------- */
 .sheet {
     width: min(100% - 32px, 480px);

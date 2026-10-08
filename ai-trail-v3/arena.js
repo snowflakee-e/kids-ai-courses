@@ -209,6 +209,7 @@ const Arena = (() => {
                     if (this.fireP && p.id === this.fireP.id) { const w = world(p); this.fireP.x = w.x; this.fireP.y = w.y; }
                 });
                 this.input.on('pointerdown', p => {
+                    if (this.wonReady) { this.finish(); return; }
                     if (this.paused) { this.pause(false); return; }
                     if (this.phase === 'dead') { this.respawn(); return; }
                     if (!p.wasTouch) return;
@@ -532,7 +533,31 @@ const Arena = (() => {
                 this.after(.5, () => sfx('win'));
                 this.banner(T.wonKicker.toUpperCase(), '');
                 this.big(T.won, '', 0);
-                this.after(2.6, () => this.finish());
+                this.after(1.6, () => this.victory());
+            }
+
+            // Экран победы в игре: звёзды, ответы с первой попытки, время, нокауты. Дальше — по кнопке игрока
+            victory() {
+                const c = this.res.filter(r => r.first).length;
+                const stars = c === N ? 3 : c / N >= .75 ? 2 : 1;
+                const sec = Math.round((Date.now() - this.started) / 1000);
+                this.dim.setVisible(true);
+                this.tweens.killTweensOf([this.bigT, this.subT]);
+                this.bigT.setText(T.won).setAlpha(1).setScale(1).setY(H / 2 - 40);
+                this.subT.setText(T.victory(c, N, sec, this.deaths)).setAlpha(1).setY(H / 2 + 14);
+                this.starsT = this.txt(W / 2, H / 2 - 104, '★'.repeat(stars) + '☆'.repeat(3 - stars), {
+                    fontFamily: FONT, fontSize: '44px', color: '#F5A100'
+                }).setOrigin(.5).setDepth(30);
+                this.contT = this.txt(W / 2, H / 2 + 84, T.cont, {
+                    fontFamily: FONT, fontSize: '17px', fontStyle: 'bold', color: '#0B0C10', backgroundColor: '#C6F432', padding: { x: 18, y: 10 }
+                }).setOrigin(.5).setDepth(30);
+                if (!calm) {
+                    this.starsT.setScale(.4);
+                    this.tweens.add({ targets: this.starsT, scale: 1, duration: 420, ease: 'Back.Out' });
+                    this.tweens.add({ targets: this.contT, alpha: .55, duration: 700, yoyo: true, repeat: -1 });
+                }
+                sfx('star');
+                this.wonReady = true;
             }
 
             finish() {
@@ -558,7 +583,10 @@ const Arena = (() => {
                     t.t -= dt;
                     if (t.t <= 0) { this.timers.splice(i, 1); t.fn(); }
                 }
-                if (this.phase === 'won') return;
+                if (this.phase === 'won') {
+                    if (this.wonReady && (JD(K.ENTER) || JD(K.SPACE))) this.finish();
+                    return;
+                }
 
                 this.updateBoss(dt);
                 this.updatePlayer(dt);

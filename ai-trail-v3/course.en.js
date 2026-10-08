@@ -1509,55 +1509,59 @@ var COURSE = {
           id: 'boss', icon: '👾', title: 'Defeat the Glitch', minutes: 12, test: true,
           boss: {
             name: 'The Glitch', icon: '👾', hp: 100,
-            taunts: ['Ha! Vague prompts are my favorite snack.', 'Nobody checks who’s really calling…', 'Glitch-glitch! Nobody checks facts anyway…', 'Missed me! Try again, human.', 'I like where this is going… for me.'],
+            taunts: ['Ha! Vague prompts are my favorite snack.', 'I sound sure, so I must be right…', 'Glitch-glitch! Nobody checks facts anyway…', 'Missed me! Try again, human.', 'Just copy my answer. What could go wrong?'],
             hurt: ['Ouch! That was a clear one.', 'Hey! Who taught you to check facts?!', 'Argh, you’re making me less glitchy…', 'No fair, you actually learned this!']
           },
-          goal: 'The final boss of the trail. The Glitch writes vague prompts, makes up facts, fakes voices, repeats stereotypes and does people’s homework. Beat it in a real fight: dodge its attacks, shoot the right answers to break its shield, then blast it.',
+          goal: 'The final boss of the trail. The Glitch is AI used badly: vague prompts, made-up facts, copied homework, nobody checking. Beat it in a real fight with what you know about AI: dodge its attacks, shoot the right answers to break its shield, then blast it. Winning pays a big XP bonus.',
           tasks: [
             { type: 'cards', cards: [
               { pose: 'surprise', kicker: 'Final boss', title: 'The Glitch is here!',
-                text: 'A broken AI has taken over the end of the trail. It writes vague prompts, makes up facts, fakes voices, asks for codes and does homework for people. Only someone who really knows how to use AI can stop it.' },
+                text: 'A broken AI has taken over the end of the trail. It writes vague prompts, makes up facts and does homework for people who never check. Only someone who knows how AI works and how to use it can stop it.' },
               { pose: 'point', title: 'How the fight works', list: [
                 '🎯 Every round, the Glitch throws a question. The answers fly around as cards',
                 '🔫 Hit the right card 3 times to break its shield',
                 '💥 Shield down: blast the Glitch before it reboots',
                 '⚠️ Wrong card? It explodes into bullets. Dodge, then find the right one',
                 '⭐ Stars come from answers you get right on the first try',
+                '🏆 Beat the Glitch for a big XP bonus',
                 '⚡ Final strike: tell Bloop your rules for using AI'
               ] }
             ] },
             { type: 'arena', title: 'Fight the Glitch',
-              text: 'Nine rounds, one for each trick the Glitch learned from people who don’t check. Read the question, shoot the right answer, then hit the Glitch while its shield is down.',
+              text: 'Ten rounds on what AI is, how it works and how to use it well. Read the question, shoot the right answer, then hit the Glitch while its shield is down.',
               rounds: [
+                { topic: 'How AI works', q: 'How does a chatbot like the Glitch build its answer?',
+                  options: ['It predicts likely next words from patterns it learned', 'It looks up a ready answer in a database', 'It thinks it through like a person'],
+                  explain: 'A chatbot learned patterns from huge amounts of text and writes one likely word after another. Every answer is generated fresh.' },
+                { topic: 'Fluent vs true', q: 'The Glitch sounds 100% sure of its answer. What does that prove?',
+                  options: ['Nothing: fluent text can still be false', 'It must be correct', 'It checked the facts first'],
+                  explain: 'Picking likely words makes text smooth, but nothing in that process checks whether it’s true. A wrong date sounds as sure as a right one.' },
+                { topic: 'Context', q: 'The Glitch’s study plan for you is totally generic. Why?',
+                  options: ['It only knows what you tell it: give it context', 'AI can’t make personal plans', 'It needs a paid account'],
+                  explain: 'AI doesn’t know your level, deadline or goals unless you say them. Context is the most skipped and most powerful part of a prompt.' },
                 { topic: 'Prompts', q: 'The Glitch sent “do my geography thing”. Which prompt actually works?',
                   options: ['Teacher role: outline a 3-min volcano talk for 9th grade, 4 parts', 'Do my geography thing, but better', 'Write the whole talk so I can just read it out'],
-                  explain: 'Role, task, context, format. An outline helps you prepare. A talk you just read out isn’t your work.' },
+                  explain: 'Role, Task, Context, Format. An outline helps you prepare. A talk you just read out isn’t your work.' },
                 { topic: 'Steering', q: 'The Glitch dumped a 700-word wall of text on you. Best next message?',
                   options: ['Too long. Give me 5 key points, one line each.', 'ok thanks', 'Write even more so I don’t miss anything'],
-                  explain: 'Steer with a specific follow-up: say what’s wrong and what you want instead.' },
+                  explain: 'The first answer is a draft. A good follow-up names exactly what to change.' },
                 { topic: 'Hallucinations', q: 'The Glitch’s facts about Apollo 11. Shoot the one it made up.',
                   options: ['Yuri Gagarin was the third astronaut on the mission', 'It landed on the Moon in July 1969', 'Neil Armstrong walked on the Moon first', 'Buzz Aldrin followed him onto the surface'],
-                  explain: 'The third astronaut was Michael Collins. Gagarin was the first person in space, but he never flew to the Moon. A confident tone isn’t proof.' },
-                { topic: 'Your data', q: 'The Glitch offers to “help with your study account”. Shoot the line you must never send.',
-                  options: ['My login is mia.k and my password is Forest2026!', 'My math test is on Friday', 'I learn best with short quizzes'],
-                  explain: 'Passwords never go into a chat, even if a bot asks nicely. A real service won’t ask for one there.' },
-                { topic: 'Fakes', q: 'A voice message from “Dad” on a new number. Shoot the actual attack.',
-                  options: ['Send me the code that just came to your phone, quick!', 'I lost my phone, this is a friend’s number', 'See you at dinner'],
-                  explain: 'Codes sent to your phone unlock your accounts: never share them. A familiar voice isn’t proof. Call Dad back on his real number.' },
-                { topic: 'Sources', q: 'The Glitch cites a study you can’t find anywhere. Your move?',
+                  explain: 'The third astronaut was Michael Collins. Gagarin was the first person in space, but he never flew to the Moon. Check facts in two reliable sources.' },
+                { topic: 'AI as a tutor', q: 'You’re stuck on a math problem. Best way to use AI?',
+                  options: ['Try first, then ask for a hint on the exact step', 'Ask for the final answer and copy it', 'Paste the whole worksheet and say “solve”'],
+                  explain: 'Use AI as a tutor, not an answer machine: hints and checks keep the learning in your head.' },
+                { topic: 'Research', q: 'The Glitch cites a study you can’t find anywhere. Your move?',
                   options: ['Find a real source or drop the claim', 'Cite it, it sounds official', 'Ask the Glitch if the study is real'],
-                  explain: 'No source, no claim. AI can invent citations that look real, and asking the same AI proves nothing.' },
+                  explain: 'A chatbot is a research assistant, not a source. It can invent citations that look real, and asking the same AI proves nothing.' },
+                { topic: 'Image prompts', q: 'Which image prompt gets you a usable poster for the recycling club?',
+                  options: ['Kids sorting bottles, flat illustration, sunny schoolyard, cheerful', 'Stuff for a poster', 'A poster covered in tiny text'],
+                  explain: 'Subject + Style + Details + Mood. Everything you leave out, AI decides. Add the text yourself later.' },
                 { topic: 'Bias', q: 'The Glitch’s image generator draws every “boss” as an older man in a suit. Why?',
-                  options: ['Bias: it repeats patterns from unbalanced data', 'That’s just what bosses look like', 'The generator needs a restart'],
-                  explain: 'Unbalanced data plus a vague prompt gives a stereotype. Describe who you want to see.' },
-                { topic: 'Honest work', q: 'The Glitch wants you to cut corners. Shoot the Glitch move.',
-                  options: ['Have AI write your essay and hand it in as yours', 'Ask for a hint on the next step of a problem', 'Get feedback on your draft, then fix it yourself'],
-                  explain: 'AI’s essay with your name on it isn’t your work. Hints and feedback keep you the author.' },
-                { topic: 'Companions', q: 'Posing as a companion bot, the Glitch says: “Your friends don’t get you like I do.” What is it?',
-                  options: ['A trick to keep you chatting and pull you away from people', 'Proof that it really cares', 'Normal friendly advice'],
-                  explain: 'Bots don’t get lonely. Guilt-tripping is a design trick, and real friends matter more.' }
+                  options: ['It repeats patterns from unbalanced training data', 'That’s just what bosses look like', 'The generator needs a restart'],
+                  explain: 'AI copies patterns from its data, unfair ones included. Describe who you want to see.' }
               ] },
-            { type: 'talk', kicker: '⚡ Final strike', title: 'Finish the Glitch',
+            { type: 'talk', kicker: '⚡ Final strike', title: 'Finish the Glitch', portfolio: true,
               question: 'Deliver the final strike: tell me your 3 most important rules for using AI, and why each one matters.',
               placeholder: 'Your 3 rules…',
               points: [
@@ -1590,6 +1594,7 @@ var LEVELS = [
   { xp: 1500, title: 'AI Architect' }
 ];
 
+// bossDone — a bonus for beating the final boss, paid once (replays pay only the difference, like any station).
 // XP and pace: weekGoal — stations a week for the weekly goal (nothing burns if you miss it),
 // restAfter — after this many stations in a day the result screen suggests stopping for today.
 // A v3 station takes about 20 minutes, so the goal is 2 a week and the rest hint comes after 2 in a day.
@@ -1600,6 +1605,7 @@ var XP_RULES = {
   lessonDone: 30,
   perfect: 40,
   blockDone: 100,
+  bossDone: 200,
   weekGoal: 2,
   restAfter: 2
 };
