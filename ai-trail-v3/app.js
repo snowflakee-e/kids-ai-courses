@@ -211,6 +211,7 @@ const UI = {
         recapText: 'The Glitch is down. Here’s every round: the ones marked ↺ tricked you once, so read why.',
         firstTry: 'first try', retried: 'took another try',
         doneTitle: (c, n) => (c === n ? 'Flawless fight.' : `${c} of ${n} on the first try.`),
+        demoDone: (c, n) => `The Glitch is down: ${c} of ${n} on the first try. This was a preview, so your progress didn’t change.`,
         doneText: deaths => `The Glitch is down${deaths ? ` (Bloop got knocked out ${deaths} ${deaths === 1 ? 'time' : 'times'}, that never costs stars)` : ''}. One last thing: the final strike.`
     },
     week: (d, g) => `${Math.min(d, g)}/${g}`,
@@ -740,7 +741,10 @@ const app = {
         this.bind();
         this.renderAll();
         this.scrollToCurrent(false);
-        if (!this.state.name) this.openHello();
+        const fight = () => { if (location.hash === '#fight') this.demoArena(); };
+        window.addEventListener('hashchange', fight);
+        if (location.hash === '#fight') fight();
+        else if (!this.state.name) this.openHello();
     },
 
     // Настройки вида: тема, крупный текст, шрифт для лёгкого чтения, меньше движения
@@ -1416,40 +1420,11 @@ const app = {
                     return;
                 }
                 if (this.run !== r || r.token !== token) return;
-                const el = document.createElement('div');
-                el.className = 'arena';
-                el.setAttribute('role', 'dialog');
-                el.setAttribute('aria-label', t.title);
-                el.innerHTML = `<div class="arena__stage"></div>
-                    <button class="arena__leave" type="button">${A.leave}</button>
-                    <p class="arena__turn">${A.turn}</p>`;
-                document.body.appendChild(el);
-                let game = null;
-                const close = () => {
-                    if (game) game.destroy();
-                    game = null;
-                    el.remove();
-                    this.leaveArena = this.arena = null;
-                };
-                this.leaveArena = close;
-                $('.arena__leave', el).addEventListener('click', () => { close(); intro(); });
-                try {
-                    game = await Arena.play({
-                        parent: $('.arena__stage', el),
-                        boss: r.lesson.boss, rounds: t.rounds, text: A,
-                        calm: REDUCED, touch,
-                        sfx: name => Sound.play(name),
-                        bloop: size => bob(STATES.neutral, { body: '#C6F432', accent: '#7C5CFF', screen: '#15171D', glow: '#E9FFB0', joint: '#7C5CFF' }, size),
-                        onEnd: res => { close(); done(res.results, res.deaths); }
-                    });
-                    if (!this.leaveArena) { game.destroy(); return; }
-                    this.arena = game;
-                } catch (e) {
-                    console.warn('Arena:', e);
-                    close();
-                    intro();
-                    $('.arena-note', box).hidden = false;
-                }
+                this.openArena(t, r.lesson.boss, {
+                    onEnd: res => done(res.results, res.deaths),
+                    onLeave: intro,
+                    onFail: () => { intro(); $('.arena-note', box).hidden = false; }
+                });
             };
 
             // Те же раунды без стрельбы: неверный вариант гаснет, ищешь дальше, верный — разбор и следующий раунд
@@ -2085,6 +2060,66 @@ const app = {
             </div>
         </dialog>`);
         $('#ask-btn').addEventListener('click', () => this.openTutor());
+    },
+
+    // ---------- Бой с Глитчем на весь экран (arena.js) ----------
+    // Phaser уже должен быть загружен (Arena.load). onEnd — бой выигран, onLeave — «Leave the fight», onFail — игра не запустилась.
+    async openArena(t, boss, { onEnd, onLeave, onFail }) {
+        const A = UI.arena;
+        const el = document.createElement('div');
+        el.className = 'arena';
+        el.setAttribute('role', 'dialog');
+        el.setAttribute('aria-label', t.title);
+        el.innerHTML = `<div class="arena__stage"></div>
+            <button class="arena__leave" type="button">${A.leave}</button>
+            <p class="arena__turn">${A.turn}</p>`;
+        document.body.appendChild(el);
+        let game = null;
+        const close = () => {
+            if (game) game.destroy();
+            game = null;
+            el.remove();
+            this.leaveArena = this.arena = null;
+        };
+        this.leaveArena = close;
+        $('.arena__leave', el).addEventListener('click', () => { close(); onLeave(); });
+        try {
+            game = await Arena.play({
+                parent: $('.arena__stage', el),
+                boss, rounds: t.rounds, text: A,
+                calm: REDUCED, touch: window.matchMedia('(pointer: coarse)').matches,
+                sfx: name => Sound.play(name),
+                bloop: size => bob(STATES.neutral, { body: '#C6F432', accent: '#7C5CFF', screen: '#15171D', glow: '#E9FFB0', joint: '#7C5CFF' }, size),
+                onEnd: res => { close(); onEnd(res); }
+            });
+            if (!this.leaveArena) { game.destroy(); return; }
+            this.arena = game;
+        } catch (e) {
+            console.warn('Arena:', e);
+            close();
+            onFail();
+        }
+    },
+
+    // Ссылка …/ai-trail-v3/#fight открывает бой сразу, без прохождения станций.
+    // Это просмотр: прогресс, звёзды и XP не меняются, станция босса остаётся закрытой.
+    async demoArena() {
+        const st = Game.stations().find(x => x.lesson.boss);
+        const t = st && st.lesson.tasks.find(x => x.type === 'arena');
+        if (!t || this.arena) return;
+        this.toast(UI.arena.loading);
+        try {
+            await Arena.load('vendor/phaser.min.js');
+        } catch (e) {
+            this.toast(UI.arena.failed);
+            return;
+        }
+        const back = () => { history.replaceState(null, '', location.pathname + location.search); };
+        this.openArena(t, st.lesson.boss, {
+            onEnd: res => { back(); this.toast(UI.arena.demoDone(res.results.filter(Boolean).length, res.results.length)); },
+            onLeave: back,
+            onFail: () => { back(); this.toast(UI.arena.failed); }
+        });
     },
 
     // ---------- Финальный босс: полоска здоровья над заданием ----------
