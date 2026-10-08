@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School: proof for parents</title>
+    <meta name="description" content="Live AI lessons for ages 6 to 14. After every lesson you see what your child made, how they got there and what they think.">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='14' y='14' width='72' height='72' rx='28' fill='%230B6E63'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+    <script>document.documentElement.classList.add('js');</script>
+    <style>
+        /* Direction: Proof. Trust-first, evidence led. One accent (teal), one radius system:
+           cards 20px, inputs 12px, buttons pill. */
+        :root {
+            --bg: #F4F7FA;
+            --surface: #FFFFFF;
+            --surface-2: #EAF0F5;
+            --ink: #14202B;
+            --ink-2: #4B5967;
+            --line: rgba(20, 32, 43, .12);
+            --accent: #0B6E63;
+            --accent-ink: #FFFFFF;
+            --accent-soft: #D7F0EA;
+            --tint-sky: #DCEBFB;
+            --tint-peach: #FBE3D6;
+            --tint-lav: #E6E2FA;
+            --shadow: 0 1px 2px rgba(20, 32, 43, .06), 0 18px 40px -18px rgba(20, 52, 68, .28);
+            --r-card: 20px;
+            --r-input: 12px;
+            --font: 'Schibsted Grotesk', 'Segoe UI', system-ui, sans-serif;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0F171D;
+                --surface: #17222A;
+                --surface-2: #1E2B35;
+                --ink: #E9F0F5;
+                --ink-2: #A6B4C0;
+                --line: rgba(233, 240, 245, .14);
+                --accent: #4FD1B8;
+                --accent-ink: #08201C;
+                --accent-soft: #163A36;
+                --tint-sky: #1B3042;
+                --tint-peach: #3A2A24;
+                --tint-lav: #2A2745;
+                --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 18px 40px -18px rgba(0, 0, 0, .6);
+            }
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+        body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.6 var(--font); -webkit-font-smoothing: antialiased; }
+        h1, h2, h3, p { margin: 0; }
+        a { color: inherit; }
+        .wrap { width: min(1200px, 100% - 32px); margin-inline: auto; }
+        .skip { position: absolute; left: 12px; top: -60px; padding: 10px 16px; background: var(--ink); color: var(--bg); border-radius: 999px; z-index: 100; }
+        .skip:focus { top: 12px; }
+        :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+        /* Buttons */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font: 700 1rem/1 var(--font); text-decoration: none; cursor: pointer; white-space: nowrap; transition: transform .2s cubic-bezier(.16, 1, .3, 1), box-shadow .2s; box-shadow: 0 8px 20px -10px var(--accent); }
+        .btn:hover { transform: translateY(-2px); }
+        .btn:active { transform: translateY(1px) scale(.98); }
+        .btn--sm { min-height: 44px; padding: 0 20px; font-size: .95rem; }
+        .link { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--line); }
+        .link:hover { border-color: var(--accent); }
+
+        /* Nav */
+        .nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+        .nav__in { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 68px; }
+        .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; text-decoration: none; letter-spacing: -.02em; }
+        .brand__mark { width: 30px; height: 30px; border-radius: 11px; background: var(--accent); display: grid; place-items: center; }
+        .brand__mark::before { content: ''; width: 14px; height: 9px; border-radius: 6px; background: var(--accent-ink); }
+        .nav__links { display: flex; gap: 28px; font-weight: 600; font-size: .98rem; }
+        .nav__links a { text-decoration: none; color: var(--ink-2); }
+        .nav__links a:hover { color: var(--ink); }
+
+        /* Hero */
+        .hero { padding: 56px 0 48px; }
+        .hero__grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 48px; align-items: center; }
+        h1 { font-size: clamp(2.3rem, 4.6vw, 3.7rem); line-height: 1.04; letter-spacing: -.04em; font-weight: 800; max-width: 14em; }
+        .hero__sub { margin-top: 20px; font-size: 1.25rem; color: var(--ink-2); max-width: 30em; }
+        .hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; margin-top: 32px; }
+
+        .stage { position: relative; min-height: 520px; }
+        .stage__bot { position: absolute; left: 2%; bottom: 0; width: 40%; z-index: 2; }
+        .report { position: absolute; right: 0; top: 0; width: min(100%, 410px); background: var(--surface); border-radius: var(--r-card); box-shadow: var(--shadow); border: 1px solid var(--line); padding: 22px; z-index: 1; }
+        .report__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+        .report__head strong { font-size: 1.05rem; letter-spacing: -.01em; }
+        .report__head small { color: var(--ink-2); font-size: .85rem; }
+        .habits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 16px 0; }
+        .habits li { list-style: none; display: grid; justify-items: center; gap: 6px; padding: 10px 4px; border-radius: 12px; background: var(--surface-2); font-size: .8rem; font-weight: 700; color: var(--ink-2); }
+        .habits li i { font-size: 1.2rem; }
+        .habits li.is-done { background: var(--accent-soft); color: var(--accent); }
+        .habits { padding: 0; }
+        .proof { display: grid; gap: 12px; }
+        .proof div { display: grid; grid-template-columns: 54px 1fr; gap: 12px; align-items: baseline; font-size: .95rem; line-height: 1.45; }
+        .proof b { font-size: .8rem; font-weight: 800; color: var(--accent); }
+        .report__note { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: var(--tint-peach); font-size: .9rem; line-height: 1.45; }
+        .report__note b { display: block; margin-bottom: 2px; }
+        .stage__tag { position: absolute; right: 8px; bottom: 0; font-size: .82rem; color: var(--ink-2); }
+
+        /* Facts strip */
+        .facts { padding: 8px 0 72px; }
+        .facts__row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+        .fact { display: flex; gap: 14px; align-items: flex-start; padding: 24px 20px 24px 0; }
+        .fact + .fact { padding-left: 24px; border-left: 1px solid var(--line); }
+        .fact i { font-size: 1.6rem; color: var(--accent); flex: none; margin-top: 2px; }
+        .fact b { display: block; font-size: 1.02rem; line-height: 1.3; }
+        .fact span { display: block; margin-top: 4px; font-size: .95rem; color: var(--ink-2); line-height: 1.45; }
+
+        /* Sections */
+        section { padding-block: clamp(56px, 8vw, 104px); }
+        h2 { font-size: clamp(1.9rem, 3.4vw, 2.8rem); line-height: 1.08; letter-spacing: -.035em; font-weight: 800; max-width: 16em; }
+        .lede { margin-top: 14px; color: var(--ink-2); font-size: 1.15rem; max-width: 36em; }
+
+        /* Habits bento */
+        .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(190px, auto); gap: 16px; margin-top: 40px; }
+        .tile { position: relative; overflow: hidden; border-radius: var(--r-card); padding: 28px; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; }
+        .tile h3 { font-size: 1.7rem; letter-spacing: -.03em; line-height: 1; }
+        .tile p { max-width: 24em; color: color-mix(in srgb, var(--ink) 78%, transparent); }
+        .tile q { font-weight: 700; font-size: 1.02rem; quotes: none; }
+        .tile i.ph-bold { position: absolute; top: 24px; left: 28px; font-size: 1.7rem; }
+        .tile--choose { grid-column: span 2; grid-row: span 2; background: var(--accent-soft); }
+        .tile--choose h3 { font-size: 2.4rem; }
+        .tile--choose .bob { position: absolute; right: -6px; top: 6px; width: 58%; }
+        .tile--tell { grid-column: span 2; background: var(--tint-sky); }
+        .tile--check { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+        .tile--own { background: var(--tint-peach); }
+        .tile--tell .bob { position: absolute; right: 12px; top: 6px; width: 120px; }
+        .tile--tell p, .tile--tell q { max-width: calc(100% - 150px); }
+
+        /* Proof rows */
+        .proofs { margin-top: 36px; border-top: 1px solid var(--line); }
+        .prow { display: grid; grid-template-columns: minmax(140px, .5fr) 1.2fr 1fr; gap: 24px 40px; align-items: baseline; padding: 32px 0; border-bottom: 1px solid var(--line); }
+        .prow h3 { font-size: clamp(2rem, 4vw, 3.2rem); letter-spacing: -.04em; color: var(--accent); line-height: 1; }
+        .prow p { font-size: 1.15rem; max-width: 26em; }
+        .prow small { font-size: .98rem; color: var(--ink-2); line-height: 1.5; }
+
+        /* Ages */
+        .ages { background: var(--surface-2); }
+        .seg { display: inline-flex; gap: 4px; padding: 5px; margin-top: 28px; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+        .seg button { min-height: 46px; padding: 0 22px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-2); font: 700 1rem var(--font); cursor: pointer; transition: background .2s, color .2s; }
+        .seg button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+        .panel { margin-top: 20px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 20px; }
+        .panel__main, .panel__side { background: var(--surface); border-radius: var(--r-card); padding: 32px; }
+        .panel__main h3 { font-size: 2rem; letter-spacing: -.035em; line-height: 1.05; }
+        .panel__meta { margin-top: 10px; color: var(--ink-2); font-weight: 600; }
+        .panel__goal { margin-top: 20px; font-size: 1.1rem; }
+        .rule { margin-top: 24px; display: flex; gap: 12px; padding: 16px 18px; border-radius: 14px; background: var(--accent-soft); font-size: .98rem; line-height: 1.5; }
+        .rule i { font-size: 1.4rem; color: var(--accent); flex: none; }
+        .panel__side h4 { margin: 0 0 14px; font-size: 1rem; letter-spacing: -.01em; }
+        .panel__side ul { margin: 0 0 28px; padding: 0; display: grid; gap: 12px; }
+        .panel__side li { list-style: none; display: flex; gap: 12px; line-height: 1.5; }
+        .panel__side li i { color: var(--accent); margin-top: 4px; flex: none; }
+
+        /* Enroll */
+        .enroll__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin-top: 36px; align-items: stretch; }
+        .card { background: var(--surface); border-radius: var(--r-card); padding: 32px; box-shadow: inset 0 0 0 1px var(--line); }
+        .card h3 { font-size: 1.5rem; letter-spacing: -.03em; }
+        .field { display: grid; gap: 8px; margin-top: 20px; }
+        .field label { font-weight: 700; font-size: .98rem; }
+        .field small { color: var(--ink-2); font-size: .9rem; }
+        .field input, .field select { min-height: 52px; padding: 0 16px; border-radius: var(--r-input); border: 1.5px solid color-mix(in srgb, var(--ink) 38%, transparent); background: var(--bg); color: var(--ink); font: 500 1rem var(--font); }
+        .field input:focus-visible, .field select:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+        .field.is-bad input { border-color: #C23B3B; }
+        .err { color: #B3261E; font-weight: 600; font-size: .92rem; min-height: 1.3em; }
+        @media (prefers-color-scheme: dark) { .err { color: #FF9C95; } .field.is-bad input { border-color: #FF9C95; } }
+        .card .btn { margin-top: 24px; width: 100%; }
+        .done { display: none; margin-top: 20px; padding: 18px; border-radius: 14px; background: var(--accent-soft); font-weight: 600; }
+        .done.is-on { display: block; }
+        .prices { margin: 18px 0 0; padding: 0; }
+        .prices li { list-style: none; display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 18px 0; }
+        .prices li + li { border-top: 1px solid var(--line); }
+        .prices b { font-size: 1.1rem; }
+        .prices strong { font-size: 1.7rem; letter-spacing: -.03em; }
+        .prices span { grid-column: 1; color: var(--ink-2); font-size: .95rem; }
+        .prices .tiny { grid-column: 2; grid-row: 2; text-align: right; font-size: .85rem; }
+        .fine { margin-top: 18px; color: var(--ink-2); font-size: .92rem; }
+
+        /* FAQ */
+        .faq { margin-top: 32px; border-top: 1px solid var(--line); max-width: 860px; }
+        .faq details { border-bottom: 1px solid var(--line); }
+        .faq summary { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 72px; font-size: 1.2rem; font-weight: 700; letter-spacing: -.015em; cursor: pointer; list-style: none; }
+        .faq summary::-webkit-details-marker { display: none; }
+        .faq summary i { transition: transform .25s cubic-bezier(.16, 1, .3, 1); flex: none; }
+        .faq details[open] summary i { transform: rotate(45deg); }
+        .faq details p { padding: 0 0 24px; color: var(--ink-2); max-width: 44em; }
+
+        /* Footer */
+        .foot { padding: 56px 0 40px; border-top: 1px solid var(--line); }
+        .foot__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+        .foot blockquote { margin: 0; padding-left: 18px; border-left: 3px solid var(--accent); color: var(--ink-2); max-width: 34em; }
+        .foot blockquote b { display: block; color: var(--ink); margin-bottom: 6px; }
+        .foot__links { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px 24px; font-weight: 600; }
+        .foot__links a { text-decoration: none; color: var(--ink-2); }
+
+        /* Reveal (hierarchy: content arrives in reading order) */
+        .js .rv { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.16, 1, .3, 1), transform .7s cubic-bezier(.16, 1, .3, 1); }
+        .js .rv.in { opacity: 1; transform: none; }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .js .rv { opacity: 1; transform: none; transition: none; }
+            .btn, .faq summary i { transition: none; }
+        }
+
+        @media (max-width: 960px) {
+            .nav__links { display: none; }
+            .hero__grid, .panel, .enroll__grid, .foot__grid { grid-template-columns: 1fr; }
+            .stage { min-height: 520px; }
+            .facts__row { grid-template-columns: 1fr 1fr; }
+            .fact:nth-child(3) { padding-left: 0; border-left: 0; }
+            .fact:nth-child(n+3) { border-top: 1px solid var(--line); }
+            .bento { grid-template-columns: 1fr 1fr; }
+            .tile--choose, .tile--tell { grid-column: span 2; }
+            .tile--choose { grid-row: auto; min-height: 340px; }
+            .prow { grid-template-columns: 1fr; gap: 10px; }
+            .foot__links { justify-content: flex-start; }
+        }
+        @media (max-width: 560px) {
+            .hero { padding-top: 32px; }
+            .facts__row { grid-template-columns: 1fr; }
+            .fact + .fact { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+            .bento { grid-template-columns: 1fr; }
+            .tile--choose, .tile--tell { grid-column: auto; }
+            .stage { min-height: 600px; }
+            .stage__bot { width: 48%; }
+            .seg { display: flex; width: 100%; }
+            .seg button { flex: 1; padding: 0 8px; }
+            .panel__main, .panel__side, .card { padding: 24px; }
+            .nav .btn--sm { padding: 0 16px; }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav">
+        <div class="wrap nav__in">
+            <a class="brand" href="#top" aria-label="Bloop AI School, back to top"><span class="brand__mark" aria-hidden="true"></span>Bloop</a>
+            <nav class="nav__links" aria-label="Sections">
+                <a href="#habits">Four habits</a>
+                <a href="#proof">Proof</a>
+                <a href="#ages">Ages</a>
+                <a href="#price">Price</a>
+                <a href="#faq">Questions</a>
+            </nav>
+            <a class="btn btn--sm" href="#price">Book a free lesson</a>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero" id="top" style="padding-block: 56px 48px;">
+            <div class="wrap hero__grid">
+                <div>
+                    <h1>Teach your child to use AI well.</h1>
+                    <p class="hero__sub">Small live classes for ages 6 to 14. After each lesson, you see what your child made.</p>
+                    <div class="hero__cta">
+                        <a class="btn" href="#price">Book a free lesson <i class="ph-bold ph-arrow-right" aria-hidden="true"></i></a>
+                        <a class="link" href="#ages">Find my child's age</a>
+                    </div>
+                </div>
+
+                <div class="stage">
+                    <div class="report">
+                        <div class="report__head"><strong>Lesson 2: Robot or Me?</strong><small>Sample report</small></div>
+                        <ul class="habits" aria-label="Habits practiced so far">
+                            <li class="is-done"><i class="ph-bold ph-hand-pointing" aria-hidden="true"></i>Choose</li>
+                            <li><i class="ph-bold ph-chat-circle-text" aria-hidden="true"></i>Tell</li>
+                            <li><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i>Check</li>
+                            <li><i class="ph-bold ph-hand-heart" aria-hidden="true"></i>Own</li>
+                        </ul>
+                        <div class="proof">
+                            <div><b>Made</b><span>Sorted the picture cards into Me, Bloop helps and Together.</span></div>
+                            <div><b>Think</b><span>"I keep drawing for mom for me."</span></div>
+                        </div>
+                        <div class="report__note"><b>Try at home</b>Ask which job they would never give a robot.</div>
+                    </div>
+                    <div class="stage__bot" id="hero-bot" aria-hidden="true"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="facts" aria-label="How we keep it safe" style="padding-block: 8px 72px;">
+            <div class="wrap">
+                <div class="facts__row">
+                    <div class="fact"><i class="ph-bold ph-chalkboard-teacher" aria-hidden="true"></i><div><b>A real teacher, live</b><span>Every lesson is written and fact-checked by a person.</span></div></div>
+                    <div class="fact"><i class="ph-bold ph-users-three" aria-hidden="true"></i><div><b>Small groups</b><span>Five kids at 6 to 8, up to ten at 12 to 14.</span></div></div>
+                    <div class="fact"><i class="ph-bold ph-shield-check" aria-hidden="true"></i><div><b>Never alone with AI</b><span>Kids do not chat with AI on their own.</span></div></div>
+                    <div class="fact"><i class="ph-bold ph-lock-key" aria-hidden="true"></i><div><b>No personal data</b><span>Names, school and passwords stay out of every tool.</span></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="habits">
+            <div class="wrap">
+                <h2 class="rv">Four habits that last longer than any app.</h2>
+                <p class="lede rv">Every course teaches the same loop, pitched to the age.</p>
+                <div class="bento">
+                    <article class="tile tile--choose rv">
+                        <div class="bob" id="bot-choose" aria-hidden="true"></div>
+                        <h3>Choose</h3>
+                        <q>Is this a job for Bloop, for me, or for both?</q>
+                        <p>Kids learn that "can AI do it" is not the same as "should it".</p>
+                    </article>
+                    <article class="tile tile--tell rv">
+                        <div class="bob" id="bot-tell" aria-hidden="true"></div>
+                        <h3>Tell</h3>
+                        <q>Say exactly what you want.</q>
+                        <p>Clear words get a clear answer. Teens add context and rules.</p>
+                    </article>
+                    <article class="tile tile--check rv">
+                        <i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i>
+                        <h3>Check</h3>
+                        <p>Bloop makes mistakes. Find them.</p>
+                    </article>
+                    <article class="tile tile--own rv">
+                        <i class="ph-bold ph-hand-heart" aria-hidden="true"></i>
+                        <h3>Own</h3>
+                        <p>Keep secrets. Say when AI helped.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="proof" style="padding-top: 0;">
+            <div class="wrap">
+                <h2 class="rv">You never have to guess what happened in class.</h2>
+                <div class="proofs">
+                    <div class="prow rv"><h3>Made</h3><p>Something your child made: a sorted set of cards, a quiz, a poster.</p><small>You can put it on the fridge.</small></div>
+                    <div class="prow rv"><h3>How</h3><p>A record of the process: the first ask, what changed, what was wrong.</p><small>Shows that your child checked, not only copied.</small></div>
+                    <div class="prow rv"><h3>Think</h3><p>A short sentence or rule, in your child's own words.</p><small>The easiest thing to talk about at dinner.</small></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="ages" id="ages">
+            <div class="wrap">
+                <h2 class="rv">One course for each age, never one text for all.</h2>
+                <div class="seg rv" role="tablist" aria-label="Child's age">
+                    <button role="tab" id="t-0" aria-selected="true" aria-controls="panel" data-i="0">6-8</button>
+                    <button role="tab" id="t-1" aria-selected="false" aria-controls="panel" data-i="1" tabindex="-1">9-11</button>
+                    <button role="tab" id="t-2" aria-selected="false" aria-controls="panel" data-i="2" tabindex="-1">12-14</button>
+                </div>
+                <div class="panel" id="panel" role="tabpanel" aria-labelledby="t-0" aria-live="polite">
+                    <div class="panel__main">
+                        <h3 id="p-name"></h3>
+                        <p class="panel__meta" id="p-meta"></p>
+                        <p class="panel__goal" id="p-goal"></p>
+                        <div class="rule"><i class="ph-bold ph-shield-check" aria-hidden="true"></i><span id="p-rule"></span></div>
+                    </div>
+                    <div class="panel__side">
+                        <h4>What your child does</h4>
+                        <ul id="p-does"></ul>
+                        <h4>What you do at home</h4>
+                        <ul id="p-home"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="price">
+            <div class="wrap">
+                <h2 class="rv">Start with one free lesson.</h2>
+                <p class="lede rv">Your child tries a real class. You see the report. Then you decide.</p>
+                <div class="enroll__grid">
+                    <form class="card rv" id="lead" novalidate>
+                        <h3>Book a free lesson</h3>
+                        <div class="field" id="f-email">
+                            <label for="email">Your email</label>
+                            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" aria-describedby="email-help email-err">
+                            <small id="email-help">We send class times here. Nothing else.</small>
+                            <span class="err" id="email-err" role="alert"></span>
+                        </div>
+                        <div class="field">
+                            <label for="age">Your child's age</label>
+                            <select id="age" name="age">
+                                <option value="6-8">6 to 8</option>
+                                <option value="9-11">9 to 11</option>
+                                <option value="12-14">12 to 14</option>
+                            </select>
+                        </div>
+                        <button class="btn" type="submit">Book a free lesson</button>
+                        <p class="done" id="done" role="status">Thank you. We will email lesson times for your child's age.</p>
+                    </form>
+                    <div class="card rv">
+                        <h3>Then pick a course</h3>
+                        <!-- mock prices: replace with real ones -->
+                        <ul class="prices">
+                            <li><b>Bloop's Helper Habits</b><strong>$59</strong><span>Ages 6-8, 6 lessons of 25 min</span></li>
+                            <li><b>You're the Boss of AI</b><strong>$89</strong><span>Ages 9-11, 8 lessons of 45 min</span></li>
+                            <li><b>AI Pilot</b><strong>$129</strong><span>Ages 12-14, 10 lessons of 50 min</span></li>
+                        </ul>
+                        <p class="fine">Prices are placeholders in this design.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" style="padding-top: 0;">
+            <div class="wrap">
+                <h2 class="rv">What parents ask first.</h2>
+                <div class="faq rv">
+                    <details>
+                        <summary>Is my child safe with AI?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary>
+                        <p>Kids do not chat with AI alone. At 6 to 8 a grown-up sits at the keyboard. At 9 to 11 kids use a built-in simulator with prepared answers, or a parent runs the tool.</p>
+                    </details>
+                    <details>
+                        <summary>Will this make my child lazy or help them cheat?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary>
+                        <p>The opposite is the plan. Kids learn to ask for a hint instead of the answer, to check every claim and to say when AI helped.</p>
+                    </details>
+                    <details>
+                        <summary>My child is 9. Which course?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary>
+                        <p>You're the Boss of AI, for ages 9 to 11. The free lesson shows whether the level feels right before you pay.</p>
+                    </details>
+                    <details>
+                        <summary>Does my child need an account on an AI tool?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary>
+                        <p>Not under 12. At 12 a parent's account is used with the parent in the room. At 13 and 14 a teen account is used only with your consent.</p>
+                    </details>
+                    <details>
+                        <summary>What do I get after a class?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary>
+                        <p>A short report with something your child made, how they got there, what they think, and one thing to try at home.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <div class="wrap foot__grid">
+            <blockquote><b>How we use AI</b>We use AI to help draft lesson ideas and pictures. A human teacher writes the final lessons, checks every fact, and decides what kids see. Kids never chat with AI alone.</blockquote>
+            <nav class="foot__links" aria-label="Footer">
+                <a href="#habits">Four habits</a>
+                <a href="#ages">Ages</a>
+                <a href="#faq">Questions</a>
+                <a href="../">All parent designs</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="../../../bobik.js"></script>
+    <script>
+    (function () {
+        /* Mascot art comes from the shared Bloop SVG generator */
+        function bot(id, state, pal) { var el = document.getElementById(id); if (el) el.innerHTML = renderBobik(state, PALETTES[pal], '100%'); }
+        bot('hero-bot', 'hello', 'mint');
+        bot('bot-choose', 'point', 'mint');
+        bot('bot-tell', 'idea', 'sky');
+
+        /* Age tabs */
+        var TRACKS = [
+            { name: "Bloop's Helper Habits", meta: 'Ages 6-8, 6 lessons of 25 min, up to 5 kids',
+              goal: 'Your child knows AI is a helper people taught, asks clearly, spots silly mistakes and keeps three secret rules.',
+              rule: "A grown-up is at the keyboard. Most lessons are unplugged or run in Bloop's built-in simulator.",
+              does: ['Sort "who did it?" cards: toaster, Bloop, kid, mom', 'Play "silly robot" to see why clear words matter', 'Find five mistakes in a picture made by Glitch'],
+              home: ['Find three helpers at home: speaker, TV, phone', 'Stick the three-rule card next to the tablet'] },
+            { name: "You're the Boss of AI", meta: 'Ages 9-11, 8 lessons of 45 min, up to 8 kids in pairs',
+              goal: 'Your child decides which tasks go to AI, writes a three-part request, tests AI on known answers and signs their AI use.',
+              rule: "No personal chatbot accounts. Kids use Bloop's chat simulator, or a parent runs the tool.",
+              does: ['Sort 12 real tasks into three piles: AI does it, AI helps, only me', 'Improve a request over three rounds and keep a log', 'Ask for a hint instead of the answer, then try alone'],
+              home: ["Sort this week's homework into the three piles together", 'Ask your child to explain the four habits to you'] },
+            { name: 'AI Pilot', meta: 'Ages 12-14, 10 lessons of 50 min, up to 10 kids, demo day',
+              goal: 'Your teen explains why chatbots make things up, verifies claims in two sources and writes a personal AI policy.',
+              rule: "Age 12: a parent's account with the parent in the room. Ages 13 to 14: a teen account only with your consent.",
+              does: ['Catch a chatbot inventing facts about a person who never existed', 'Fact-check three claims from an AI answer', 'Present a team project with a "how we used AI" statement'],
+              home: ["Turn off training on data in the family's AI tools together", 'Sign your teen\'s one-page AI policy and add one family rule'] }
+        ];
+        var tabs = [].slice.call(document.querySelectorAll('.seg [role=tab]'));
+        function show(i) {
+            var t = TRACKS[i];
+            tabs.forEach(function (b, k) { b.setAttribute('aria-selected', k === i); b.tabIndex = k === i ? 0 : -1; });
+            document.getElementById('panel').setAttribute('aria-labelledby', 't-' + i);
+            document.getElementById('p-name').textContent = t.name;
+            document.getElementById('p-meta').textContent = t.meta;
+            document.getElementById('p-goal').textContent = t.goal;
+            document.getElementById('p-rule').textContent = t.rule;
+            function list(id, items) { document.getElementById(id).innerHTML = items.map(function (x) { var li = document.createElement('li'); li.innerHTML = '<i class="ph-bold ph-check" aria-hidden="true"></i><span></span>'; li.lastChild.textContent = x; return li.outerHTML; }).join(''); }
+            list('p-does', t.does); list('p-home', t.home);
+            document.getElementById('age').value = ['6-8', '9-11', '12-14'][i];
+        }
+        tabs.forEach(function (b, i) {
+            b.addEventListener('click', function () { show(i); });
+            b.addEventListener('keydown', function (e) {
+                var n = e.key === 'ArrowRight' ? (i + 1) % 3 : e.key === 'ArrowLeft' ? (i + 2) % 3 : -1;
+                if (n < 0) return; e.preventDefault(); show(n); tabs[n].focus();
+            });
+        });
+        show(0);
+
+        /* Lead form: inline error under the field, calm confirmation */
+        var form = document.getElementById('lead');
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var f = document.getElementById('f-email'), v = document.getElementById('email').value.trim();
+            var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+            f.classList.toggle('is-bad', !ok);
+            document.getElementById('email').setAttribute('aria-invalid', !ok);
+            document.getElementById('email-err').textContent = ok ? '' : 'Enter an email like name@example.com.';
+            document.getElementById('done').classList.toggle('is-on', ok);
+            /* TODO: send to the real backend or Make.com webhook */
+        });
+
+        /* Reveal in reading order */
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }); }, { threshold: .15 });
+            document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
+        } else { document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); }); }
+    })();
+    </script>
+</body>
+</html>
