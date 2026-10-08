@@ -33,7 +33,7 @@ test('stars by ratio', () => {
 });
 
 test('every task is valid', () => {
-  const known = ['predict', 'read', 'cards', 'quiz', 'sort', 'build', 'spot', 'order', 'poll', 'chat', 'talk'];
+  const known = ['predict', 'read', 'cards', 'quiz', 'sort', 'build', 'spot', 'order', 'poll', 'chat', 'talk', 'arena'];
   const ids = new Set();
   for (const st of G.stations()) {
     const l = st.lesson;
@@ -55,6 +55,17 @@ test('every task is valid', () => {
         assert.equal(new Set(t.items).size, t.items.length, where + ': steps must differ');
       }
       if (t.type === 'build') assert.ok(t.slots.every(s => s.options.length >= 2 && s.hint), where);
+      if (t.type === 'arena') {
+        assert.ok(l.boss, where + ': an arena belongs to a boss lesson');
+        assert.ok(t.title && t.text && t.rounds.length >= 6, where + ': title, text, at least 6 rounds');
+        for (const r of t.rounds) {
+          assert.ok(r.topic && r.q && r.explain, where + ': round needs topic, q, explain');
+          // Варианты летают карточками: 2–4 штуки, короткие, разные
+          assert.ok(r.options.length >= 2 && r.options.length <= 4, where + ': 2–4 options');
+          assert.ok(r.options.every(o => o.length <= 70), where + ': option over 70 chars');
+          assert.equal(new Set(r.options).size, r.options.length, where + ': options must differ');
+        }
+      }
       if (t.type === 'talk') {
         assert.ok(!G.isGraded(t), 'talk is not graded');
         assert.ok(t.question && t.points.length && t.points.length <= 6 && t.sample, where + ': talk needs question, up to 6 points, sample');
@@ -105,15 +116,33 @@ test('fewer, bigger stations: two parts each, real reading, plenty of practice',
   }
 });
 
-test('the course ends with a boss fight that mixes the skills', () => {
+test('the course ends with a boss fight game that mixes the skills', () => {
   const bosses = G.stations().filter(st => st.lesson.boss);
   assert.equal(bosses.length, 1, 'one boss');
   const st = bosses[0], l = st.lesson;
   assert.equal(st.index, G.stations().length - 1, 'the boss is the last station');
   assert.ok(l.test && !l.extra, 'the boss is a main finale');
   assert.ok(l.boss.name && l.boss.icon && l.boss.hp > 0 && l.boss.taunts.length && l.boss.hurt.length);
-  const types = new Set(l.tasks.filter(G.isGraded).map(t => t.type));
-  for (const type of ['build', 'order', 'spot', 'sort', 'quiz']) assert.ok(types.has(type), 'boss round: ' + type);
+  const arenas = l.tasks.filter(t => t.type === 'arena');
+  assert.equal(arenas.length, 1, 'one arena fight');
+  const topics = arenas[0].rounds.map(r => r.topic);
+  for (const topic of ['Prompts', 'Hallucinations', 'Your data', 'Fakes', 'Sources', 'Bias', 'Honest work', 'Companions']) {
+    assert.ok(topics.includes(topic), 'boss round: ' + topic);
+  }
+  assert.equal(l.tasks[l.tasks.length - 1].type, 'talk', 'the final strike comes after the fight');
+});
+
+test('an arena counts as one graded task per round', () => {
+  const l = lesson('boss'), n = l.tasks.find(t => t.type === 'arena').rounds.length;
+  const comboFor = run => Math.max(0, run - XP_RULES.comboFrom + 1) * XP_RULES.combo;
+  const x = G.lessonXp(l, scores(l));
+  assert.equal(x.graded, n);
+  assert.equal(x.total, n * XP_RULES.correct + comboFor(n) + XP_RULES.lessonDone + XP_RULES.perfect);
+  // Глитч побеждён, но с первой попытки меньше половины: станция пройдена на 1 звезду
+  assert.equal(G.lessonXp(l, scores(l, .5)).stars, 1);
+  assert.equal(G.lessonXp(l, scores(l, 7 / 9)).stars, 2);
+  const r = G.applyLesson(G.newState(), 'boss', scores(l), '2026-10-01');
+  assert.equal(r.state.bestCombo, n, 'a perfect fight is a combo of all its rounds');
 });
 
 test('no side quests and no zone tests: only the boss is a test', () => {

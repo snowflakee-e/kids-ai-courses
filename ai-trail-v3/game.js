@@ -5,7 +5,10 @@
 // Работает в браузере (глобальные данные из course.en.js) и в Node (для тестов).
 // make(data) собирает ту же логику для другого курса — пригодится для курсов других возрастов.
 (function (root) {
-  var GRADED = { quiz: true, sort: true, build: true, spot: true, order: true };
+  var GRADED = { quiz: true, sort: true, build: true, spot: true, order: true, arena: true };
+
+  // Бой с боссом весит столько, сколько в нём раундов: иначе финал дал бы меньше XP, чем обычная станция
+  function weightOf(task) { return task.type === 'arena' ? task.rounds.length : 1; }
 
   function make(D) {
     function newState(name) {
@@ -127,13 +130,15 @@
       var R = D.XP_RULES, run = 0, bestRun = 0, base = 0, combo = 0, sum = 0, graded = 0;
       lesson.tasks.forEach(function (task, i) {
         if (!isGraded(task)) return;
-        var s = typeof scores[i] === 'number' ? scores[i] : 0;
-        graded++;
-        sum += s;
-        base += Math.round(R.correct * s);
+        var s = typeof scores[i] === 'number' ? scores[i] : 0, w = weightOf(task);
+        graded += w;
+        sum += s * w;
+        base += Math.round(R.correct * s * w);
         if (s === 1) {
-          run++;
-          if (run >= R.comboFrom) combo += R.combo;
+          for (var k = 0; k < w; k++) {
+            run++;
+            if (run >= R.comboFrom) combo += R.combo;
+          }
         } else {
           run = 0;
         }
@@ -317,7 +322,7 @@
       var run = s.combo || 0;
       st.lesson.tasks.forEach(function (task, i) {
         if (!isGraded(task)) return;
-        run = scores[i] === 1 ? run + 1 : 0;
+        run = scores[i] === 1 ? run + weightOf(task) : 0;
         s.bestCombo = Math.max(s.bestCombo, run);
       });
       s.combo = run;
@@ -362,7 +367,7 @@
     var Game = {
       newState: newState, dayKey: dayKey, daysBetween: daysBetween, addDays: addDays, weekKey: weekKey,
       stations: stations, mainStations: mainStations, findStation: findStation, passed: passed,
-      isUnlocked: isUnlocked, currentIndex: currentIndex, isGraded: isGraded,
+      isUnlocked: isUnlocked, currentIndex: currentIndex, isGraded: isGraded, weightOf: weightOf,
       starsFor: starsFor, lessonXp: lessonXp, levelFor: levelFor,
       blockDone: blockDone, totals: totals, week: week, dayStats: dayStats, weekSec: weekSec,
       limitReached: limitReached, restTime: restTime, reviewFor: reviewFor, applyReview: applyReview,
