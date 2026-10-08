@@ -11,7 +11,7 @@
     <!-- Шрифты свои, из fonts/: никаких запросов к Google Fonts -->
     <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="style.css?v=20261008-2">
+    <link rel="stylesheet" href="style.css?v=20261008-3">
 </head>
 <body>
     <!-- КАРТА -->
@@ -90,6 +90,34 @@
             <div class="result__actions">
                 <button class="btn btn--go btn--lg btn--block" id="result-map" type="button">To the map →</button>
                 <button class="link-btn" id="result-retry" type="button">Play again</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ФИНАЛ КУРСА: после победы над Глитчем -->
+    <section class="result finale" id="finale" hidden aria-labelledby="finale-title">
+        <div class="result__box finale__box">
+            <div class="result__bot sticker" id="finale-blup" aria-hidden="true"></div>
+            <p class="eyebrow" id="finale-kicker"></p>
+            <h1 id="finale-title"></h1>
+            <p class="result__lead" id="finale-lead"></p>
+            <ul class="result__stats finale__stats" id="finale-stats"></ul>
+            <section class="finale__part">
+                <h2>What you can do now</h2>
+                <div class="finale__zones" id="finale-skills"></div>
+            </section>
+            <section class="finale__part" id="finale-rules-box" hidden>
+                <h2>Your rules for AI</h2>
+                <blockquote class="finale__rules" id="finale-rules"></blockquote>
+            </section>
+            <section class="finale__part">
+                <h2>Keep using it</h2>
+                <ul class="finale__next" id="finale-next"></ul>
+            </section>
+            <div class="result__actions">
+                <button class="btn btn--go btn--lg btn--block" id="finale-cert" type="button">Get your certificate</button>
+                <button class="btn btn--white btn--block" id="finale-share" type="button">Share my skills card</button>
+                <button class="link-btn" id="finale-map" type="button">Back to the map</button>
             </div>
         </div>
     </section>
@@ -247,10 +275,10 @@
     <!-- Сертификат: виден только при печати -->
     <section class="cert" id="cert" aria-hidden="true"></section>
 
-    <script src="../bobik.js?v=20261008-2"></script>
-    <script src="course.en.js?v=20261008-2"></script>
-    <script src="game.js?v=20261008-2"></script>
-    <script src="arena.js?v=20261008-2"></script>
-    <script src="app.js?v=20261008-2"></script>
+    <script src="../bobik.js?v=20261008-3"></script>
+    <script src="course.en.js?v=20261008-3"></script>
+    <script src="game.js?v=20261008-3"></script>
+    <script src="arena.js?v=20261008-3"></script>
+    <script src="app.js?v=20261008-3"></script>
 </body>
 </html>

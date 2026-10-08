@@ -148,10 +148,12 @@
       var stars = starsFor(ratio);
       var done = stars > 0 ? R.lessonDone : 0;
       var perfect = ratio >= 1 ? R.perfect : 0;
+      // Победа над боссом — большой бонус сверху. Он входит в лучший результат станции, поэтому платится один раз
+      var boss = lesson.boss && stars > 0 ? (R.bossDone || 0) : 0;
       return {
         ratio: ratio, stars: stars, graded: graded, bestRun: bestRun,
-        base: base, combo: combo, done: done, perfect: perfect,
-        total: base + combo + done + perfect
+        base: base, combo: combo, done: done, perfect: perfect, boss: boss,
+        total: base + combo + done + perfect + boss
       };
     }
 
