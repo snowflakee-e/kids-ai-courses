@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School: meet Bloop</title>
+    <meta name="description" content="Playful live AI classes for ages 6 to 8. A grown-up sits beside your child at every step. Try one real activity before you book.">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='12' y='20' width='76' height='62' rx='28' fill='%237AD3C1'/><circle cx='36' cy='50' r='7' fill='%232D3A63'/><circle cx='64' cy='50' r='7' fill='%232D3A63'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+    <script>document.documentElement.classList.add('js');</script>
+    <style>
+        /* Direction: Storybook. Playful and warm for parents of 6 to 8 year olds.
+           One accent (blue). Radius system: cards 28px, inputs 16px, buttons and chips pill. */
+        :root {
+            --bg: #F2F7FF;
+            --surface: #FFFFFF;
+            --ink: #1B2559;
+            --ink-2: #4A5585;
+            --line: rgba(27, 37, 89, .14);
+            --accent: #2F5BFF;
+            --accent-ink: #FFFFFF;
+            --t-mint: #D5F4EA;
+            --t-peach: #FFE3D4;
+            --t-sun: #FFF0B9;
+            --t-lav: #E7E2FF;
+            --t-sky: #D9E8FF;
+            --shadow: 0 2px 0 rgba(27, 37, 89, .08), 0 22px 40px -22px rgba(27, 37, 89, .35);
+            --head: 'Fredoka', 'Trebuchet MS', system-ui, sans-serif;
+            --body: 'Nunito Sans', 'Segoe UI', system-ui, sans-serif;
+            --r-card: 28px;
+            --r-input: 16px;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0F1634;
+                --surface: #19234A;
+                --ink: #EEF2FF;
+                --ink-2: #AEB9E6;
+                --line: rgba(238, 242, 255, .16);
+                --accent: #8FA9FF;
+                --accent-ink: #0A1233;
+                --t-mint: #17403F;
+                --t-peach: #4A2E2B;
+                --t-sun: #46401F;
+                --t-lav: #2E2A5E;
+                --t-sky: #1D3566;
+                --shadow: 0 2px 0 rgba(0, 0, 0, .3), 0 22px 40px -22px rgba(0, 0, 0, .7);
+            }
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+        body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.125rem/1.6 var(--body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        h1, h2, h3, h4, p { margin: 0; }
+        h1, h2, h3, h4 { font-family: var(--head); font-weight: 600; }
+        a { color: inherit; }
+        .wrap { width: min(1180px, 100% - 32px); margin-inline: auto; }
+        .skip { position: absolute; left: 12px; top: -60px; padding: 10px 16px; background: var(--ink); color: var(--bg); border-radius: 999px; z-index: 100; }
+        .skip:focus { top: 12px; }
+        :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; padding: 0 30px; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font: 600 1.15rem/1 var(--head); text-decoration: none; cursor: pointer; white-space: nowrap; box-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 60%, #000), 0 16px 28px -14px var(--accent); transition: transform .15s, box-shadow .15s; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 60%, #000); }
+        .btn--sm { min-height: 46px; padding: 0 22px; font-size: 1rem; box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 60%, #000); }
+        .link { display: inline-flex; align-items: center; min-height: 56px; font-weight: 800; text-decoration: none; border-bottom: 3px solid var(--line); }
+        .link:hover { border-color: var(--accent); }
+
+        .nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+        .nav__in { display: flex; align-items: center; justify-content: space-between; gap: 20px; height: 72px; }
+        .brand { display: inline-flex; align-items: center; gap: 10px; font: 600 1.5rem var(--head); text-decoration: none; }
+        .brand__bot { width: 40px; }
+        .nav__links { display: flex; gap: 26px; font-weight: 700; }
+        .nav__links a { text-decoration: none; color: var(--ink-2); }
+        .nav__links a:hover { color: var(--ink); }
+
+        /* Hero */
+        .hero { padding: 36px 0 24px; }
+        .hero__grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 24px; align-items: center; }
+        h1 { font-size: clamp(2.5rem, 5.2vw, 4.2rem); line-height: 1.02; letter-spacing: -.02em; font-weight: 700; max-width: 11em; }
+        h1 em { font-style: normal; color: var(--accent); }
+        .hero__sub { margin-top: 20px; font-size: 1.3rem; color: var(--ink-2); max-width: 27em; }
+        .hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; margin-top: 30px; }
+        .hero__art { position: relative; justify-self: center; width: min(100%, 460px); padding: 8% 6% 4%; }
+        .hero__blob { position: absolute; inset: 0; background: var(--t-sky); border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%; }
+        .hero__bot { position: relative; animation: bob 5s ease-in-out infinite; }
+        .bubble { position: absolute; left: -4%; top: 2%; max-width: 62%; padding: 14px 18px; border-radius: 22px 22px 22px 6px; background: var(--surface); box-shadow: var(--shadow); font: 600 1.05rem/1.3 var(--head); z-index: 2; }
+        @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        section { padding-block: clamp(48px, 7vw, 96px); }
+        #home { overflow-x: clip; }
+        h2 { font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.05; letter-spacing: -.015em; max-width: 14em; }
+        .lede { margin-top: 12px; color: var(--ink-2); font-size: 1.2rem; max-width: 32em; }
+
+        /* Game */
+        .game { background: var(--t-sun); border-radius: 40px; padding: clamp(24px, 4vw, 52px); display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 32px; align-items: center; }
+        .game__bot { max-width: 240px; margin-top: 18px; }
+        .tasks { display: grid; gap: 12px; }
+        .task { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px 16px; padding: 14px 16px 14px 22px; border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); }
+        .task b { font: 600 1.15rem/1.25 var(--head); }
+        .chips { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+        .chip { min-height: 44px; padding: 0 16px; border: 2px solid var(--line); border-radius: 999px; background: transparent; color: var(--ink); font: 700 .95rem var(--body); cursor: pointer; transition: transform .12s, background .12s, border-color .12s; }
+        .chip:hover { border-color: var(--accent); }
+        .chip:active { transform: scale(.96); }
+        .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+        .game__result { margin-top: 18px; min-height: 3.2em; font: 600 1.15rem/1.4 var(--head); }
+
+        /* Habit story */
+        .story { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 40px; margin-top: 16px; }
+        .story__stick { position: sticky; top: 96px; align-self: start; height: min(520px, calc(100dvh - 130px)); display: grid; place-items: center; border-radius: var(--r-card); background: var(--t-mint); transition: background .5s; padding: 20px; }
+        #story-bot svg { width: auto; height: 100%; max-width: 100%; }
+        .step { min-height: 62vh; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 24px 0; opacity: .38; transition: opacity .4s; }
+        .step.is-on { opacity: 1; }
+        .step h3 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); line-height: 1; }
+        .step q { quotes: none; font: 600 1.4rem/1.3 var(--head); color: var(--accent); }
+        .step p { color: var(--ink-2); max-width: 28em; }
+        .step .gesture { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; min-height: 40px; padding: 0 16px; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 2px var(--line); font-weight: 800; font-size: .95rem; }
+
+        /* At home carousel */
+        .home__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+        .arrows { display: flex; gap: 10px; }
+        .arrow { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); color: var(--ink); font-size: 1.3rem; display: grid; place-items: center; cursor: pointer; transition: transform .12s, border-color .12s; }
+        .arrow:hover { border-color: var(--accent); }
+        .arrow:active { transform: scale(.94); }
+        .rail { display: flex; gap: 16px; margin-top: 32px; padding: 6px 16px 28px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc((100vw - min(1180px, 100vw - 32px)) / -2); padding-inline: max(16px, calc((100vw - 1180px) / 2)); scroll-padding-inline: max(16px, calc((100vw - 1180px) / 2)); }
+        .rail::-webkit-scrollbar { display: none; }
+        .home-card { flex: none; width: min(320px, 78vw); scroll-snap-align: start; padding: 28px; border-radius: var(--r-card); display: flex; flex-direction: column; gap: 14px; min-height: 280px; }
+        .home-card i { font-size: 2rem; }
+        .home-card h3 { font-size: 1.6rem; line-height: 1.1; }
+        .home-card p { margin-top: auto; font-size: 1rem; color: color-mix(in srgb, var(--ink) 72%, transparent); }
+        .home-card:nth-child(5n+1) { background: var(--t-mint); }
+        .home-card:nth-child(5n+2) { background: var(--t-peach); }
+        .home-card:nth-child(5n+3) { background: var(--t-lav); }
+        .home-card:nth-child(5n+4) { background: var(--t-sun); }
+        .home-card:nth-child(5n+5) { background: var(--t-sky); }
+
+        /* Safe or secret */
+        .secret { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border-radius: 40px; overflow: hidden; box-shadow: var(--shadow); }
+        .secret__side { padding: clamp(28px, 4vw, 52px); display: flex; flex-direction: column; gap: 16px; }
+        .secret__safe { background: var(--t-mint); }
+        .secret__lock { background: var(--ink); color: var(--bg); }
+        .secret h3 { font-size: 2.1rem; line-height: 1.05; }
+        .secret ul { margin: 0; padding: 0; display: grid; gap: 10px; }
+        .secret li { list-style: none; display: flex; gap: 12px; align-items: center; font-weight: 800; font-size: 1.12rem; }
+        .secret li i { font-size: 1.4rem; flex: none; }
+        .secret__note { margin-top: auto; font-size: .98rem; opacity: .85; }
+
+        /* Ticket */
+        .ticket { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--surface); border-radius: 40px; box-shadow: var(--shadow); overflow: hidden; }
+        .ticket__l { padding: clamp(28px, 4vw, 52px); background: var(--t-lav); display: flex; flex-direction: column; gap: 16px; position: relative; }
+        .ticket__l::after { content: ''; position: absolute; top: 0; bottom: 0; right: -1px; border-right: 4px dotted var(--bg); }
+        .ticket__l h2 { font-size: clamp(2rem, 3.4vw, 2.7rem); }
+        .ticket__price { margin-top: auto; font: 600 1rem var(--head); }
+        .ticket__price strong { display: block; font-size: 3.2rem; line-height: 1; }
+        .ticket__r { padding: clamp(28px, 4vw, 52px); }
+        .field { display: grid; gap: 8px; margin-bottom: 18px; }
+        .field label { font-weight: 800; }
+        .field small { color: var(--ink-2); font-size: .92rem; }
+        .field input, .field select { min-height: 56px; padding: 0 18px; border-radius: var(--r-input); border: 2px solid color-mix(in srgb, var(--ink) 40%, transparent); background: var(--bg); color: var(--ink); font: 600 1.05rem var(--body); }
+        .field.is-bad input { border-color: #C42B2B; }
+        .err { color: #B3261E; font-weight: 700; font-size: .95rem; min-height: 1.3em; }
+        @media (prefers-color-scheme: dark) { .err { color: #FFA29B; } .field.is-bad input { border-color: #FFA29B; } }
+        .ticket .btn { width: 100%; }
+        .done { display: none; margin-top: 18px; padding: 16px 18px; border-radius: 18px; background: var(--t-mint); font-weight: 800; }
+        .done.is-on { display: block; }
+        .fine { margin-top: 12px; font-size: .9rem; color: var(--ink-2); }
+
+        /* FAQ */
+        .faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 32px; align-items: start; }
+        .faq details { background: var(--surface); border-radius: 24px; padding: 0 24px; box-shadow: inset 0 0 0 2px var(--line); }
+        .faq summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 76px; font: 600 1.25rem/1.25 var(--head); cursor: pointer; list-style: none; }
+        .faq summary::-webkit-details-marker { display: none; }
+        .faq summary i { flex: none; transition: transform .25s; }
+        .faq details[open] summary i { transform: rotate(45deg); }
+        .faq details p { padding: 0 0 22px; color: var(--ink-2); }
+
+        .foot { padding: 40px 0 56px; }
+        .foot__in { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; border-top: 2px solid var(--line); padding-top: 32px; }
+        .foot p { max-width: 38em; color: var(--ink-2); font-size: 1rem; }
+        .foot p b { display: block; color: var(--ink); }
+        .foot a { font-weight: 800; text-decoration: none; }
+
+        .js .rv { opacity: 0; transform: translateY(20px); transition: opacity .6s cubic-bezier(.16, 1, .3, 1), transform .6s cubic-bezier(.16, 1, .3, 1); }
+        .js .rv.in { opacity: 1; transform: none; }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .hero__bot { animation: none; }
+            .js .rv { opacity: 1; transform: none; transition: none; }
+            .step, .story__stick, .btn, .chip { transition: none; }
+        }
+
+        @media (max-width: 900px) {
+            .nav__links { display: none; }
+            .hero__grid, .game, .secret, .ticket, .faq { grid-template-columns: 1fr; }
+            .hero__art { order: -1; width: min(70%, 320px); }
+            .story { grid-template-columns: 1fr; gap: 0; }
+            .story__stick { position: sticky; top: 72px; z-index: 5; height: 190px; padding: 10px; border-radius: 22px; }
+            .step { min-height: 56vh; }
+            .ticket__l::after { display: none; }
+            .task { grid-template-columns: 1fr; }
+            .chips { justify-content: flex-start; }
+            .arrows { display: none; }
+        }
+        @media (max-width: 520px) {
+            .btn { white-space: normal; }
+            .bubble { left: 0; font-size: .95rem; }
+            .nav .btn--sm { padding: 0 14px; font-size: .92rem; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav">
+        <div class="wrap nav__in">
+            <a class="brand" href="#top" aria-label="Bloop AI School, back to top"><span class="brand__bot" id="brand-bot" aria-hidden="true"></span>Bloop</a>
+            <nav class="nav__links" aria-label="Sections">
+                <a href="#try">Try it</a>
+                <a href="#habits">Four habits</a>
+                <a href="#home">At home</a>
+                <a href="#safe">Safety</a>
+                <a href="#faq">Questions</a>
+            </nav>
+            <a class="btn btn--sm" href="#ticket">Book a free lesson</a>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero" id="top" style="padding-block: 36px 24px;">
+            <div class="wrap hero__grid">
+                <div>
+                    <h1>Meet Bloop, the robot that teaches <em>AI</em> to kids.</h1>
+                    <p class="hero__sub">Playful live classes for ages 6 to 8, with a grown-up beside your child every step.</p>
+                    <div class="hero__cta">
+                        <a class="btn" href="#ticket">Book a free lesson <i class="ph-bold ph-arrow-right" aria-hidden="true"></i></a>
+                        <a class="link" href="#try">Try one activity first</a>
+                    </div>
+                </div>
+                <div class="hero__art">
+                    <div class="hero__blob" aria-hidden="true"></div>
+                    <p class="bubble">Is a birthday card a job for a robot?</p>
+                    <div class="hero__bot" id="hero-bot" aria-hidden="true"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="try">
+            <div class="wrap">
+                <div class="game rv">
+                    <div>
+                        <h2>Try today's class at the dinner table.</h2>
+                        <p class="lede">Lesson two is called "Robot or Me?". Read each job and let your child pick a pile.</p>
+                        <div class="game__bot" id="game-bot" aria-hidden="true"></div>
+                    </div>
+                    <div>
+                        <div class="tasks" id="tasks"></div>
+                        <p class="game__result" id="result" role="status" aria-live="polite">There are no wrong piles. Ask your child why.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="habits" style="padding-top: 24px;">
+            <div class="wrap">
+                <h2 class="rv">Four little habits, one big idea.</h2>
+                <p class="lede rv">AI helps. Your child decides. Bloop teaches it with one gesture each.</p>
+                <div class="story">
+                    <div class="story__stick" id="stick" aria-hidden="true"><div id="story-bot" style="height:100%;display:grid;place-items:center"></div></div>
+                    <div>
+                        <article class="step is-on" data-state="point" data-bg="--t-mint">
+                            <span class="gesture"><i class="ph-bold ph-hand-pointing" aria-hidden="true"></i>Point a finger</span>
+                            <h3>Choose</h3>
+                            <q>Is this a job for Bloop, for me, or for both?</q>
+                            <p>Some jobs are yours because they are fun or come from your heart.</p>
+                        </article>
+                        <article class="step" data-state="idea" data-bg="--t-sky">
+                            <span class="gesture"><i class="ph-bold ph-chat-circle-text" aria-hidden="true"></i>Hand at mouth</span>
+                            <h3>Tell</h3>
+                            <q>Say exactly what you want.</q>
+                            <p>Clear words get the right picture. Vague words get a silly one.</p>
+                        </article>
+                        <article class="step" data-state="surprise" data-bg="--t-peach">
+                            <span class="gesture"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i>Magnifier hands</span>
+                            <h3>Check</h3>
+                            <q>Bloop makes mistakes. Find them.</q>
+                            <p>A cat with five legs? A sun at night? Your child learns to look twice.</p>
+                        </article>
+                        <article class="step" data-state="victory" data-bg="--t-lav">
+                            <span class="gesture"><i class="ph-bold ph-hand-heart" aria-hidden="true"></i>Hand on heart</span>
+                            <h3>Own</h3>
+                            <q>Keep secrets. Say when AI helped.</q>
+                            <p>Every finished page gets a stamp: made by me and Bloop.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="home" style="padding-top: 24px;">
+            <div class="wrap">
+                <div class="home__head rv">
+                    <div>
+                        <h2>One small thing to do together after each class.</h2>
+                        <p class="lede">No homework for your child. A card for you.</p>
+                    </div>
+                    <div class="arrows">
+                        <button class="arrow" type="button" id="prev" aria-label="Previous cards"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i></button>
+                        <button class="arrow" type="button" id="next" aria-label="Next cards"><i class="ph-bold ph-arrow-right" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="rail" id="rail" tabindex="0" aria-label="At-home cards, scroll sideways">
+                <article class="home-card"><i class="ph-bold ph-house-line" aria-hidden="true"></i><h3>Find three helpers at home</h3><p>A speaker, a TV, a phone. Which ones are smart?</p></article>
+                <article class="home-card"><i class="ph-bold ph-heart" aria-hidden="true"></i><h3>Which job would you never give a robot?</h3><p>Ask at bedtime and listen to the answer.</p></article>
+                <article class="home-card"><i class="ph-bold ph-sandwich" aria-hidden="true"></i><h3>Play silly robot at dinner</h3><p>Do exactly what is said. "Make a sandwich" gets funny fast.</p></article>
+                <article class="home-card"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i><h3>Spot one mistake together</h3><p>Ask a voice assistant a question and check the answer.</p></article>
+                <article class="home-card"><i class="ph-bold ph-lock-key" aria-hidden="true"></i><h3>Stick the rule card by the tablet</h3><p>Three secret rules, in your child's colors.</p></article>
+                <article class="home-card"><i class="ph-bold ph-hand-heart" aria-hidden="true"></i><h3>Let them teach you the four gestures</h3><p>Your child shows their page and explains each one.</p></article>
+            </div>
+        </section>
+
+        <section id="safe" style="padding-top: 24px;">
+            <div class="wrap">
+                <div class="secret rv">
+                    <div class="secret__side secret__safe">
+                        <h3>Safe to tell a computer</h3>
+                        <ul>
+                            <li><i class="ph-bold ph-check-circle" aria-hidden="true"></i>Your favorite color</li>
+                            <li><i class="ph-bold ph-check-circle" aria-hidden="true"></i>A dragon's name</li>
+                            <li><i class="ph-bold ph-check-circle" aria-hidden="true"></i>What your story is about</li>
+                        </ul>
+                        <p class="secret__note">Kids learn this by playing "safe or secret?" in lesson five.</p>
+                    </div>
+                    <div class="secret__side secret__lock">
+                        <h3>Secret. Never type it.</h3>
+                        <ul>
+                            <li><i class="ph-bold ph-lock-key" aria-hidden="true"></i>Your name and home address</li>
+                            <li><i class="ph-bold ph-lock-key" aria-hidden="true"></i>Your school</li>
+                            <li><i class="ph-bold ph-lock-key" aria-hidden="true"></i>Your passwords</li>
+                            <li><i class="ph-bold ph-question" aria-hidden="true"></i>A photo of your face: ask a grown-up</li>
+                        </ul>
+                        <p class="secret__note">A grown-up is at the keyboard for every lesson.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ticket" style="padding-top: 24px;">
+            <div class="wrap">
+                <div class="ticket rv">
+                    <div class="ticket__l">
+                        <h2>Your child's free first lesson.</h2>
+                        <p class="lede" style="margin-top:0">25 minutes with a real teacher. Then the full course, if you both like it.</p>
+                        <!-- mock price: replace with the real one -->
+                        <p class="ticket__price">Bloop's Helper Habits, 6 lessons<strong>$59</strong></p>
+                    </div>
+                    <form class="ticket__r" id="lead" novalidate>
+                        <div class="field" id="f-email">
+                            <label for="email">Your email</label>
+                            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" aria-describedby="email-help email-err">
+                            <small id="email-help">We send the class time here.</small>
+                            <span class="err" id="email-err" role="alert"></span>
+                        </div>
+                        <div class="field">
+                            <label for="age">How old is your child?</label>
+                            <select id="age" name="age">
+                                <option>6</option><option>7</option><option>8</option>
+                            </select>
+                            <small>We do not ask for your child's name.</small>
+                        </div>
+                        <button class="btn" type="submit">Book a free lesson</button>
+                        <p class="done" id="done" role="status">Thank you. We will email the next class time.</p>
+                        <p class="fine">Price shown is a placeholder in this design.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" style="padding-top: 24px;">
+            <div class="wrap">
+                <h2 class="rv">Questions parents ask first.</h2>
+                <div class="faq rv">
+                    <details><summary>Is it safe for a 6 year old?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary><p>A grown-up is at the keyboard. Most lessons are unplugged or run inside Bloop's own simulator.</p></details>
+                    <details><summary>Does my child sit at a screen all hour?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary><p>No. Lessons use cards, games and talking. The screen is a tool, not the lesson.</p></details>
+                    <details><summary>What does my child bring home?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary><p>Something they made, like sorted cards or a stamped story page, plus one sentence in their own words.</p></details>
+                    <details><summary>What if my child is 9?<i class="ph-bold ph-plus" aria-hidden="true"></i></summary><p>Pick You're the Boss of AI, made for ages 9 to 11, with experiments instead of stories.</p></details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <div class="wrap foot__in">
+            <p><b>How we use AI</b>We use AI to help draft lesson ideas and pictures. A human teacher writes the final lessons, checks every fact, and decides what kids see. Kids never chat with AI alone.</p>
+            <a href="../">All parent designs</a>
+        </div>
+    </footer>
+
+    <script src="../../../bobik.js"></script>
+    <script>
+    (function () {
+        function bot(id, state, pal, size) { var el = document.getElementById(id); if (el) el.innerHTML = renderBobik(state, PALETTES[pal], size || '100%'); }
+        bot('brand-bot', 'joy', 'mint');
+        bot('hero-bot', 'wink', 'mint');
+        bot('game-bot', 'think', 'peach');
+        bot('story-bot', 'point', 'mint');
+
+        /* Robot or Me game */
+        var TASKS = ['Draw a birthday card for mom', 'Find a song to dance to', 'Brush your teeth', 'Name a dragon'];
+        var PILES = ['Me', 'Bloop helps', 'Together'];
+        var picks = {};
+        var box = document.getElementById('tasks');
+        TASKS.forEach(function (t, i) {
+            var row = document.createElement('div'); row.className = 'task';
+            var b = document.createElement('b'); b.textContent = t; row.appendChild(b);
+            var chips = document.createElement('div'); chips.className = 'chips'; chips.setAttribute('role', 'group'); chips.setAttribute('aria-label', t);
+            PILES.forEach(function (p) {
+                var c = document.createElement('button'); c.type = 'button'; c.className = 'chip'; c.textContent = p; c.setAttribute('aria-pressed', 'false');
+                c.addEventListener('click', function () {
+                    picks[i] = p;
+                    [].forEach.call(chips.children, function (x) { x.setAttribute('aria-pressed', x === c); });
+                    update();
+                });
+                chips.appendChild(c);
+            });
+            row.appendChild(chips); box.appendChild(row);
+        });
+        function update() {
+            var n = Object.keys(picks).length, mine = Object.keys(picks).filter(function (k) { return picks[k] === 'Me'; }).length;
+            var res = document.getElementById('result');
+            if (n < TASKS.length) { res.textContent = n + ' of ' + TASKS.length + ' sorted. Keep going.'; return; }
+            res.textContent = mine ? 'Your child kept ' + mine + ' of 4 jobs for themselves. Ask why.' : 'Everything went to Bloop. Ask: is there a job you would keep?';
+            bot('game-bot', 'delight', 'peach');
+        }
+
+        /* Sticky story: Bloop changes pose as the habit changes (storytelling) */
+        var steps = [].slice.call(document.querySelectorAll('.step'));
+        var stick = document.getElementById('stick');
+        var pals = ['mint', 'sky', 'peach', 'lav'];
+        function setStep(i) {
+            steps.forEach(function (s, k) { s.classList.toggle('is-on', k === i); });
+            stick.style.background = 'var(' + steps[i].dataset.bg + ')';
+            bot('story-bot', steps[i].dataset.state, pals[i]);
+        }
+        if ('IntersectionObserver' in window) {
+            var cur = 0;
+            var so = new IntersectionObserver(function (es) {
+                es.forEach(function (en) { if (en.isIntersecting) { var i = steps.indexOf(en.target); if (i !== cur) { cur = i; setStep(i); } } });
+            }, { rootMargin: '-45% 0px -45% 0px' });
+            steps.forEach(function (s) { so.observe(s); });
+        }
+
+        /* Carousel arrows */
+        var rail = document.getElementById('rail');
+        function slide(d) { rail.scrollBy({ left: d * 336, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+        document.getElementById('prev').addEventListener('click', function () { slide(-1); });
+        document.getElementById('next').addEventListener('click', function () { slide(1); });
+
+        /* Lead form */
+        document.getElementById('lead').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var f = document.getElementById('f-email'), em = document.getElementById('email'), ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim());
+            f.classList.toggle('is-bad', !ok); em.setAttribute('aria-invalid', !ok);
+            document.getElementById('email-err').textContent = ok ? '' : 'Enter an email like name@example.com.';
+            document.getElementById('done').classList.toggle('is-on', ok);
+            /* TODO: send to the real backend or Make.com webhook */
+        });
+
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }); }, { threshold: .12 });
+            document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
+        } else { document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); }); }
+    })();
+    </script>
+</body>
+</html>

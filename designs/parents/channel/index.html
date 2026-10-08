@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School: AI lessons for your child's age</title>
+    <meta name="description" content="AI lessons for kids aged 6 to 17. Set your child's age and see the episodes, the screen rules and the proof you get after every lesson. The first lesson is free.">
+    <meta name="theme-color" content="#FFCE3A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap" rel="stylesheet">
+    <style>
+        /* Every token below is rewritten by the age dial (see TOKENS in the script). These are the 6-year-old values. */
+        :root {
+            --age: 6;
+            --bg: #FFCE3A; --on-bg: #1E1A3C;
+            --acc: #FF5B4A; --on-acc: #1E1A3C;
+            --s1: #FF5B4A; --s2: #2F6BEF; --s3: #FFFFFF;
+            --page: #E8F3FF; --ink: #1E1A3C; --card: #FFFFFF; --line: rgba(30, 26, 60, .14); --soft: rgba(30, 26, 60, .66);
+            --rb-body: #6EC3FF; --rb-accent: #FF5B4A; --rb-screen: #1E1A3C; --rb-glow: #DDF6FF; --rb-joint: #FF8FB1;
+            --rad: 28px; --casl: 1; --wd: 900; --slnt: -9; --tilt: -2deg; --bob: 12px; --m: 0;
+            --focus: #2F6BEF;
+            --ease: cubic-bezier(.16, 1, .3, 1);
+            --gut: clamp(16px, 4vw, 48px);
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+        body {
+            margin: 0; background: var(--page); color: var(--ink);
+            font-family: 'Recursive', 'Segoe UI', system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.6;
+            font-variation-settings: "CASL" calc(var(--casl) * .45), "slnt" 0, "MONO" 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::selection { background: var(--acc); color: var(--on-acc); }
+        html { scrollbar-color: color-mix(in oklch, var(--ink) 35%, transparent) var(--page); }
+        input, select, textarea { caret-color: var(--acc); }
+        a { color: inherit; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+        :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+        .skip { position: absolute; left: 12px; top: -60px; z-index: 30; padding: 10px 16px; background: var(--ink); color: var(--page); border-radius: 8px; }
+        .skip:focus { top: 12px; }
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+        .display { font-weight: var(--wd); font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt), "MONO" 0; letter-spacing: -.025em; text-wrap: balance; }
+        .wrap { max-width: 1240px; margin: 0 auto; padding: 0 var(--gut); }
+        .tag { display: inline-block; padding: 2px 9px; border-radius: 999px; background: color-mix(in oklch, var(--ink) 9%, transparent); color: var(--soft); font-size: .8rem; font-weight: 600; vertical-align: middle; }
+
+        /* Buttons: one label per intent, "Book a free lesson" everywhere */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px;
+            border: 0; border-radius: calc(var(--rad) * .7 + 4px); background: var(--ink); color: var(--page);
+            font: inherit; font-weight: 700; font-variation-settings: "CASL" var(--casl), "slnt" 0; white-space: nowrap; text-decoration: none; cursor: pointer;
+            box-shadow: 0 6px 16px -8px color-mix(in oklch, var(--ink) 60%, transparent);
+            transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 22px -10px color-mix(in oklch, var(--ink) 60%, transparent); }
+        .btn:active { transform: translateY(1px) scale(.98); }
+        .btn svg { width: 18px; height: 18px; flex: none; }
+
+        /* NAV */
+        .nav { position: sticky; top: 0; z-index: 20; background: color-mix(in oklch, var(--bg) 92%, transparent); color: var(--on-bg); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid color-mix(in oklch, var(--on-bg) 12%, transparent); }
+        .nav__in { display: flex; align-items: center; gap: 28px; height: 68px; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); font-size: 1.15rem; letter-spacing: -.02em; white-space: nowrap; }
+        .logo__bot { width: 34px; height: 34px; }
+        .logo b { font-weight: 500; }
+        .nav__links { display: flex; gap: 22px; margin: 0 0 0 auto; padding: 0; list-style: none; font-size: .95rem; font-weight: 600; }
+        .nav__links a { text-decoration: none; opacity: .82; }
+        .nav__links a:hover { opacity: 1; text-decoration: underline; }
+        .nav .btn { min-height: 44px; padding: 0 18px; background: var(--on-bg); color: var(--bg); }
+        @media (max-width: 1020px) { .nav__links { display: none; } .nav .btn { margin-left: auto; } }
+        @media (max-width: 420px) { .logo b { display: none; } }
+
+        /* IDENT: the channel's hero */
+        .ident { position: relative; isolation: isolate; overflow: hidden; background: var(--bg); color: var(--on-bg); min-height: min(calc(100dvh - 68px), 820px); display: grid; grid-template-rows: 1fr auto auto; }
+        .ident::after { content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0; background: repeating-linear-gradient(0deg, color-mix(in oklch, var(--on-bg) 22%, transparent) 0 2px, transparent 2px 5px); }
+        .ident.is-switching::after { animation: signal .42s steps(6) both; }
+        @keyframes signal { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: .9; } 60% { opacity: .5; transform: translateY(6px); } 100% { opacity: 0; transform: translateY(0); } }
+
+        .shapes { position: absolute; inset: 0 0 auto 0; height: 62%; z-index: -1; pointer-events: none; }
+        .shape { position: absolute; transform-origin: center; transform: rotate(var(--r, 0deg)) scale(clamp(0, calc((var(--life) - var(--age)) / 1.6), 1)); transition: transform .5s var(--ease); }
+        .shape svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+        .stage { position: relative; padding: clamp(20px, 4vw, 48px) var(--gut) 0; max-width: 1340px; width: 100%; margin: 0 auto; display: grid; align-content: center; }
+        .numeral { position: relative; display: flex; align-items: flex-end; gap: clamp(10px, 2vw, 24px); }
+        .numeral__digits { position: relative; overflow: hidden; display: block; height: .86em; line-height: .86; font-size: clamp(8.5rem, 24vw, 21rem); font-variant-numeric: tabular-nums; letter-spacing: -.045em; }
+        .numeral__digits span { display: block; }
+        .numeral__digits.roll-up span { animation: rollUp .45s var(--ease) both; }
+        .numeral__digits.roll-down span { animation: rollDown .45s var(--ease) both; }
+        @keyframes rollUp { from { transform: translateY(55%); opacity: 0; } to { transform: none; opacity: 1; } }
+        @keyframes rollDown { from { transform: translateY(-55%); opacity: 0; } to { transform: none; opacity: 1; } }
+        .numeral__unit { padding-bottom: clamp(10px, 2vw, 26px); font-size: clamp(1.1rem, 2.2vw, 1.7rem); line-height: 1.1; font-weight: 700; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .numeral__unit small { display: block; font-size: .7em; font-weight: 500; opacity: .75; }
+
+        /* Bloop: big host at 6, the channel bug in the corner at 17 */
+        .host { position: absolute; z-index: 2; top: clamp(14px, 2vw, 22px); right: var(--gut); width: clamp(220px, 34vw, 470px); transform-origin: 100% 0;
+            transform: translate(calc((1 - var(--m)) * clamp(-90px, -6vw, -20px)), calc((1 - var(--m)) * clamp(30px, 7vh, 80px))) scale(calc(1 - var(--m) * .84)); transition: transform .5s var(--ease); pointer-events: none; }
+        .host__bob { animation: bob 2.6s ease-in-out infinite; }
+        @keyframes bob { 50% { transform: translateY(calc(var(--bob) * -1)) rotate(calc(var(--bob) * .12deg)); } }
+        .bug { position: absolute; z-index: 3; top: clamp(24px, 2.6vw, 34px); right: calc(var(--gut) + clamp(84px, 6.5vw, 96px)); font-size: .82rem; font-weight: 800; letter-spacing: .02em; line-height: 1.15; text-align: right; opacity: clamp(0, calc((var(--m) - .7) * 3.4), 1); transition: opacity .4s; }
+        .bug small { display: block; font-weight: 500; opacity: .8; }
+
+        /* Lower third */
+        .l3 { position: relative; z-index: 3; margin: clamp(18px, 3vw, 30px) auto 0; width: calc(100% - 2 * var(--gut)); max-width: 1244px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px 32px;
+            padding: clamp(18px, 2.4vw, 28px) clamp(18px, 2.6vw, 34px); background: var(--acc); color: var(--on-acc); border-radius: var(--rad); transform: rotate(var(--tilt)); transition: transform .5s var(--ease);
+            box-shadow: 0 18px 40px -22px color-mix(in oklch, var(--on-bg) 70%, transparent); }
+        .l3__tab { position: absolute; left: clamp(18px, 2.6vw, 34px); top: 0; transform: translateY(-62%); padding: 5px 14px; border-radius: calc(var(--rad) * .5 + 2px); background: var(--on-bg); color: var(--bg); font-size: .9rem; font-weight: 800; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); white-space: nowrap; }
+        .l3 h1 { margin: 0; font-size: clamp(1.75rem, 3.6vw, 3rem); line-height: 1.04; max-width: 20em; }
+        .l3 p { margin: 8px 0 0; max-width: 46em; font-size: clamp(1rem, 1.3vw, 1.12rem); opacity: .9; }
+        .l3 .btn { background: var(--on-acc); color: var(--acc); }
+        .l3.is-in { animation: l3in .5s var(--ease) both; }
+        @keyframes l3in { from { transform: translateX(-24px) rotate(var(--tilt)); opacity: 0; } to { transform: rotate(var(--tilt)); opacity: 1; } }
+
+        /* Tuner: the age dial */
+        .tuner { position: relative; z-index: 3; width: calc(100% - 2 * var(--gut)); max-width: 1244px; margin: clamp(18px, 3vw, 28px) auto clamp(18px, 3vw, 30px); }
+        .tuner__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 18px; margin-bottom: 10px; }
+        .tuner__label { font-weight: 700; }
+        .tuner__hint { font-size: .9rem; opacity: .75; }
+        .channels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 10px; padding: 0; list-style: none; }
+        .channels button { width: 100%; min-height: 44px; padding: 6px 10px; border: 2px solid color-mix(in oklch, var(--on-bg) 30%, transparent); border-radius: calc(var(--rad) * .45 + 4px); background: transparent; color: inherit; font: inherit; font-weight: 700; font-size: .92rem; line-height: 1.15; cursor: pointer; transition: background .2s, border-color .2s; }
+        .channels button span { display: block; font-weight: 500; font-size: .8rem; opacity: .8; }
+        .channels button:hover { border-color: var(--on-bg); }
+        .channels button[aria-pressed="true"] { background: var(--on-bg); color: var(--bg); border-color: var(--on-bg); }
+        .dial { position: relative; padding: 0 14px; }
+        .dial input { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 44px; margin: 0; background: transparent; cursor: grab; }
+        .dial input:active { cursor: grabbing; }
+        .dial input::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: color-mix(in oklch, var(--on-bg) 28%, transparent); }
+        .dial input::-moz-range-track { height: 6px; border-radius: 3px; background: color-mix(in oklch, var(--on-bg) 28%, transparent); }
+        .dial input::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 40px; margin-top: -17px; border: 3px solid var(--bg); border-radius: calc(var(--rad) * .3 + 3px); background: var(--on-bg); box-shadow: 0 4px 10px -3px color-mix(in oklch, var(--on-bg) 70%, transparent); }
+        .dial input::-moz-range-thumb { width: 22px; height: 34px; border: 3px solid var(--bg); border-radius: calc(var(--rad) * .3 + 3px); background: var(--on-bg); }
+        .dial input:focus-visible { outline: none; }
+        .dial input:focus-visible::-webkit-slider-thumb { outline: 3px solid var(--on-bg); outline-offset: 3px; }
+        .dial input:focus-visible::-moz-range-thumb { outline: 3px solid var(--on-bg); outline-offset: 3px; }
+        .ticks { position: relative; height: 26px; margin: 0 14px; }
+        .ticks span { position: absolute; top: 0; transform: translateX(-50%); font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; opacity: .55; cursor: pointer; user-select: none; transition: opacity .2s, transform .2s var(--ease); }
+        .ticks span.is-on { opacity: 1; transform: translateX(-50%) scale(1.25); }
+
+        /* SECTIONS */
+        section { padding: clamp(64px, 9vw, 120px) 0; }
+        h2 { margin: 0 0 14px; font-size: clamp(2rem, 4.2vw, 3.4rem); line-height: 1.04; max-width: 17em; }
+        .lede { margin: 0; max-width: 40em; font-size: 1.15rem; color: var(--soft); }
+
+        /* Programme guide */
+        .season { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 22px 0 28px; padding: 0; list-style: none; font-weight: 600; }
+        .season li { display: flex; gap: 8px; align-items: baseline; }
+        .season b { font-size: 1.3rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+        .guide { border-top: 2px solid var(--ink); }
+        .guide__head, .ep summary { display: grid; grid-template-columns: 74px minmax(0, 1.6fr) 120px 150px minmax(0, 1.1fr) 28px; gap: 16px; align-items: center; }
+        .guide__head { padding: 10px 0; font-size: .82rem; font-weight: 700; color: var(--soft); border-bottom: 1px solid var(--line); }
+        .ep { border-bottom: 1px solid var(--line); }
+        .ep summary { padding: 16px 0; cursor: pointer; list-style: none; transition: background .2s; }
+        .ep summary::-webkit-details-marker { display: none; }
+        .ep summary:hover { background: color-mix(in oklch, var(--ink) 4%, transparent); }
+        .ep__no { font-weight: 800; font-size: 1.05rem; font-variant-numeric: tabular-nums; padding-left: 6px; }
+        .ep__title { font-weight: 800; font-size: 1.12rem; line-height: 1.25; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .ep__title small { display: block; margin-top: 2px; font-weight: 500; font-size: .95rem; color: var(--soft); font-variation-settings: "CASL" calc(var(--casl) * .45), "slnt" 0; }
+        .habit { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+        .habit i { font-style: normal; padding: 2px 9px; border-radius: 999px; background: color-mix(in oklch, var(--acc) 22%, var(--card)); font-size: .82rem; font-weight: 700; }
+        .rating { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 600; line-height: 1.2; }
+        .rating b { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border: 2px solid currentColor; border-radius: calc(var(--rad) * .2 + 2px); font-size: .85rem; font-weight: 800; }
+        .rating[data-r="U"] b { background: var(--ink); color: var(--page); border-color: var(--ink); }
+        .ep__leaves { font-size: .95rem; }
+        .ep__chev { width: 22px; height: 22px; transition: transform .3s var(--ease); }
+        .ep[open] .ep__chev { transform: rotate(45deg); }
+        .ep__body { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 40px; padding: 4px 34px 26px 90px; }
+        .ep__body h3 { margin: 0 0 4px; font-size: .85rem; color: var(--soft); }
+        .ep__body p { margin: 0; }
+        .home { padding: 14px 18px; border-radius: calc(var(--rad) * .5 + 4px); background: var(--card); box-shadow: 0 10px 24px -18px color-mix(in oklch, var(--ink) 70%, transparent); }
+        .ep[open] .ep__body { animation: open .35s var(--ease); }
+        @keyframes open { from { opacity: 0; transform: translateY(-6px); } }
+
+        /* Standards slate */
+        .slate { background: var(--ink); color: var(--page); }
+        .slate ::selection { background: var(--page); color: var(--ink); }
+        .slate__grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+        .slate h2 { font-size: clamp(2.2rem, 5vw, 4.2rem); }
+        .slate .lede { color: color-mix(in oklch, var(--page) 78%, transparent); }
+        .legend { margin: 30px 0 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+        .legend li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+        .legend .rating b { width: 34px; height: 34px; }
+        .legend .rating[data-r="U"] b { background: var(--page); color: var(--ink); border-color: var(--page); }
+        .legend strong { display: block; }
+        .legend span.d { display: block; font-size: .92rem; color: color-mix(in oklch, var(--page) 70%, transparent); }
+        .legend .count { font-weight: 800; font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+        .rules { display: grid; gap: 22px; padding-top: 8px; }
+        .rules h3 { margin: 0 0 6px; font-size: 1.15rem; }
+        .rules p { margin: 0; color: color-mix(in oklch, var(--page) 82%, transparent); }
+        .rules blockquote { margin: 0; padding: 20px 22px; border-radius: calc(var(--rad) * .5 + 4px); background: color-mix(in oklch, var(--page) 9%, transparent); font-size: 1.05rem; }
+
+        /* Parent report */
+        .report__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(32px, 6vw, 88px); align-items: center; }
+        .sheet { position: relative; padding: clamp(20px, 3vw, 32px); border-radius: calc(var(--rad) * .7 + 6px); background: var(--card); box-shadow: 0 30px 60px -36px color-mix(in oklch, var(--ink) 75%, transparent), 0 2px 6px -2px color-mix(in oklch, var(--ink) 18%, transparent); transform: rotate(calc(var(--tilt) * -.6)); transition: transform .5s var(--ease); }
+        .sheet__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+        .sheet__top strong { display: block; font-size: 1.3rem; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .sheet__top span { color: var(--soft); font-size: .95rem; }
+        .meters { display: grid; gap: 10px; margin: 18px 0; padding: 0; list-style: none; }
+        .meters li { display: grid; grid-template-columns: 80px auto 1fr; gap: 12px; align-items: center; font-weight: 700; }
+        .pips { display: flex; gap: 6px; }
+        .pips i { width: 16px; height: 16px; border-radius: calc(var(--rad) * .25 + 1px); border: 2px solid var(--ink); }
+        .pips i.on { background: var(--acc); border-color: var(--acc); }
+        .meters em { font-style: normal; font-weight: 500; font-size: .9rem; color: var(--soft); }
+        .proof { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+        .proof li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; padding: 12px 14px; border-radius: calc(var(--rad) * .4 + 3px); background: color-mix(in oklch, var(--ink) 5%, var(--card)); }
+        .proof b { font-weight: 800; }
+        .report__copy p { margin: 0 0 14px; max-width: 34em; font-size: 1.1rem; }
+        .report__copy dl { margin: 26px 0 0; display: grid; gap: 14px; }
+        .report__copy dt { font-weight: 800; font-size: 1.15rem; }
+        .report__copy dd { margin: 2px 0 0; color: var(--soft); }
+
+        /* Habits that grow */
+        .grow { background: color-mix(in oklch, var(--acc) 12%, var(--page)); }
+        .matrix-scroll { margin-top: 34px; overflow-x: auto; scrollbar-width: thin; }
+        .matrix { width: 100%; min-width: 860px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+        .matrix th, .matrix td { padding: 16px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+        .matrix thead th { font-size: .95rem; border-bottom: 2px solid var(--ink); }
+        .matrix thead th span { display: block; font-weight: 500; color: var(--soft); }
+        .matrix tbody th { width: 120px; font-size: 1.15rem; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .matrix td { color: var(--soft); transition: background .3s, color .3s; }
+        .matrix .is-now { background: var(--card); color: var(--ink); font-weight: 600; }
+        .matrix thead .is-now { background: var(--ink); color: var(--page); border-radius: calc(var(--rad) * .4) calc(var(--rad) * .4) 0 0; }
+        .matrix thead .is-now span { color: color-mix(in oklch, var(--page) 75%, transparent); }
+        .matrix thead th { cursor: pointer; }
+
+        /* Price + booking */
+        .book__grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
+        .price { margin: 26px 0 0; }
+        .price__num { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+        .price__num strong { font-size: clamp(3rem, 6vw, 4.6rem); line-height: 1; letter-spacing: -.04em; font-weight: var(--wd); font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .incl { margin: 22px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+        .incl li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; }
+        .incl svg { width: 20px; height: 20px; margin-top: 4px; color: var(--acc); }
+        .form { padding: clamp(22px, 3vw, 36px); border-radius: calc(var(--rad) * .7 + 6px); background: var(--card); box-shadow: 0 30px 60px -40px color-mix(in oklch, var(--ink) 80%, transparent); }
+        .form h3 { margin: 0 0 4px; font-size: 1.6rem; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .form > p { margin: 0 0 20px; color: var(--soft); }
+        .field { display: grid; gap: 6px; margin-bottom: 16px; }
+        .field label { font-weight: 700; font-size: .95rem; }
+        .field input, .field select { width: 100%; min-height: 50px; padding: 0 14px; border: 2px solid color-mix(in oklch, var(--ink) 25%, transparent); border-radius: calc(var(--rad) * .35 + 4px); background: var(--page); color: var(--ink); font: inherit; }
+        .field input:focus, .field select:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in oklch, var(--focus) 30%, transparent); }
+        .field .err { min-height: 1.2em; margin: 0; color: #C2262E; font-size: .9rem; font-weight: 600; }
+        .field.bad input, .field.bad select { border-color: #C2262E; }
+        .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+        .form .btn { width: 100%; background: var(--acc); color: var(--on-acc); }
+        .form .btn[disabled] { opacity: .6; cursor: progress; }
+        .form__note { margin: 12px 0 0; color: var(--soft); font-size: .9rem; }
+        .done { display: none; text-align: left; }
+        .form.is-done form { display: none; }
+        .form.is-done .done { display: block; animation: open .4s var(--ease); }
+        .done strong { display: block; font-size: 1.6rem; line-height: 1.15; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+
+        /* FAQ */
+        .faq__grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(28px, 6vw, 88px); }
+        .faq details { border-bottom: 1px solid var(--line); }
+        .faq summary { display: flex; justify-content: space-between; gap: 18px; padding: 20px 0; cursor: pointer; list-style: none; font-weight: 700; font-size: 1.15rem; }
+        .faq summary::-webkit-details-marker { display: none; }
+        .faq summary svg { flex: none; width: 22px; height: 22px; margin-top: 3px; transition: transform .3s var(--ease); }
+        .faq details[open] summary svg { transform: rotate(45deg); }
+        .faq details p { margin: 0 0 20px; max-width: 40em; color: var(--soft); }
+
+        /* End card */
+        .end { background: var(--bg); color: var(--on-bg); padding: clamp(48px, 7vw, 88px) 0 36px; }
+        .end__in { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 40px; }
+        .end h2 { margin: 0; max-width: 14em; }
+        .end .btn { background: var(--on-bg); color: var(--bg); }
+        .end__small { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; margin-top: 48px; padding-top: 18px; border-top: 1px solid color-mix(in oklch, var(--on-bg) 20%, transparent); font-size: .9rem; opacity: .85; }
+
+        .reveal { transition: opacity .7s var(--ease), transform .7s var(--ease); }
+        .js .reveal:not(.is-seen) { opacity: 0; transform: translateY(18px); }
+
+        /* MOBILE */
+        @media (max-width: 900px) {
+            .slate__grid, .report__grid, .book__grid, .faq__grid { grid-template-columns: 1fr; }
+            .guide__head { display: none; }
+            .ep summary { grid-template-columns: 44px minmax(0, 1fr) 24px; grid-template-areas: "no title chev" "no meta meta"; gap: 8px 12px; }
+            .ep__no { grid-area: no; align-self: start; padding: 2px 0 0; }
+            .ep__title { grid-area: title; }
+            .ep__chev { grid-area: chev; align-self: start; }
+            .ep__meta { grid-area: meta; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+            .ep__body { grid-template-columns: 1fr; padding: 0 0 22px 56px; }
+        }
+        @media (min-width: 901px) { .ep__meta { display: contents; } }
+        @media (max-width: 760px) {
+            .ident { min-height: auto; }
+            .host { width: clamp(150px, 42vw, 240px); transform: translate(calc((1 - var(--m)) * -2vw), calc((1 - var(--m)) * 6vw)) scale(calc(1 - var(--m) * .7)); }
+            .bug { right: calc(var(--gut) + 74px); font-size: .75rem; }
+            .numeral__digits { font-size: clamp(7rem, 38vw, 11rem); }
+            .shapes { height: 50%; }
+            .l3 { grid-template-columns: 1fr; margin-top: 30px; }
+            .l3 .btn { justify-self: start; }
+            .channels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .row2 { grid-template-columns: 1fr; }
+            .meters li { grid-template-columns: 70px auto; }
+            .meters em { grid-column: 1 / -1; margin-top: -6px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+            .js .reveal:not(.is-seen) { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip" href="#episodes">Skip to the episodes</a>
+
+    <header class="nav">
+        <div class="wrap nav__in">
+            <a class="logo" href="#top"><span class="logo__bot" data-bloop="neutral"></span>Bloop <b>AI School</b></a>
+            <ul class="nav__links">
+                <li><a href="#episodes">Episodes</a></li>
+                <li><a href="#screens">Screen rules</a></li>
+                <li><a href="#report">Parent report</a></li>
+                <li><a href="#book">Price</a></li>
+                <li><a href="#questions">Questions</a></li>
+            </ul>
+            <a class="btn" href="#book">Book a free lesson</a>
+        </div>
+    </header>
+
+    <main id="top">
+        <section class="ident" aria-label="Choose your child's age" style="padding:0">
+            <div class="shapes" aria-hidden="true" id="shapes"></div>
+
+            <div class="host" aria-hidden="true"><div class="host__bob" id="host"></div></div>
+            <p class="bug" aria-hidden="true">Bloop<small id="bug-track">Pros</small></p>
+
+            <div class="stage">
+                <div class="numeral display" aria-hidden="true">
+                    <span class="numeral__digits" id="digits"><span>6</span></span>
+                    <span class="numeral__unit">years old<small id="unit-track">Explorers channel</small></span>
+                </div>
+            </div>
+
+            <div class="l3" id="l3">
+                <span class="l3__tab" id="l3-tab">Explorers, ages 6-8</span>
+                <div>
+                    <h1 class="display" id="h1">AI's first rules, learned at the kitchen table.</h1>
+                    <p id="lead">Six short episodes, half of them with no screen. A grown-up always types.</p>
+                </div>
+                <a class="btn" href="#book">Book a free lesson</a>
+            </div>
+
+            <div class="tuner">
+                <div class="tuner__head">
+                    <label class="tuner__label" for="age">How old is your child?</label>
+                    <span class="tuner__hint">Drag the dial and the whole school grows up with them.</span>
+                </div>
+                <ul class="channels" id="channels"></ul>
+                <div class="dial"><input id="age" type="range" min="6" max="17" step="0.05" value="6"></div>
+                <div class="ticks" id="ticks" aria-hidden="true"></div>
+            </div>
+        </section>
+
+        <section id="episodes">
+            <div class="wrap">
+                <h2 class="display reveal" id="ep-title">This season on Explorers: Bloop's Helper Habits.</h2>
+                <p class="lede reveal" id="ep-lede"></p>
+                <ul class="season reveal" id="season"></ul>
+                <div class="guide reveal" role="list" aria-label="Episodes">
+                    <div class="guide__head" aria-hidden="true"><span>Episode</span><span>Title</span><span>Habit</span><span>Screen</span><span>What it leaves you</span><span></span></div>
+                    <div id="guide"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slate" id="screens">
+            <div class="wrap slate__grid">
+                <div class="reveal">
+                    <h2 class="display" id="scr-title">3 of 6 episodes need no screen.</h2>
+                    <p class="lede" id="scr-lede"></p>
+                    <ul class="legend" id="legend"></ul>
+                </div>
+                <div class="rules reveal">
+                    <div>
+                        <h3>Tool rule for this age</h3>
+                        <p id="tool-rule"></p>
+                    </div>
+                    <div>
+                        <h3>Every episode, every age</h3>
+                        <p>Kids never chat with AI alone. No real names, addresses, schools or photos go into any tool.</p>
+                    </div>
+                    <div>
+                        <h3>How we use AI ourselves</h3>
+                        <blockquote>We use AI to help draft lesson ideas and pictures. A human teacher writes the final lessons, checks every fact, and decides what kids see. Kids never chat with AI alone.</blockquote>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="report">
+            <div class="wrap report__grid">
+                <div class="sheet reveal" aria-label="Sample parent report">
+                    <div class="sheet__top">
+                        <div><strong id="rep-child">Mia, 7</strong><span id="rep-ep">After episode 4 of 6</span></div>
+                        <span class="tag">Sample</span>
+                    </div>
+                    <ul class="meters" id="meters"></ul>
+                    <ul class="proof" id="proof"></ul>
+                </div>
+                <div class="report__copy reveal">
+                    <h2 class="display">You never have to guess what happened in class.</h2>
+                    <p>After every episode you get a short report: the four habits as a meter and the newest proof of what your child did.</p>
+                    <dl>
+                        <div><dt>Made</dt><dd>Something your child made: a picture, a quiz, a poster.</dd></div>
+                        <div><dt>How</dt><dd>A record of the process: before and after, a round log, an annotated chat.</dd></div>
+                        <div><dt>Think</dt><dd>A short rule or reflection in your child's own words.</dd></div>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <section class="grow" id="grow">
+            <div class="wrap">
+                <h2 class="display reveal">Same four habits at every age, deeper every year.</h2>
+                <p class="lede reveal">Choose, Tell, Check, Own. What your child learns at <span id="grow-age">6</span> is the start of what they'll use at 17.</p>
+                <div class="matrix-scroll reveal" tabindex="0" aria-label="The four habits by age, scrolls sideways">
+                    <table class="matrix" id="matrix">
+                        <caption class="sr-only">The four habits by age track</caption>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="book">
+            <div class="wrap book__grid">
+                <div class="reveal">
+                    <h2 class="display">The first lesson is free.</h2>
+                    <p class="lede">Try one episode together. If it isn't a fit, you owe nothing.</p>
+                    <div class="price">
+                        <div class="price__num"><strong id="price">$149</strong><span id="price-per">per season</span></div>
+                        <span class="tag">Placeholder price, not final</span>
+                        <ul class="incl" id="incl"></ul>
+                    </div>
+                </div>
+                <div class="form reveal" id="form-card">
+                    <form id="form" novalidate>
+                        <h3>Book a free lesson</h3>
+                        <p>We'll write back within one working day with times for your child's age.</p>
+                        <div class="row2">
+                            <div class="field">
+                                <label for="f-name">Your name</label>
+                                <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name">
+                                <p class="err" id="e-name" aria-live="polite"></p>
+                            </div>
+                            <div class="field">
+                                <label for="f-age">Child's age</label>
+                                <select id="f-age" name="age" required></select>
+                                <p class="err" aria-live="polite"></p>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="f-contact">Email or phone</label>
+                            <input id="f-contact" name="contact" type="text" inputmode="email" autocomplete="email" required aria-describedby="e-contact">
+                            <p class="err" id="e-contact" aria-live="polite"></p>
+                        </div>
+                        <div class="field">
+                            <label for="f-time">Best time for you</label>
+                            <select id="f-time" name="time">
+                                <option>Weekday afternoon</option>
+                                <option>Weekday evening</option>
+                                <option>Weekend</option>
+                            </select>
+                        </div>
+                        <button class="btn" type="submit">Book a free lesson</button>
+                        <p class="form__note">This page is a design preview: the form does not send anything yet.</p>
+                    </form>
+                    <div class="done" role="status" tabindex="-1" id="done">
+                        <strong>Your free lesson request is in.</strong>
+                        <p id="done-text"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="questions" class="faq">
+            <div class="wrap faq__grid">
+                <h2 class="display reveal" id="faq-title">What parents of 6 to 8 year olds ask first.</h2>
+                <div class="reveal" id="faq"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="end">
+        <div class="wrap">
+            <div class="end__in">
+                <h2 class="display" id="end-title">See you on the Explorers channel.</h2>
+                <a class="btn" href="#book">Book a free lesson</a>
+            </div>
+            <div class="end__small">
+                <span>Bloop AI School. AI lessons for kids aged 6 to 17.</span>
+                <a href="../">All parent page designs</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../bobik.js"></script>
+    <script>
+    'use strict';
+    document.documentElement.classList.add('js');
+
+    var ICON_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+    var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>';
+
+    // How each episode uses screens. Letters work like TV ratings badges.
+    var RATINGS = {
+        U: { label: 'Unplugged', desc: 'No screen at all: cards, games and paper.' },
+        G: { label: 'Grown-up types', desc: 'AI is used, but a grown-up is at the keyboard.' },
+        S: { label: 'Simulator', desc: "Bloop's practice chat with pre-made answers. No accounts." },
+        R: { label: 'Real tool', desc: 'A real chatbot on your account, or a teen account you approve.' },
+        W: { label: 'With you', desc: 'Done together with a parent.' },
+        A: { label: 'In the app', desc: "Practice inside Bloop's built-in chat, no outside accounts." }
+    };
+
+    // Content per age track: kids-courses/choose-tell-check-own/curriculum.md (6-14) and ai-trail-v3/course.en.js (15-17)
+    var TRACKS = [
+        {
+            id: '6-8', min: 6, max: 8, name: 'Explorers', pose: 'hello',
+            h1: "AI's first rules, learned at the kitchen table.",
+            lead: 'Six short episodes, half of them with no screen. A grown-up always types.',
+            season: "Bloop's Helper Habits",
+            seasonLede: 'Your child learns that AI is a helper people taught, asks it clearly, spots its silly mistakes and keeps three secret rules.',
+            facts: [['6', 'episodes'], ['25', 'minutes each'], ['5', 'kids at most, a grown-up nearby']],
+            lessons: [
+                ['Bloop Is a Helper', ['Choose'], 'AI is a program people taught. It helps, you decide.', '"Who did it?" cards: toaster, Bloop, kid, mom. Sort what people do and what helpers do.', 'U', 'Made: sorted cards', 'Find 3 helpers at home: speaker, TV, phone.'],
+                ['Robot or Me?', ['Choose'], "Some jobs are yours because they're fun or come from your heart.", 'Picture cards: a birthday drawing for mom, find a song, brush teeth, name a dragon. Sort into Me, Bloop helps, Together.', 'U', 'Think: "I keep ___ for me."', "Ask which job they'd never give a robot."],
+                ['Tell Bloop Exactly', ['Tell'], 'Clear words get the right picture.', 'A grown-up plays a silly robot that does exactly what is said. Then the child tells the image tool who + what + color while the grown-up types.', 'G', 'How: vague picture vs clear picture', 'Play silly robot at dinner.'],
+                ['Oops, Glitch!', ['Check'], 'Helpers make mistakes. We check.', "Glitch's picture with 5 mistakes, like a cat with 5 legs. Then ask for a dog with an umbrella and count what's wrong.", 'G', 'Made: circled mistakes', "Spot one mistake in a voice assistant's answer together."],
+                ['Secrets Stay With Me', ['Own'], 'Never tell a computer your name, home, school or password.', '"Safe or secret?" game: favorite color is safe, home address is secret, a face photo means ask a grown-up.', 'U', 'Think: 3-rule sticker card', 'Stick the card next to the tablet.'],
+                ['Made With Bloop', ['Own'], 'Say when AI helped.', 'Make one storybook page with the image tool, stamp it "made by me + Bloop" and learn the 4 gestures.', 'G', 'Made: signed page and rules card', 'Your child shows the page and the 4 gestures.']
+            ],
+            screenTitle: null,
+            screenLede: 'When AI is used, a grown-up types and your child talks. Nobody gets an account.',
+            rule: "A grown-up is at the keyboard. Most lessons are unplugged or run in Bloop's built-in simulator.",
+            report: { child: 'Mia, 7', ep: 'After episode 4 of 6', meters: [3, 2, 2, 1], made: 'Five mistakes circled in Glitch\'s picture.', how: 'A vague picture next to a clear one.', think: '"I keep birthday drawings for me."' },
+            price: '$149', per: 'per season',
+            incl: ['6 episodes of 25 minutes', 'Up to 5 kids, a grown-up nearby', 'A parent report after every episode', 'A take-home card for every episode'],
+            faq: [
+                ['Isn\'t 6 too young for AI?', 'Your child already hears voice assistants and sees AI pictures. These episodes teach what AI is and three rules to stay safe, mostly with cards and games.'],
+                ['Will my child chat with a robot?', 'No. Every time AI is used, a grown-up is at the keyboard. Kids never chat with AI alone.'],
+                ['Do I need to be there?', 'A grown-up stays nearby in class. Each episode ends with one card of something to try together at home.']
+            ]
+        },
+        {
+            id: '9-11', min: 9, max: 11, name: 'Inventors', pose: 'idea',
+            h1: 'Your child asks AI for a hint, not the answer.',
+            lead: "Eight episodes on choosing, asking and checking. No chatbot accounts: Bloop's simulator answers.",
+            season: "You're the Boss of AI",
+            seasonLede: 'Your child decides which tasks go to AI, writes a 3-part request, tests AI on known answers and signs their AI use.',
+            facts: [['8', 'episodes'], ['45', 'minutes each'], ['8', 'kids at most, working in pairs']],
+            lessons: [
+                ["Who's the Boss?", ['Choose'], 'AI is a tool. You set the goal.', 'In pairs, one plays an AI that only does exactly what was said, then they swap. Meet the 4-habit Boss Checklist.', 'U', 'Think: Boss Checklist', 'Your child explains the 4 habits to you.'],
+                ['Three Piles', ['Choose'], 'AI does it, AI helps, or only me. "Can" is not "should".', "Sort 12 real tasks: spell check, a poem for grandma, times tables, a summary of a book I didn't read.", 'U', 'Think: sort sheet with reasons', "Sort this week's homework into the 3 piles together."],
+                ['The 3-Question Recipe', ['Tell'], 'What I want + how + what kind of helper.', 'A vague request vs a recipe request in the Bloop chat simulator. Compare the answers.', 'S', 'How: two requests side by side', 'Your child writes one recipe request for a family task.'],
+                ['Ask Again, Better', ['Tell', 'Check'], 'The first answer is a draft. Improve the ask.', '3 rounds to get a great quiz about your hobby, noting what changed each round.', 'S', 'How: round log', 'Ask what changed between rounds 1 and 3.'],
+                ['Test the Robot', ['Check'], 'Test AI on what you already know before you trust it.', "Write 5 questions you're an expert on: your pet, your game, your town. Ask, score, update Glitch's scoreboard.", 'S', 'Made: "AI got _/5" score sheet', 'Ask: what did AI get wrong about your town?'],
+                ['Hint, Not Answer', ['Choose', 'Own'], 'A coach makes you smarter. An answer machine makes you slower.', 'One problem twice: "give the answer" vs "give a hint, ask me a question". Which could you do alone tomorrow?', 'S', 'Made: coach request card', 'Use the coach card on real homework, with you watching.'],
+                ['Data Detective', ['Own'], 'What you type can be stored. Share only what the task needs.', "A fake class form: circle personal info, cross out what AI doesn't need, rewrite the request without it.", 'U', 'How: marked-up form', "Check together what your family's apps know about you."],
+                ['Boss Project + Family AI Deal', ['All 4'], 'Use all 4 habits on one project.', 'A mini comic, quiz or poster with the note "AI helped with ___, I checked ___". Then sign a family AI deal.', 'W', 'Made + Think: project and signed deal', 'Put the family deal on the fridge.']
+            ],
+            screenTitle: null,
+            screenLede: "The rest use Bloop's chat simulator with pre-made answers, so nobody needs a chatbot account.",
+            rule: "No personal chatbot accounts: most tools are 13+. Bloop's chat simulator with pre-made answers, or a parent runs the tool.",
+            report: { child: 'Leo, 10', ep: 'After episode 5 of 8', meters: [3, 3, 4, 2], made: 'Score sheet: "AI got 3/5 about our town".', how: 'Round log: three tries at a dinosaur quiz.', think: '"Homework pile: AI helps, I decide."' },
+            price: '$219', per: 'per season',
+            incl: ['8 episodes of 45 minutes', 'Up to 8 kids, working in pairs', 'A parent report after every episode', 'A family AI deal you sign together'],
+            faq: [
+                ["Won't this make cheating easier?", 'Episode 6 is about exactly that: asking for a hint instead of the answer. In episode 8 your child signs a family AI deal with you.'],
+                ['Does my child need a chatbot account?', "No. Most AI tools are 13+. Kids use Bloop's chat simulator with pre-made answers, or you run the tool."],
+                ['What will I see after each episode?', 'One piece of proof: something your child made, a record of how, or a rule in their own words.']
+            ]
+        },
+        {
+            id: '12-14', min: 12, max: 14, name: 'Creators', pose: 'point',
+            h1: "They'll use AI anyway. Teach them to fly it.",
+            lead: "Ten episodes: why chatbots make things up, two-source fact checks, and a demo day you're invited to.",
+            season: 'AI Pilot',
+            seasonLede: 'Your teen learns why chatbots make things up, plans AI use across a project, checks claims in two sources and writes a personal AI policy.',
+            facts: [['10', 'episodes'], ['50', 'minutes each'], ['10', 'teens at most, with team roles']],
+            lessons: [
+                ['Pilot or Passenger', ['Choose'], 'Three ways AI works: do it for me, think with me, run it for me.', 'Classify 10 real uses: autocorrect, a homework chatbot, video recommendations, a smart home routine.', 'U', 'Think: classified list', 'Your teen finds one run-it-for-me AI at home.'],
+                ['Why AI Makes Things Up', ['Check'], "Chatbots predict likely words. Likely isn't true.", 'A next-word guessing game in teams. Then ask AI about a made-up historical person and watch it invent facts.', 'R', 'How: screenshot plus explanation', 'Your teen explains "likely isn\'t true" in one minute.'],
+                ['Should AI Do This?', ['Choose'], 'Ask what the task is for: learning, speed or people.', 'Break a history poster into 8 steps and tag each one: me, AI helps, AI does. Teams defend their choices.', 'U', 'Think: task map', 'Map one real school project the same way.'],
+                ['Context Is King', ['Tell'], 'AI knows only what you give it.', 'Build a reusable "About my project" note with no personal data. Run the same request with and without it.', 'R', 'Made: context note and comparison', 'Check the note has no personal data.'],
+                ['Set Up a Study Buddy', ['Tell'], 'Describe the result, the steps and the behavior.', 'Set up a buddy that quizzes and gives hints. Try to trick it into giving answers, then fix the setup.', 'R', 'How: setup and test log', 'Your teen uses the buddy for one real topic.'],
+                ['The Checking Loop', ['Check'], 'Name one exact problem per round.', 'Three rounds on an explainer paragraph, each naming one precise fix: too long, wrong date, too flattering.', 'R', 'How: annotated loop log', 'Ask: what was the worst first-draft mistake?'],
+                ['Two Sources + Tool Face-off', ['Check'], 'Verify claims in two independent sources.', 'Fact-check 3 claims from an AI answer. Ask two chatbots the same question and compare.', 'R', 'Made: fact-check table', 'Fact-check one viral post together.'],
+                ['Your Data, Your Call', ['Own'], 'Typed data can be stored and used for training.', "With you, read a real tool's privacy settings and redact a sample text.", 'W', 'How: redacted text and checklist', "Turn off training on data in the family's AI tools."],
+                ['My AI Rules', ['Own'], 'A personal policy: when I use AI, my red lines, how I tell teachers.', 'Draft, peer review, then a parent signs it.', 'U', 'Think: one-page AI policy', 'Sign it and add one family rule.'],
+                ['Demo Day', ['All 4'], 'Show the process, not just the result.', 'A team project presented with its process log and a "How we used AI" statement.', 'W', 'Made + How + Think', 'Come to the demo.']
+            ],
+            screenTitle: 'Real AI tools, on your account and your terms.',
+            screenLede: 'Teens use real chatbots, because that is what they will meet at school. You decide whose account and when.',
+            rule: 'Age 12: your account, with you in the room. Ages 13 and 14: a teen account only with your consent. Claude is 18+, so kids never use it.',
+            report: { child: 'Ava, 13', ep: 'After episode 7 of 10', meters: [4, 3, 4, 3], made: 'Fact-check table: 2 of 3 claims held up.', how: 'Loop log: "too flattering" fixed in round 2.', think: 'Draft AI policy: "I tell my teacher when AI helped."' },
+            price: '$299', per: 'per season',
+            incl: ['10 episodes of 50 minutes', 'Up to 10 teens with team roles', 'A parent report after every episode', 'A demo day you are invited to'],
+            faq: [
+                ['Is my 12-year-old allowed on these tools?', 'At 12, AI is used on your account with you in the room. At 13 and 14, only a teen account and only with your consent.'],
+                ['How do you stop AI homework cheating?', 'Teens map which steps are theirs, set up a study buddy that gives hints, and write a personal AI policy you sign.'],
+                ["What happens to my child's data?", "Episode 8 is done with you: you read a real tool's privacy settings together and turn off training on your data."]
+            ]
+        },
+        {
+            id: '15-17', min: 15, max: 17, name: 'Pros', pose: 'think',
+            h1: 'AI as a study partner, never a ghostwriter.',
+            lead: 'Short lessons in the app and a weekly live session: tutoring, test prep, honest writing, a real project.',
+            season: 'AI Trail',
+            seasonLede: 'Your teen learns to steer and check AI, use it as a tutor and for test prep, write honestly, spot fakes and bias, and ship a real project.',
+            facts: [['9', 'lessons in the app'], ['22-24', 'minutes each'], ['60-75', 'minute live session weekly']],
+            lessons: [
+                ['How AI thinks, how to ask', ['Tell', 'Check'], 'A chatbot predicts words. A good prompt gives it context and a format.', 'Predict what two words in will produce, then build and fix a real prompt.', 'A', 'How: a fixed prompt', 'Ask: why does the same question get two answers?'],
+                ['Steer, check, stay safe', ['Check', 'Own'], 'Steer with follow-ups. Anything presented as true needs a real source.', 'Find the hallucination about a YouTuber who doesn\'t exist; cut what should never be sent.', 'A', 'How: a follow-up that steered', 'Ask what they would never paste into a chatbot.'],
+                ['AI as your tutor', ['Choose'], 'Answer machine or tutor? Only one makes you better on the test.', 'Build a tutor prompt, then swap roles and teach the topic back to Bloop.', 'A', 'Made: own tutor prompt', 'Ask them to teach you one thing they learned.'],
+                ['Test prep and honest writing', ['Own'], 'Quiz yourself instead of rereading. Improve your own writing, don\'t replace it.', 'Turn notes into a quiz, build a study plan and find the trap in an AI plan.', 'A', 'Made: notes turned into a quiz', 'Ask for the quiz before their next test.'],
+                ['From idea to plan, with real research', ['Check'], 'AI helps plan; sources prove.', 'Turn a project idea into a plan and back the facts with real sources.', 'A', 'How: plan with sources', 'Ask which source they trusted most and why.'],
+                ['Make it visual, build your bot', ['Tell'], 'Clear instructions make a useful assistant.', 'Make visuals for a project and set up an assistant with its own rules.', 'A', 'Made: own assistant setup', 'Ask for a demo of their bot.'],
+                ['Your AI project', ['All 4'], 'Use all four habits on something real.', 'A personal project built with AI and presented with how AI was used.', 'W', 'Made + Think: project and AI statement', 'Ask to see the project and its AI statement.'],
+                ['Fakes and bias', ['Check'], 'Fakes look real. Bias hides in data.', 'Spot deepfakes and scam patterns, and find bias in AI answers.', 'A', 'Think: a fake-spotting checklist', 'Check one viral video together.'],
+                ['Bots as friends, AI and your future', ['Choose', 'Own'], 'Where AI belongs in your life, and where it doesn\'t.', 'Talk through AI companions and how AI changes work and study.', 'A', 'Think: my rules for AI and me', 'Ask where they think AI does not belong.']
+            ],
+            screenTitle: "Practice stays inside Bloop. Outside tools stay within their age rules.",
+            screenLede: "Every lesson's practice chat runs inside the app, so your teen doesn't need new accounts to learn.",
+            rule: "Practice runs in Bloop's built-in chat. Outside tools only on accounts your teen is old enough for, with your consent. Claude is 18+, so kids never use it.",
+            report: { child: 'Sam, 16', ep: 'After lesson 4 of 9', meters: [4, 4, 3, 4], made: 'History notes turned into a 12-question quiz.', how: 'Tutor setup: "ask me first, give hints".', think: '"I improve my essay. AI doesn\'t write it."' },
+            price: '$249', per: 'per term',
+            incl: ['9 app lessons of 22-24 minutes', 'A weekly live session, 60-75 minutes', 'Project teams of 3-4, up to 15 teens', 'A parent report after every lesson'],
+            faq: [
+                ['My teen already uses ChatGPT. What is left to learn?', 'How to check it, steer it and learn with it: spotting made-up facts, building a tutor, preparing for tests and writing honestly.'],
+                ['How much time does it take?', 'Short lessons in the app, 22 to 24 minutes each, plus a weekly live session of 60 to 75 minutes.'],
+                ['Does it help with exams?', 'Yes. Test prep is a full lesson: AI quizzes your teen and explains mistakes, instead of doing the work.']
+            ]
+        }
+    ];
+
+    var HABITS = [
+        ['Choose', ['Is this a job for Bloop, for me, or for both?', 'Can AI do it? Should it? Sort it into three piles.', 'Decide whether, when and how to use AI.', 'Use AI to learn faster, never to skip the learning.']],
+        ['Tell', ['Say exactly what you want.', 'What I want + how + what kind of helper.', 'Give context: the result, the steps, how the helper should act.', 'Set up tutors and assistants that ask before they answer.']],
+        ['Check', ['Bloop makes mistakes. Find them.', 'Test AI on what you already know.', "Likely isn't true: verify in two sources.", 'Spot fakes and bias. Anything presented as true needs a source.']],
+        ['Own', ['Keep secrets. Say when AI helped.', 'Share only what the task needs. Sign your AI use.', 'A personal AI policy, signed with you.', 'Honest writing: you answer for everything you hand in.']]
+    ];
+
+    // Visual stops, one per track. The dial blends between neighbours in OKLCH, so 9 is two-thirds Inventors and one-third Explorers.
+    var STOPS = [
+        { bg: '#FFCE3A', onBg: '#1E1A3C', acc: '#FF5B4A', onAcc: '#1E1A3C', s1: '#FF5B4A', s2: '#2F6BEF', s3: '#FFFFFF', page: '#E8F3FF', ink: '#1E1A3C', card: '#FFFFFF', pageD: '#1D1A33', inkD: '#FFF3CF', cardD: '#2A2546', focus: '#2F6BEF',
+          body: '#6EC3FF', accent: '#FF5B4A', screen: '#1E1A3C', glow: '#DDF6FF', joint: '#FF8FB1', rad: 28, casl: 1, wd: 900, slnt: -9, tilt: -2, bob: 12 },
+        { bg: '#3CCBB0', onBg: '#0E2B2A', acc: '#FF8A3D', onAcc: '#0E2B2A', s1: '#FFE16A', s2: '#FF8A3D', s3: '#F4FFFB', page: '#ECFAF5', ink: '#0E2B2A', card: '#FFFFFF', pageD: '#0F2524', inkD: '#E2F7F1', cardD: '#183533', focus: '#1F5FD6',
+          body: '#FFE16A', accent: '#FF8A3D', screen: '#0E2B2A', glow: '#FFF9D9', joint: '#6FD3FF', rad: 20, casl: .7, wd: 840, slnt: -6, tilt: -1.2, bob: 8 },
+        { bg: '#2F4FE0', onBg: '#FFFFFF', acc: '#FFD84D', onAcc: '#141A3C', s1: '#FFD84D', s2: '#8FA6FF', s3: '#FFFFFF', page: '#EEF1FD', ink: '#141A3C', card: '#FFFFFF', pageD: '#11163A', inkD: '#E6EAFE', cardD: '#1B2252', focus: '#2F4FE0',
+          body: '#C7D2FF', accent: '#FFD84D', screen: '#141A3C', glow: '#FFFFFF', joint: '#FF8A7A', rad: 12, casl: .28, wd: 760, slnt: -2, tilt: -.4, bob: 3 },
+        { bg: '#121A2E', onBg: '#EEF1F7', acc: '#F5C842', onAcc: '#121A2E', s1: '#F5C842', s2: '#3A4A70', s3: '#EEF1F7', page: '#0D1322', ink: '#E7EBF3', card: '#172038', pageD: '#0D1322', inkD: '#E7EBF3', cardD: '#172038', focus: '#F5C842',
+          body: '#D9DEEA', accent: '#F5C842', screen: '#121A2E', glow: '#FFFFFF', joint: '#7F8FB3', rad: 4, casl: 0, wd: 640, slnt: 0, tilt: 0, bob: 0 }
+    ];
+
+    // Ident shapes: they crowd the margins at 6 and leave one by one. life = the age at which the shape is gone.
+    var SHAPES = [
+        { x: '3%', y: '8%', w: 120, life: 9, k: 'blob', c: 's1', r: -12 },
+        { x: '30%', y: '4%', w: 70, life: 8, k: 'star', c: 's3', r: 10 },
+        { x: '44%', y: '30%', w: 54, life: 10, k: 'ring', c: 's2', r: 0 },
+        { x: '1%', y: '52%', w: 90, life: 11, k: 'squig', c: 's2', r: 8 },
+        { x: '58%', y: '9%', w: 64, life: 12, k: 'tri', c: 's1', r: 18 },
+        { x: '34%', y: '70%', w: 80, life: 9.5, k: 'blob', c: 's3', r: 30 },
+        { x: '88%', y: '62%', w: 72, life: 13, k: 'ring', c: 's1', r: 0 },
+        { x: '70%', y: '52%', w: 46, life: 8.5, k: 'star', c: 's2', r: -20 },
+        { x: '22%', y: '36%', w: 34, life: 14, k: 'dot', c: 's1', r: 0 },
+        { x: '72%', y: '86%', w: 110, life: 15, k: 'bar', c: 's2', r: 0 }
+    ];
+    var SHAPE_SVG = {
+        blob: '<svg viewBox="0 0 100 100"><path fill="var(--C)" d="M50 4c20 0 40 12 44 32s-6 46-30 56S8 90 5 62 30 4 50 4z"/></svg>',
+        star: '<svg viewBox="0 0 100 100"><path fill="var(--C)" d="M50 2l13 33 35 2-27 22 9 35-30-19-30 19 9-35L2 37l35-2z"/></svg>',
+        ring: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="var(--C)" stroke-width="16"/></svg>',
+        squig: '<svg viewBox="0 0 100 40"><path fill="none" stroke="var(--C)" stroke-width="9" stroke-linecap="round" d="M5 20c10-16 20-16 30 0s20 16 30 0 20-16 30 0"/></svg>',
+        tri: '<svg viewBox="0 0 100 100"><path fill="var(--C)" d="M50 6l46 84H4z"/></svg>',
+        dot: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="var(--C)"/></svg>',
+        bar: '<svg viewBox="0 0 100 20"><rect width="100" height="20" rx="10" fill="var(--C)"/></svg>'
+    };
+
+    var $ = function (id) { return document.getElementById(id); };
+    var root = document.documentElement;
+    var dark = window.matchMedia('(prefers-color-scheme: dark)');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+    var trackOf = function (age) { for (var i = 0; i < TRACKS.length; i++) if (age <= TRACKS[i].max) return i; return TRACKS.length - 1; };
+
+    // Bloop himself (bobik.js). The page sets his colours through --rb-* so he morphs with the dial.
+    function bloop(pose) { return bob(STATES[pose] || STATES.neutral, null, '100%'); }
+    var mascotCss = document.createElement('style');
+    mascotCss.textContent = CSS;
+    document.head.appendChild(mascotCss);
+    document.querySelectorAll('[data-bloop]').forEach(function (el) { el.innerHTML = bloop(el.getAttribute('data-bloop')); el.firstChild.setAttribute('aria-hidden', 'true'); });
+
+    // Tokens: one cord. Every value comes from the age.
+    function mix(a, b, f) { return f <= 0 ? a : f >= 1 ? b : 'color-mix(in oklch, ' + a + ' ' + ((1 - f) * 100).toFixed(1) + '%, ' + b + ')'; }
+    function lerp(a, b, f) { return a + (b - a) * f; }
+    var COLOR_KEYS = { bg: 'bg', onBg: 'on-bg', acc: 'acc', onAcc: 'on-acc', s1: 's1', s2: 's2', s3: 's3', focus: 'focus', body: 'rb-body', accent: 'rb-accent', screen: 'rb-screen', glow: 'rb-glow', joint: 'rb-joint' };
+
+    function paint(age) {
+        var v = Math.min(3, Math.max(0, (age - 7) / 3));
+        var i = Math.min(2, Math.floor(v)), f = v - i, A = STOPS[i], B = STOPS[i + 1];
+        var s = root.style, d = dark.matches;
+        Object.keys(COLOR_KEYS).forEach(function (k) { s.setProperty('--' + COLOR_KEYS[k], mix(A[k], B[k], f)); });
+        var page = mix(d ? A.pageD : A.page, d ? B.pageD : B.page, f);
+        var ink = mix(d ? A.inkD : A.ink, d ? B.inkD : B.ink, f);
+        s.setProperty('--page', page);
+        s.setProperty('--ink', ink);
+        s.setProperty('--card', mix(d ? A.cardD : A.card, d ? B.cardD : B.card, f));
+        s.setProperty('--line', 'color-mix(in oklch, ' + ink + ' 15%, transparent)');
+        s.setProperty('--soft', 'color-mix(in oklch, ' + ink + ' 72%, ' + page + ')');
+        s.setProperty('--rad', lerp(A.rad, B.rad, f).toFixed(1) + 'px');
+        s.setProperty('--casl', lerp(A.casl, B.casl, f).toFixed(3));
+        s.setProperty('--wd', Math.round(lerp(A.wd, B.wd, f)));
+        s.setProperty('--slnt', lerp(A.slnt, B.slnt, f).toFixed(2));
+        s.setProperty('--tilt', lerp(A.tilt, B.tilt, f).toFixed(2) + 'deg');
+        s.setProperty('--bob', lerp(A.bob, B.bob, f).toFixed(1) + 'px');
+        s.setProperty('--m', Math.min(1, Math.max(0, (age - 6) / 10)).toFixed(3));
+        s.setProperty('--age', age.toFixed(2));
+    }
+
+    // Static parts built once
+    $('shapes').innerHTML = SHAPES.map(function (p) {
+        return '<span class="shape" style="left:' + p.x + ';top:' + p.y + ';width:' + p.w + 'px;height:' + p.w + 'px;--life:' + p.life + ';--r:' + p.r + 'deg;--C:var(--' + p.c + ')">' + SHAPE_SVG[p.k] + '</span>';
+    }).join('');
+    $('channels').innerHTML = TRACKS.map(function (t, i) {
+        return '<li><button type="button" data-track="' + i + '" aria-pressed="false">' + t.name + '<span>ages ' + t.min + '-' + t.max + '</span></button></li>';
+    }).join('');
+    var ticks = '';
+    for (var a = 6; a <= 17; a++) ticks += '<span data-age="' + a + '" style="left:' + ((a - 6) / 11 * 100) + '%">' + a + '</span>';
+    $('ticks').innerHTML = ticks;
+    var opts = '';
+    for (var b = 6; b <= 17; b++) opts += '<option value="' + b + '">' + b + ' years old</option>';
+    $('f-age').innerHTML = opts;
+
+    var matrixHead = '<thead><tr><td></td>' + TRACKS.map(function (t, i) { return '<th scope="col" data-track="' + i + '">' + t.name + '<span>ages ' + t.min + '-' + t.max + '</span></th>'; }).join('') + '</tr></thead>';
+    var matrixBody = '<tbody>' + HABITS.map(function (h) {
+        return '<tr><th scope="row">' + h[0] + '</th>' + h[1].map(function (txt, i) { return '<td data-track="' + i + '">' + esc(txt) + '</td>'; }).join('') + '</tr>';
+    }).join('') + '</tbody>';
+    $('matrix').insertAdjacentHTML('beforeend', matrixHead + matrixBody);
+
+    // Content per track
+    var current = -1, shownAge = -1;
+    function render(ti) {
+        var t = TRACKS[ti];
+        var counts = {};
+        t.lessons.forEach(function (l) { counts[l[4]] = (counts[l[4]] || 0) + 1; });
+        var n = t.lessons.length, unplugged = counts.U || 0;
+        var unit = t.id === '15-17' ? 'lesson' : 'episode';
+
+        $('l3-tab').textContent = t.name + ', ages ' + t.min + '-' + t.max;
+        $('h1').textContent = t.h1;
+        $('lead').textContent = t.lead;
+        $('unit-track').textContent = t.name + ' channel';
+        $('bug-track').textContent = t.name;
+        $('host').innerHTML = bloop(t.pose);
+
+        $('ep-title').textContent = 'This season on ' + t.name + ': ' + t.season + '.';
+        $('ep-lede').textContent = t.seasonLede;
+        $('season').innerHTML = t.facts.map(function (f) { return '<li><b>' + f[0] + '</b>' + esc(f[1]) + '</li>'; }).join('');
+        $('guide').innerHTML = t.lessons.map(function (l, k) {
+            var r = RATINGS[l[4]];
+            return '<details class="ep" role="listitem"><summary>' +
+                '<span class="ep__no">' + (k + 1) + '</span>' +
+                '<span class="ep__title">' + esc(l[0]) + '<small>' + esc(l[2]) + '</small></span>' +
+                '<span class="ep__meta"><span class="habit">' + l[1].map(function (h) { return '<i>' + h + '</i>'; }).join('') + '</span>' +
+                '<span class="rating" data-r="' + l[4] + '"><b aria-hidden="true">' + l[4] + '</b>' + r.label + '</span>' +
+                '<span class="ep__leaves">' + esc(l[5]) + '</span></span>' +
+                '<span class="ep__chev">' + ICON_PLUS + '</span>' +
+                '</summary><div class="ep__body"><div><h3>What happens</h3><p>' + esc(l[3]) + '</p></div>' +
+                '<div class="home"><h3>Try at home</h3><p>' + esc(l[6]) + '</p></div></div></details>';
+        }).join('');
+
+        $('scr-title').textContent = t.screenTitle || (unplugged + ' of ' + n + ' ' + unit + 's need no screen.');
+        $('scr-lede').textContent = t.screenLede;
+        $('legend').innerHTML = Object.keys(RATINGS).filter(function (k) { return counts[k]; }).map(function (k) {
+            return '<li><span class="rating" data-r="' + k + '"><b aria-hidden="true">' + k + '</b></span><span><strong>' + RATINGS[k].label + '</strong><span class="d">' + RATINGS[k].desc + '</span></span><span class="count" aria-label="' + counts[k] + ' of ' + n + '">' + counts[k] + '/' + n + '</span></li>';
+        }).join('');
+        $('tool-rule').textContent = t.rule;
+
+        var rp = t.report;
+        $('rep-child').textContent = rp.child;
+        $('rep-ep').textContent = rp.ep;
+        $('meters').innerHTML = ['Choose', 'Tell', 'Check', 'Own'].map(function (h, k) {
+            var pips = '';
+            for (var p = 0; p < 5; p++) pips += '<i class="' + (p < rp.meters[k] ? 'on' : '') + '"></i>';
+            return '<li><span>' + h + '</span><span class="pips" role="img" aria-label="' + rp.meters[k] + ' of 5">' + pips + '</span><em>' + HABITS[k][1][ti] + '</em></li>';
+        }).join('');
+        $('proof').innerHTML = [['Made', rp.made], ['How', rp.how], ['Think', rp.think]].map(function (p) { return '<li><b>' + p[0] + '</b><span>' + esc(p[1]) + '</span></li>'; }).join('');
+
+        $('grow-age').textContent = t.min + ' to ' + t.max;
+        document.querySelectorAll('.matrix [data-track]').forEach(function (c) { c.classList.toggle('is-now', +c.getAttribute('data-track') === ti); });
+
+        $('price').textContent = t.price;
+        $('price-per').textContent = t.per;
+        $('incl').innerHTML = t.incl.map(function (x) { return '<li>' + ICON_CHECK + '<span>' + esc(x) + '</span></li>'; }).join('');
+
+        $('faq-title').textContent = 'What parents of ' + t.min + ' to ' + t.max + ' year olds ask first.';
+        $('faq').innerHTML = t.faq.map(function (q) { return '<details><summary>' + esc(q[0]) + ICON_PLUS + '</summary><p>' + esc(q[1]) + '</p></details>'; }).join('');
+        $('end-title').textContent = 'See you on the ' + t.name + ' channel.';
+
+        document.querySelectorAll('#channels button').forEach(function (btn) { btn.setAttribute('aria-pressed', String(+btn.getAttribute('data-track') === ti)); });
+    }
+
+    function setDigits(age) {
+        if (age === shownAge) return;
+        var el = $('digits');
+        el.classList.remove('roll-up', 'roll-down');
+        void el.offsetWidth;
+        if (shownAge !== -1 && !reduce.matches) el.classList.add(age > shownAge ? 'roll-up' : 'roll-down');
+        el.innerHTML = '<span>' + age + '</span>';
+        shownAge = age;
+        document.querySelectorAll('#ticks span').forEach(function (s) { s.classList.toggle('is-on', +s.getAttribute('data-age') === age); });
+        $('f-age').value = String(age);
+        $('age').setAttribute('aria-valuetext', age + ' years old, ' + TRACKS[trackOf(age)].name + ' channel');
+    }
+
+    var ageNow = 6;
+    function update(age, opts) {
+        ageNow = age;
+        paint(age);
+        var whole = Math.round(age);
+        setDigits(whole);
+        var ti = trackOf(whole);
+        if (ti !== current) {
+            var first = current === -1;
+            current = ti;
+            render(ti);
+            if (!first && !reduce.matches) {
+                var ident = document.querySelector('.ident'), l3 = $('l3');
+                ident.classList.remove('is-switching'); l3.classList.remove('is-in');
+                void ident.offsetWidth;
+                ident.classList.add('is-switching'); l3.classList.add('is-in');
+            }
+        }
+        if (!opts || !opts.live) {
+            $('age').value = age;
+            try { history.replaceState(null, '', '?age=' + whole + location.hash); } catch (e) { /* file:// */ }
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', STOPS[Math.min(3, Math.round(Math.max(0, (whole - 7) / 3)))].bg);
+        }
+    }
+
+    // Smooth travel through every age in between, so a jump from 6 to 16 visibly grows up
+    var raf = 0;
+    function goTo(target) {
+        cancelAnimationFrame(raf);
+        var from = ageNow, start = performance.now(), dur = reduce.matches ? 0 : Math.min(900, 160 + Math.abs(target - from) * 70);
+        if (!dur) { update(target); return; }
+        (function step(now) {
+            var p = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - p, 3);
+            var a = from + (target - from) * e;
+            $('age').value = a;
+            update(a, { live: p < 1 });
+            if (p < 1) raf = requestAnimationFrame(step); else update(target);
+        })(start);
+    }
+
+    var dial = $('age');
+    dial.addEventListener('input', function () { cancelAnimationFrame(raf); update(parseFloat(dial.value), { live: true }); });
+    dial.addEventListener('change', function () { goTo(Math.round(parseFloat(dial.value))); });
+    dial.addEventListener('keydown', function (e) {
+        var k = e.key, a = Math.round(ageNow), t = null;
+        if (k === 'ArrowRight' || k === 'ArrowUp') t = a + 1;
+        else if (k === 'ArrowLeft' || k === 'ArrowDown') t = a - 1;
+        else if (k === 'PageUp') t = TRACKS[Math.min(3, trackOf(a) + 1)].min;
+        else if (k === 'PageDown') t = TRACKS[Math.max(0, trackOf(a) - 1)].min;
+        else if (k === 'Home') t = 6;
+        else if (k === 'End') t = 17;
+        if (t === null) return;
+        e.preventDefault();
+        goTo(Math.min(17, Math.max(6, t)));
+    });
+    $('channels').addEventListener('click', function (e) {
+        var btn = e.target.closest('button'); if (!btn) return;
+        var t = TRACKS[+btn.getAttribute('data-track')];
+        goTo(Math.round((t.min + t.max) / 2));
+    });
+    $('ticks').addEventListener('click', function (e) { var s = e.target.closest('span'); if (s) goTo(+s.getAttribute('data-age')); });
+    $('matrix').addEventListener('click', function (e) {
+        var th = e.target.closest('thead th'); if (!th) return;
+        var t = TRACKS[+th.getAttribute('data-track')];
+        goTo(Math.round((t.min + t.max) / 2));
+        window.scrollTo({ top: 0, behavior: reduce.matches ? 'auto' : 'smooth' });
+    });
+    $('f-age').addEventListener('change', function () { goTo(+this.value); });
+    dark.addEventListener('change', function () { paint(ageNow); });
+
+    // Booking form: inline validation, then a confirmation state
+    var form = $('form');
+    function check(field, ok, msg) { var wrap = field.closest('.field'); wrap.classList.toggle('bad', !ok); wrap.querySelector('.err').textContent = ok ? '' : msg; field.setAttribute('aria-invalid', String(!ok)); return ok; }
+    function validContact(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || v.replace(/[^\d]/g, '').length >= 7; }
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = $('f-name'), contact = $('f-contact');
+        var okName = check(name, name.value.trim().length > 1, 'Add your name so we know who to write to.');
+        var okContact = check(contact, validContact(contact.value.trim()), 'Add an email or a phone number with at least 7 digits.');
+        if (!okName) { name.focus(); return; }
+        if (!okContact) { contact.focus(); return; }
+        var btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true; btn.textContent = 'Booking...';
+        setTimeout(function () {
+            var age = +$('f-age').value, t = TRACKS[trackOf(age)];
+            $('done-text').textContent = 'Thanks, ' + name.value.trim().split(' ')[0] + '. We will send ' + $('f-time').value.toLowerCase() + ' times for the ' + t.name + ' channel (' + age + ' years old) to ' + contact.value.trim() + '. Design preview: nothing was sent.';
+            $('form-card').classList.add('is-done');
+            $('done').focus();
+        }, 600);
+    });
+    ['f-name', 'f-contact'].forEach(function (id) { $(id).addEventListener('input', function () { if (this.closest('.field').classList.contains('bad')) this.closest('.field').classList.remove('bad'); }); });
+
+    // Section reveal, once
+    if ('IntersectionObserver' in window && !reduce.matches) {
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-seen'); io.unobserve(en.target); } });
+        }, { rootMargin: '0px 0px -8% 0px' });
+        document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    } else {
+        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-seen'); });
+    }
+
+    // Deep link: ?age=13 (from an ad) or #age=13
+    var q = /[?&#]age=(\d{1,2})/.exec(location.search + location.hash);
+    var startAge = q ? Math.min(17, Math.max(6, +q[1])) : 6;
+    update(startAge);
+    </script>
+</body>
+</html>
