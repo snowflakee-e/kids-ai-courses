@@ -81,7 +81,7 @@
 
         .stage { position: relative; padding: clamp(20px, 4vw, 48px) var(--gut) 0; max-width: 1340px; width: 100%; margin: 0 auto; display: grid; align-content: center; }
         .numeral { position: relative; display: flex; align-items: flex-end; gap: clamp(10px, 2vw, 24px); }
-        .numeral__digits { position: relative; overflow: hidden; display: block; height: .86em; line-height: .86; font-size: clamp(8.5rem, 24vw, 21rem); font-variant-numeric: tabular-nums; letter-spacing: -.045em; }
+        .numeral__digits { position: relative; overflow: hidden; display: block; line-height: 1; margin: -.1em 0 -.08em; padding: 0 .1em 0 .02em; font-size: clamp(8.5rem, 24vw, 21rem); font-variant-numeric: tabular-nums; letter-spacing: -.045em; }
         .numeral__digits span { display: block; }
         .numeral__digits.roll-up span { animation: rollUp .45s var(--ease) both; }
         .numeral__digits.roll-down span { animation: rollDown .45s var(--ease) both; }
@@ -282,6 +282,7 @@
             .bug { right: calc(var(--gut) + 74px); font-size: .75rem; }
             .numeral__digits { font-size: clamp(7rem, 38vw, 11rem); }
             .shapes { height: 50%; }
+            .shape--wide { display: none; }
             .l3 { grid-template-columns: 1fr; margin-top: 30px; }
             .l3 .btn { justify-self: start; }
             .channels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -648,16 +649,15 @@
 
     // Ident shapes: they crowd the margins at 6 and leave one by one. life = the age at which the shape is gone.
     var SHAPES = [
-        { x: '3%', y: '8%', w: 120, life: 9, k: 'blob', c: 's1', r: -12 },
-        { x: '30%', y: '4%', w: 70, life: 8, k: 'star', c: 's3', r: 10 },
-        { x: '44%', y: '30%', w: 54, life: 10, k: 'ring', c: 's2', r: 0 },
-        { x: '1%', y: '52%', w: 90, life: 11, k: 'squig', c: 's2', r: 8 },
-        { x: '58%', y: '9%', w: 64, life: 12, k: 'tri', c: 's1', r: 18 },
-        { x: '34%', y: '70%', w: 80, life: 9.5, k: 'blob', c: 's3', r: 30 },
-        { x: '88%', y: '62%', w: 72, life: 13, k: 'ring', c: 's1', r: 0 },
-        { x: '70%', y: '52%', w: 46, life: 8.5, k: 'star', c: 's2', r: -20 },
-        { x: '22%', y: '36%', w: 34, life: 14, k: 'dot', c: 's1', r: 0 },
-        { x: '72%', y: '86%', w: 110, life: 15, k: 'bar', c: 's2', r: 0 }
+        { x: '47%', y: '4%', w: 110, life: 9, k: 'blob', c: 's1', r: -12 },
+        { x: '60%', y: '50%', w: 66, life: 8, k: 'star', c: 's3', r: 10 },
+        { x: '51%', y: '36%', w: 54, life: 10, k: 'ring', c: 's2', r: 0 },
+        { x: '1%', y: '1%', w: 90, life: 11, k: 'squig', c: 's2', r: 4 },
+        { x: '63%', y: '8%', w: 64, life: 12, k: 'tri', c: 's1', r: 18, mob: 1 },
+        { x: '44%', y: '74%', w: 80, life: 9.5, k: 'blob', c: 's3', r: 30 },
+        { x: '90%', y: '78%', w: 72, life: 13, k: 'ring', c: 's1', r: 0, mob: 1 },
+        { x: '75%', y: '68%', w: 46, life: 8.5, k: 'star', c: 's2', r: -20, mob: 1 },
+        { x: '72%', y: '92%', w: 110, life: 15, k: 'bar', c: 's2', r: 0 }
     ];
     var SHAPE_SVG = {
         blob: '<svg viewBox="0 0 100 100"><path fill="var(--C)" d="M50 4c20 0 40 12 44 32s-6 46-30 56S8 90 5 62 30 4 50 4z"/></svg>',
@@ -665,7 +665,6 @@
         ring: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="var(--C)" stroke-width="16"/></svg>',
         squig: '<svg viewBox="0 0 100 40"><path fill="none" stroke="var(--C)" stroke-width="9" stroke-linecap="round" d="M5 20c10-16 20-16 30 0s20 16 30 0 20-16 30 0"/></svg>',
         tri: '<svg viewBox="0 0 100 100"><path fill="var(--C)" d="M50 6l46 84H4z"/></svg>',
-        dot: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="var(--C)"/></svg>',
         bar: '<svg viewBox="0 0 100 20"><rect width="100" height="20" rx="10" fill="var(--C)"/></svg>'
     };
 
@@ -686,18 +685,24 @@
     // Tokens: one cord. Every value comes from the age.
     function mix(a, b, f) { return f <= 0 ? a : f >= 1 ? b : 'color-mix(in oklch, ' + a + ' ' + ((1 - f) * 100).toFixed(1) + '%, ' + b + ')'; }
     function lerp(a, b, f) { return a + (b - a) * f; }
-    var COLOR_KEYS = { bg: 'bg', onBg: 'on-bg', acc: 'acc', onAcc: 'on-acc', s1: 's1', s2: 's2', s3: 's3', focus: 'focus', body: 'rb-body', accent: 'rb-accent', screen: 'rb-screen', glow: 'rb-glow', joint: 'rb-joint' };
+    var COLOR_KEYS = { bg: 'bg', acc: 'acc', s1: 's1', s2: 's2', s3: 's3', body: 'rb-body', accent: 'rb-accent', screen: 'rb-screen', glow: 'rb-glow', joint: 'rb-joint' };
 
     function paint(age) {
         var v = Math.min(3, Math.max(0, (age - 7) / 3));
         var i = Math.min(2, Math.floor(v)), f = v - i, A = STOPS[i], B = STOPS[i + 1];
         var s = root.style, d = dark.matches;
         Object.keys(COLOR_KEYS).forEach(function (k) { s.setProperty('--' + COLOR_KEYS[k], mix(A[k], B[k], f)); });
-        var page = mix(d ? A.pageD : A.page, d ? B.pageD : B.page, f);
-        var ink = mix(d ? A.inkD : A.ink, d ? B.inkD : B.ink, f);
+        var N = f < .5 ? A : B;
+        s.setProperty('--on-bg', N.onBg);
+        s.setProperty('--on-acc', N.onAcc);
+        s.setProperty('--focus', N.focus);
+        // surfaces jump between light and dark in the middle third of a step, so text on them stays readable at every whole age
+        var g = Math.min(1, Math.max(0, (f - .35) / .3));
+        var page = mix(d ? A.pageD : A.page, d ? B.pageD : B.page, g);
+        var ink = (g < .5 ? A : B)[d ? 'inkD' : 'ink'];
         s.setProperty('--page', page);
         s.setProperty('--ink', ink);
-        s.setProperty('--card', mix(d ? A.cardD : A.card, d ? B.cardD : B.card, f));
+        s.setProperty('--card', mix(d ? A.cardD : A.card, d ? B.cardD : B.card, g));
         s.setProperty('--line', 'color-mix(in oklch, ' + ink + ' 15%, transparent)');
         s.setProperty('--soft', 'color-mix(in oklch, ' + ink + ' 72%, ' + page + ')');
         s.setProperty('--rad', lerp(A.rad, B.rad, f).toFixed(1) + 'px');
@@ -712,7 +717,7 @@
 
     // Static parts built once
     $('shapes').innerHTML = SHAPES.map(function (p) {
-        return '<span class="shape" style="left:' + p.x + ';top:' + p.y + ';width:' + p.w + 'px;height:' + p.w + 'px;--life:' + p.life + ';--r:' + p.r + 'deg;--C:var(--' + p.c + ')">' + SHAPE_SVG[p.k] + '</span>';
+        return '<span class="shape' + (p.mob ? '' : ' shape--wide') + '" style="left:' + p.x + ';top:' + p.y + ';width:' + p.w + 'px;height:' + p.w + 'px;--life:' + p.life + ';--r:' + p.r + 'deg;--C:var(--' + p.c + ')">' + SHAPE_SVG[p.k] + '</span>';
     }).join('');
     $('channels').innerHTML = TRACKS.map(function (t, i) {
         return '<li><button type="button" data-track="' + i + '" aria-pressed="false">' + t.name + '<span>ages ' + t.min + '-' + t.max + '</span></button></li>';
