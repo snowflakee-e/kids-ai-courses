@@ -68,6 +68,7 @@
         .nav .btn { min-height: 44px; padding: 0 18px; background: var(--on-bg); color: var(--bg); }
         @media (max-width: 1020px) { .nav__links { display: none; } .nav .btn { margin-left: auto; } }
         @media (max-width: 420px) { .logo b { display: none; } }
+        @media (max-width: 360px) { .nav .btn { padding: 0 14px; font-size: .9rem; } .nav__in { gap: 12px; } }
 
         /* IDENT: the channel's hero */
         .ident { position: relative; isolation: isolate; overflow: hidden; background: var(--bg); color: var(--on-bg); min-height: min(calc(100dvh - 68px), 820px); display: grid; grid-template-rows: 1fr auto auto; }
@@ -281,6 +282,11 @@
             .host { width: clamp(150px, 42vw, 240px); transform: translate(calc((1 - var(--m)) * -2vw), calc((1 - var(--m)) * 6vw)) scale(calc(1 - var(--m) * .7)); }
             .bug { right: calc(var(--gut) + 74px); font-size: .75rem; }
             .numeral__digits { font-size: clamp(7rem, 38vw, 11rem); }
+        }
+        @media (max-width: 420px) {
+            .numeral { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .numeral__unit { padding-bottom: 0; }
+            .numeral__digits { font-size: clamp(6rem, 34vw, 8.5rem); }
             .shapes { height: 50%; }
             .shape--wide { display: none; }
             .l3 { grid-template-columns: 1fr; margin-top: 30px; }
