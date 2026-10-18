@@ -24,6 +24,13 @@ var TRACKS = [
         lead: 'Six short episodes, half of them with no screen. A grown-up always types.',
         season: "Bloop's Helper Habits",
         seasonLede: 'Your child learns that AI is a helper people taught, asks it clearly, spots its silly mistakes and keeps three secret rules.',
+        games: [
+            ['Teach Bloop', 'Episode 1', 'Kids train Bloop with cat and not-cat cards. Show only orange cats and Bloop calls a black cat "not a cat".', 'Shows that AI learns from the examples people give it.'],
+            ['Silly Robot', 'Episode 3', 'A grown-up robot follows orders literally: "put bread on the peanut butter" and the bread lands on the jar.', 'Kids feel why clear words matter.'],
+            ['Spot the Glitch', 'Episode 4', 'Find five hidden mistakes in an AI picture before the timer ends. The whole group plays against Glitch.', 'Checking becomes a game nobody loses.'],
+            ['Safe or Secret? Run', 'Episode 5', 'Kids run to the green corner for safe things and the red corner for secrets.', 'Moving makes the three secret rules stick.'],
+            ['Story Dice', 'Episodes 3 and 6', 'Roll three picture dice (who, what, where), say the sentence and a grown-up types it into the image tool.', 'Turns a clear request into play and ends with a page you can keep.']
+        ],
         facts: [['6', 'episodes'], ['25', 'minutes each'], ['5', 'kids at most, a grown-up nearby']],
         lessons: [
             ['Bloop Is a Helper', ['Choose'], 'AI is a program people taught. It helps, you decide.', '"Who did it?" cards: toaster, Bloop, kid, mom. Sort what people do and what helpers do.', 'U', 'Made: sorted cards', 'Find 3 helpers at home: speaker, TV, phone.'],
@@ -51,6 +58,15 @@ var TRACKS = [
         lead: "Eight episodes on choosing, asking and checking. No chatbot accounts: Bloop's simulator answers.",
         season: "You're the Boss of AI",
         seasonLede: 'Your child decides which tasks go to AI, writes a 3-part request, tests AI on known answers and signs their AI use.',
+        games: [
+            ['Barrier Drawing', 'Episode 1', 'Back to back: the Boss describes a picture and the Bot draws only what was said. Then they swap.', 'The mistake is visible and funny, and both kids get to be the boss.'],
+            ['Three Piles Court', 'Episode 2', 'Sort 12 tasks into AI does it, AI helps or only me. Another pair can object and you defend your pile.', 'Kids this age care about fairness, so arguing "can vs should" keeps them hooked.'],
+            ['Prompt Chef', 'Episodes 3 and 4', 'Pairs get a target result. The pair that gets there in the fewest rounds wins.', 'Asking again, better becomes a score.'],
+            ['Stump the Robot', 'Episode 5', 'Each kid picks a topic they know best (a pet, a team, a game, their town), asks Bloop five questions and scores the answers.', 'The child is the expert and the AI is the student.'],
+            ['Two Truths and a Bot', 'Episode 5', 'Bloop gives three facts and one is made up. Pairs vote on the fake, then check.', 'A five-minute habit of checking before trusting.'],
+            ['Hint Ladder', 'Episode 6', 'Solve a puzzle. Each hint costs a step, and asking for the answer sends you back to the start.', 'Rewards using AI as a coach instead of an answer machine.'],
+            ['Data Detective Escape', 'Episode 7', 'A fake class form hides personal details. Every correct cross-out gives one digit of a lock code.', 'Mystery makes privacy rules feel like a puzzle, not a lecture.']
+        ],
         facts: [['8', 'episodes'], ['45', 'minutes each'], ['8', 'kids at most, working in pairs']],
         lessons: [
             ["Who's the Boss?", ['Choose'], 'AI is a tool. You set the goal.', 'In pairs, one plays an AI that only does exactly what was said, then they swap. Meet the 4-habit Boss Checklist.', 'U', 'Think: Boss Checklist', 'Your child explains the 4 habits to you.'],
@@ -80,6 +96,15 @@ var TRACKS = [
         lead: "Ten episodes: why chatbots make things up, two-source fact checks, and a demo day you're invited to.",
         season: 'AI Pilot',
         seasonLede: 'Your teen learns why chatbots make things up, plans AI use across a project, checks claims in two sources and writes a personal AI policy.',
+        games: [
+            ['Next Word', 'Episode 2', 'Teams guess the next word of a sentence and score when they match the most common guess.', 'Teens act like a chatbot and feel why "likely" is not "true".'],
+            ['Fake Historian', 'Episodes 2 and 7', 'Invent a person, ask AI about them and race to list every fact it makes up.', 'The moment AI lies with confidence is the one they remember.'],
+            ['Should AI? Court', 'Episode 3', 'A mock trial about a student who used AI for an essay, with a prosecutor, defense, judge, jury and clerk.', 'Teens love arguing about fairness, and quieter kids can take the clerk or judge role.'],
+            ['Red Team the Study Buddy', 'Episode 5', 'One team sets up a buddy that only gives hints. The other tries to make it give the answer. Fix it and swap.', 'Beating the system motivates this age, and they learn to write clear instructions by defending them.'],
+            ['Blind Chatbot Taste Test', 'Episode 7', 'Two chatbots answer the same question, shown as A and B. Teams judge blind, then see which is which.', 'They judge the answer, not the brand name.'],
+            ['Fact or Fake: Feed Edition', 'Episode 7', 'Real viral posts from their own feeds. Teams check each one in two independent sources against the clock.', 'It uses a skill they need every day, on their own content.'],
+            ['Make a Game', 'Episode 10', 'The Demo Day project: a quiz, text adventure or game design doc made with AI help, plus a log of how AI was used.', 'Making a game beats playing one, and teams pick the theme.']
+        ],
         facts: [['10', 'episodes'], ['50', 'minutes each'], ['10', 'teens at most, with team roles']],
         lessons: [
             ['Pilot or Passenger', ['Choose'], 'Three ways AI works: do it for me, think with me, run it for me.', 'Classify 10 real uses: autocorrect, a homework chatbot, video recommendations, a smart home routine.', 'U', 'Think: classified list', 'Your teen finds one run-it-for-me AI at home.'],

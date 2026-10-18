@@ -10,7 +10,7 @@ web
 Parents of kids aged 6 to 17 are the buyers. They land from Instagram or TikTok ads on a phone, often in the evening, with one question: is this worth my child's time and my money, and is it safe? Kids are the learners, not the readers of the sales page.
 
 ## Product Purpose
-Bloop AI School teaches kids to use AI well: what AI is (data, models, prompts), how it works, how to use it for homework, creativity and hobbies, and how to stay safe and think critically. Success for the parent page is a booked free trial lesson.
+Bloop AI School teaches kids to use AI well: what AI is (data, models, prompts), how it works, how to use it for homework, creativity and hobbies, and how to stay safe and think critically. Success for the parent page is a booked free trial lesson. This page is the school's main page (the site root): the home of the online AI courses.
 
 ## Positioning
 One habit loop for every age: Choose, Tell, Check, Own. Every lesson leaves proof a parent can see (Made, How, Think), and the parent report shows the four habits as a meter. Kids never chat with AI alone: tool rules are written per age track.
