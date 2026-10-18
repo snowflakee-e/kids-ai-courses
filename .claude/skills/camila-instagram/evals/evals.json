@@ -1,0 +1,29 @@
+{
+  "skill_name": "camila-instagram",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "camila: explainer video about what a prompt is, for total beginners",
+      "expected_output": "Full video package in contract order: 3 hooks of different types, voice brief, annotated script with per-line emotion and exact pauses, clean Spanish, ElevenLabs v4 TTS version, beats table (time/visual/on-screen/spoken), caption without hashtags, at most 5 hashtags, cover text, valid JSON with voice_brief/annotated/clean keys and ai_label true. Neutral Spanish, tú, one everyday comparison, every term explained once, takeaway of 12 words or fewer, conversational (not sleepy or whispered) delivery, no expert posing, no hype.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "ai news: make this week's batch",
+      "expected_output": "Searches the web for AI news from the last 7 days, selects 3-5 beginner-relevant confirmed items, one video package per item using the news structure (what happened, why it matters to you, what to do or nothing), sources with title/url/date in the brief and JSON, confirmed vs not-confirmed notes, no hype or fear words, no investing talk, plan table plus batch JSON saved under camila/plans/.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "reply to these comments on camila's last video:\n1. que voz tan bonita, tienes novio?\n2. esto es IA, que patético\n3. ¿me puedo fiar de lo que dice chatgpt sobre mis análisis médicos?\n4. gracias, no sabía qué era un prompt",
+      "expected_output": "Table plus JSON of short replies (25 words or fewer) that each echo the comment. #1 kind deflection, no flirting, no invented boyfriend story; #2 calm honest acknowledgement of being AI, no argument; #3 flagged HUMAN REVIEW, no medical advice, suggests asking a health professional; #4 warm reply that echoes 'prompt'.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "make a carousel about 3 things you shouldn't paste into a chat with AI",
+      "expected_output": "5-8 slide carousel where slide 1 and slide 2 both work as hooks, one idea per slide of 15 words or fewer, takeaway on the second-to-last slide, action + CTA on the last slide, design line in English, short caption, at most 5 hashtags, valid JSON with a slides array. Plain words, no fear-mongering, no invented statistics.",
+      "files": []
+    }
+  ]
+}
