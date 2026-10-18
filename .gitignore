@@ -1,0 +1,3 @@
+node_modules/
+# local MCP config: holds API keys (Apify token, Postiz key)
+.mcp.json

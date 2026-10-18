@@ -1,0 +1,120 @@
+{
+  "title": "Choose the visual world for the Bloop parent page",
+  "question": "One page, an age dial from 6 to 17, the whole theme grows up as it turns. The roll assigned Channel Bloop. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Channel Bloop",
+      "kicker": "THE ROLL",
+      "lineage": "Kids' TV channel idents that grow into a teen documentary channel",
+      "thesis": "The age dial is a channel dial: every age is its own channel with its own ident, schedule and host.",
+      "palette": ["#FFCE3A", "#FF5B4A", "#2BB3A3", "#16213A"],
+      "materials": ["broadcast ident shapes", "programme guide grid"],
+      "viewport": "A channel ident hero (bouncy Bloop at 6, a documentary title card at 17) with the week's lessons below as the programme guide and Book a free lesson on the guide.",
+      "risk": "Frames lessons as TV to parents worried about screen time, while 6-8 lessons are mostly unplugged.",
+      "raised": [
+        {"from": "challenger-cape", "raise": "One cord: every color, radius and type weight interpolates from the dial, nothing swaps abruptly."},
+        {"from": "challenger-secession", "raise": "Ornament density follows age: shapes crowd in at 6 and recede to one rule at 17."},
+        {"from": "challenger-nixie", "raise": "The age numeral is the hero object, a big physical digit that turns with the dial."}
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "The Exercise Book",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "School stationery from crayon scrapbook to dot-grid planner",
+      "thesis": "The page is your child's notebook: the ruling, the pen and the handwriting grow up as the dial turns.",
+      "palette": ["#FF7A59", "#2F6BEF", "#EAF0FA", "#1C2433"],
+      "materials": ["real notebook rulings: blank, wide, squared, dot grid", "crayon, pencil, ballpoint, fineliner"],
+      "viewport": "An open exercise book: crayon and stickers at 6, squared paper and ballpoint at 13, a dot-grid planner at 16; lesson proof (Made, How, Think) pasted in as the child's own work, Book a free lesson in the margin.",
+      "risk": "The notebook is a familiar education metaphor; rulings must structure real content, not decorate."
+    },
+    {
+      "id": "challenger-dive",
+      "label": "Deeper Every Year",
+      "verdict": "competitive",
+      "lineage": "A dive from turquoise surface to deep water",
+      "thesis": "Age is depth: bright surface at 6, deep ink at 17. Same habits, deeper each year.",
+      "palette": ["#5FD3E0", "#1E6FA8", "#0B2340", "#F2FAFF"],
+      "materials": ["water light that dims by depth", "drifting particles"],
+      "viewport": "A vertical depth gauge that reads the child's age; Bloop sinks as the dial moves; lessons sit at their depth.",
+      "case": "Fuses cleanly with 'deeper each year'; loses on audience: parents do not see their child in a diver.",
+      "risk": "The deep end can feel cold or scary to parents who want ambition for their teen."
+    },
+    {
+      "id": "challenger-catalogue",
+      "label": "Toy Catalogue Spread",
+      "verdict": "competitive",
+      "lineage": "Eighties toy catalogues in unmixed primaries",
+      "thesis": "Courses packed like the catalogue parents grew up with, each with a burst flash.",
+      "palette": ["#E3262E", "#FFD200", "#1F4FB4", "#FAF8F2"],
+      "materials": ["flat primary sweeps", "starburst flashes"],
+      "viewport": "An edge-to-edge spread of the age's courses, a burst flash shouting First lesson free.",
+      "case": "Parents feel the nostalgia and the offer is clear; loses at 15-17 where a toy catalogue reads childish.",
+      "risk": "Cannot get serious enough for teens without abandoning the world."
+    },
+    {
+      "id": "challenger-cape",
+      "label": "Drawcord Cape",
+      "verdict": "declined",
+      "lineage": "A flat cape that one pulled cord shapes into volume",
+      "thesis": "One pull transforms a flat plane into structure.",
+      "palette": ["#111111", "#C9A23A", "#4A4F57"],
+      "materials": ["matte silk", "gold cord"],
+      "viewport": "A black semicircle that gathers as the cord is pulled.",
+      "case": "Right mechanism, wrong world: black silk and gold cannot be childish at 6.",
+      "kept": "One control drives the whole transformation.",
+      "risk": "Luxury fashion has nothing to say to a parent of a 7-year-old."
+    },
+    {
+      "id": "challenger-nixie",
+      "label": "Nixie Counter",
+      "verdict": "declined",
+      "lineage": "Glowing lab counter tubes",
+      "thesis": "Quantities are the interface.",
+      "palette": ["#FF7A1A", "#151515", "#8A8F96"],
+      "materials": ["glass tubes", "steel chassis"],
+      "viewport": "Age shown as glowing digits.",
+      "case": "Too technical and cold at the young end.",
+      "kept": "The age number as a physical, turning digit.",
+      "risk": "Reads as a lab instrument, not a school."
+    },
+    {
+      "id": "challenger-algorave",
+      "label": "Algorave Floor",
+      "verdict": "declined",
+      "lineage": "Live-coded club visuals",
+      "thesis": "Edits apply on the next beat, visible before they sound.",
+      "palette": ["#39FF88", "#FF3DCB", "#0A0A0A"],
+      "materials": ["projected code", "terminal type"],
+      "viewport": "A code buffer as the stage.",
+      "case": "Parents of 6-year-olds do not identify with a club.",
+      "kept": "Show what will change before it changes.",
+      "risk": "Alienates every parent below the 15-17 end."
+    },
+    {
+      "id": "challenger-secession",
+      "label": "Secession Page",
+      "verdict": "declined",
+      "lineage": "Krakow folk-flower borders",
+      "thesis": "Ornament grows in from the margins toward the text.",
+      "palette": ["#F3EEDD", "#6E8B4E", "#C98A8A", "#3A4552"],
+      "materials": ["flat ornament", "hand lettering"],
+      "viewport": "A clearing of text inside a growing border.",
+      "case": "Beautiful, but no link to AI, kids or parents.",
+      "kept": "Decoration density as a dial.",
+      "risk": "Reads as a poetry review."
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A kids edtech landing page, executed impeccably.",
+    "palette": ["#FFFFFF", "#1B1F3B", "#4F7CFF", "#FFC94A"],
+    "materials": ["rounded cards", "mascot illustration"],
+    "viewport": "Headline and mascot split hero, age tabs, course cards, pricing, FAQ.",
+    "risk": "Looks like every kids coding school ad parents already scroll past."
+  },
+  "steer": true
+}

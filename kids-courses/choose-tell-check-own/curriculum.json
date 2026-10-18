@@ -1,0 +1,145 @@
+{
+  "framework": {
+    "name": "Choose, Tell, Check, Own",
+    "school": "Bloop AI School",
+    "language": "en",
+    "loops": {
+      "frame": ["choose", "own"],
+      "work": ["tell", "check"]
+    },
+    "habits": [
+      { "id": "choose", "gesture": "point finger", "kid": "Is this a job for Bloop, for me, or for both?", "teen": "Decide whether, when and how to use AI. Can is not should." },
+      { "id": "tell", "gesture": "hand at mouth", "kid": "Say exactly what you want.", "teen": "Give context: the result, the steps, how the helper should act." },
+      { "id": "check", "gesture": "magnifier hands", "kid": "Bloop makes mistakes. Find them.", "teen": "Judge the answer, how it got there, how it behaved. Ask again better." },
+      { "id": "own", "gesture": "hand on heart", "kid": "Keep secrets. Say when AI helped.", "teen": "Privacy, honesty about AI use, you answer for what you hand in." }
+    ],
+    "evidence_types": {
+      "made": "Something the child made",
+      "how": "A record of the process",
+      "think": "A reflection or rule in the child's own words"
+    },
+    "attribution_note": "Inspired by ideas in the AI Fluency Framework (Dakan, Feller, Anthropic, CC BY-NC-SA 4.0). Original wording and activities. Internal only; no endorsement implied.",
+    "game_rules": [
+      "One game for all kids. No girls' or boys' versions.",
+      "Kids pick the theme, the mechanic stays the same.",
+      "Mix play motives: compete, cooperate, build, tell stories.",
+      "Every game maps to one lesson and habit, leaves a made/how/think proof and follows the track's tool rule."
+    ]
+  },
+  "tracks": [
+    {
+      "age_group": "6-8",
+      "group_name": "Explorers",
+      "tool_rule": "Grown-up at the keyboard. Mostly unplugged or Bloop simulator.",
+      "goal": "Knows AI is a helper people taught, asks clearly, spots silly mistakes, keeps 3 secret rules, says made with Bloop.",
+      "catalog_entry": {
+        "id": "helper-habits", "title": "Bloop's Helper Habits", "ages": [6, 8], "lessons": 6, "minutes": 25, "level": "Starter",
+        "desc": "Learn four helper habits with Bloop: choose, tell, check and own. Catch Glitch's mistakes and keep your secrets safe.",
+        "interests": ["research", "games"], "palette": "mint", "pose": "hello", "thumb": "#DDF6EF"
+      },
+      "lessons": [
+        { "n": 1, "title": "Bloop Is a Helper", "habits": ["choose"], "idea": "AI is a program people taught. It helps, you decide.", "activity": "Who did it? cards: toaster, Bloop, kid, mom. Sort what people do and what helpers do.", "proof": { "type": "made", "what": "Sorted cards" }, "at_home": "Find 3 helpers at home." },
+        { "n": 2, "title": "Robot or Me?", "habits": ["choose"], "idea": "Some jobs are yours because they're fun or come from your heart.", "activity": "Picture cards sorted into Me / Bloop helps / Together.", "proof": { "type": "think", "what": "I keep ___ for me." }, "at_home": "Ask which job they'd never give a robot." },
+        { "n": 3, "title": "Tell Bloop Exactly", "habits": ["tell"], "idea": "Clear words get the right picture.", "activity": "Silly robot game, then who + what + color request to the image tool, grown-up types.", "proof": { "type": "how", "what": "Vague vs clear picture" }, "at_home": "Play silly robot at dinner." },
+        { "n": 4, "title": "Oops, Glitch!", "habits": ["check"], "idea": "Helpers make mistakes. We check.", "activity": "Find 5 Glitch mistakes in a picture, then count mistakes in a generated picture.", "proof": { "type": "made", "what": "Circled mistakes" }, "at_home": "Spot one voice-assistant mistake together." },
+        { "n": 5, "title": "Secrets Stay With Me", "habits": ["own"], "idea": "Never tell a computer your name, home, school or password.", "activity": "Safe or secret? sorting game.", "proof": { "type": "think", "what": "3-rule sticker card" }, "at_home": "Stick the card next to the tablet." },
+        { "n": 6, "title": "Made With Bloop", "habits": ["own"], "idea": "Say when AI helped.", "activity": "Storybook page stamped made by me + Bloop; learn the 4 gestures.", "proof": { "type": "made", "what": "Signed page + My Robot Rules card" }, "at_home": "Child explains the 4 gestures." }
+      ],
+      "game_notes": {
+        "age_needs": "Many can't read yet, 10-15 min per activity, learn by moving and pretending, losing hurts, strictest age about girl/boy things. No reading, movement, whole group vs Glitch, neutral themes.",
+        "themes": ["animals", "dinosaurs", "space", "monsters", "food", "magic"],
+        "rules": ["Never princesses or cars as the only option, no pink/blue coding.", "Each kid picks Bloop's sidekick."]
+      },
+      "games": [
+        { "id": "teach-bloop", "name": "Teach Bloop", "lessons": [1], "habits": ["choose"], "how": "Kids train Bloop (puppet or grown-up) with cat / not cat cards. Only orange cats shown, so Bloop says a black cat is not a cat.", "why": "Makes AI is a program people taught physical. Bad examples make a bad AI, without the words data or bias." },
+        { "id": "silly-robot", "name": "Silly Robot", "lessons": [3], "habits": ["tell"], "how": "A kid gives orders, the grown-up robot takes them literally.", "why": "Kids love bossing an adult and watching them fail. They feel why clear words matter." },
+        { "id": "spot-the-glitch", "name": "Spot the Glitch", "lessons": [4], "habits": ["check"], "how": "AI pictures with 5 hidden mistakes. The group finds all 5 before the timer and Glitch loses.", "why": "Spot-the-difference is a skill they already have, no reading. Group vs Glitch, so no kid loses." },
+        { "id": "safe-or-secret-run", "name": "Safe or Secret? Run", "lessons": [5], "habits": ["own"], "how": "Grown-up names an item. Kids run to the green (safe) or red (secret) corner.", "why": "Movement and repetition make the 3 secret rules stick. A two-way choice fits this age." },
+        { "id": "story-dice", "name": "Story Dice", "lessons": [3, 6], "habits": ["tell", "own"], "how": "Roll 3 picture dice: who + what + where. The kid says the sentence, the grown-up types it into the image tool.", "why": "Turns the who + what + color request into play. Ends with a page parents see." }
+      ]
+    },
+    {
+      "age_group": "9-11",
+      "group_name": "Inventors",
+      "tool_rule": "No personal chatbot accounts. Bloop chat simulator or parent runs the tool.",
+      "goal": "Decides which tasks go to AI, writes a 3-part request, tests AI on known answers, asks for hints not answers, keeps data private, signs AI use.",
+      "catalog_entry": {
+        "id": "boss-of-ai", "title": "You're the Boss of AI", "ages": [9, 11], "lessons": 8, "minutes": 45, "level": "Beginner",
+        "desc": "Decide what AI should do, ask it clearly, test it on things you know and use it as a coach, not an answer machine.",
+        "interests": ["study", "research"], "palette": "sky", "pose": "point", "thumb": "#E1F0FF"
+      },
+      "lessons": [
+        { "n": 1, "title": "Who's the Boss?", "habits": ["choose"], "idea": "AI is a tool. You set the goal.", "activity": "Pairs role-play a literal AI, then swap. Meet the Boss Checklist.", "proof": { "type": "think", "what": "Boss Checklist" }, "at_home": "Child explains the 4 habits." },
+        { "n": 2, "title": "Three Piles", "habits": ["choose"], "idea": "AI does it / AI helps, I decide / only me. Can is not should.", "activity": "Sort 12 real homework and hobby tasks.", "proof": { "type": "think", "what": "Sort sheet with reasons" }, "at_home": "Sort this week's homework together." },
+        { "n": 3, "title": "The 3-Question Recipe", "habits": ["tell"], "idea": "What I want + how + what kind of helper.", "activity": "Vague vs recipe request in the Bloop chat simulator.", "proof": { "type": "how", "what": "Two requests, two answers" }, "at_home": "Write one recipe request for a family task." },
+        { "n": 4, "title": "Ask Again, Better", "habits": ["tell", "check"], "idea": "The first answer is a draft.", "activity": "3 rounds to a great hobby quiz, noting each change.", "proof": { "type": "how", "what": "Round log" }, "at_home": "Child shows what changed from round 1 to 3." },
+        { "n": 5, "title": "Test the Robot", "habits": ["check"], "idea": "Test AI on what you know before you trust it.", "activity": "5 expert questions, score the answers, Glitch scoreboard.", "proof": { "type": "made", "what": "Score sheet" }, "at_home": "Ask what AI got wrong about your town." },
+        { "n": 6, "title": "Hint, Not Answer", "habits": ["choose", "own"], "idea": "A coach makes you smarter. An answer machine makes you slower.", "activity": "Same problem with answer vs hint request; compare.", "proof": { "type": "made", "what": "Coach request card" }, "at_home": "Use the coach card on real homework, parent watching." },
+        { "n": 7, "title": "Data Detective", "habits": ["own"], "idea": "Share only what the task needs.", "activity": "Mark personal info on a fake form, rewrite the request without it.", "proof": { "type": "how", "what": "Marked-up form" }, "at_home": "Check what family apps know about you." },
+        { "n": 8, "title": "Boss Project + Family AI Deal", "habits": ["choose", "tell", "check", "own"], "idea": "Use all 4 habits on one project.", "activity": "Mini project, AI note, family AI deal signed with a parent.", "proof": { "type": "made", "what": "Project + AI note + signed deal" }, "at_home": "Put the deal on the fridge." }
+      ],
+      "game_notes": {
+        "age_needs": "Read well, love rules, fairness, points, codes and mysteries, ready for some competition, want to be the expert.",
+        "themes": ["chosen by the kid: own expert topic"],
+        "rules": ["Swap the keyboard every round so both kids in a pair type."]
+      },
+      "games": [
+        { "id": "barrier-drawing", "name": "Barrier Drawing", "lessons": [1], "habits": ["tell"], "how": "Back to back. The Boss describes a picture, the Bot draws only what was said. Swap.", "why": "Classic communication game. The failure is visible and funny, role swap is built in." },
+        { "id": "three-piles-court", "name": "Three Piles Court", "lessons": [2], "habits": ["choose"], "how": "Sort 12 task cards into 3 piles. Another pair can object, and you defend the card in one sentence.", "why": "Can vs should needs arguing. This age is obsessed with fairness, so debate keeps them hooked." },
+        { "id": "prompt-chef", "name": "Prompt Chef", "lessons": [3, 4], "habits": ["tell", "check"], "how": "Pairs get a target result. Fewest rounds in the simulator to hit it wins.", "why": "Makes ask again, better a score. The round log is the how proof." },
+        { "id": "stump-the-robot", "name": "Stump the Robot", "lessons": [5], "habits": ["check"], "how": "Each kid picks a topic they're the expert on. Ask Bloop 5 questions, score it.", "why": "The kid is the expert, the AI is the student. Own topic fits every interest with no gender label." },
+        { "id": "two-truths-and-a-bot", "name": "Two Truths and a Bot", "lessons": [5], "habits": ["check"], "how": "Bloop gives 3 facts, 1 is made up. Pairs vote on the fake, then check.", "why": "5-minute warm-up for any lesson. Trains don't trust, check." },
+        { "id": "hint-ladder", "name": "Hint Ladder", "lessons": [6], "habits": ["choose", "own"], "how": "Solve a puzzle. Each hint costs 1 step, asking for the answer sends you back to the start.", "why": "Rewards the coach habit with points instead of a lecture about cheating." },
+        { "id": "data-detective-escape", "name": "Data Detective Escape", "lessons": [7], "habits": ["own"], "how": "A fake class profile hides personal info. Each correct cross-out gives one digit of the lock code.", "why": "Mystery and escape themes peak at this age. Clear win." }
+      ]
+    },
+    {
+      "age_group": "12-14",
+      "group_name": "Creators",
+      "tool_rule": "Age 12: parent account, parent in the room. 13-14: teen account with parental consent. Never Claude (18+).",
+      "goal": "Explains why chatbots make things up, plans AI use across a project, builds context notes, verifies in two sources, compares tools, writes a personal AI policy, presents with an AI use statement.",
+      "catalog_entry": {
+        "id": "ai-pilot", "title": "AI Pilot", "ages": [12, 14], "lessons": 10, "minutes": 50, "level": "Intermediate",
+        "desc": "Be the pilot, not the passenger: plan when to use AI, give it context, check every claim and write your own AI rules.",
+        "interests": ["study", "research", "blog"], "palette": "lav", "pose": "victory", "thumb": "#FFF1C9"
+      },
+      "lessons": [
+        { "n": 1, "title": "Pilot or Passenger", "habits": ["choose"], "idea": "3 ways AI works: Do-for-me, Think-with-me, Run-for-me.", "activity": "Classify 10 real AI uses.", "proof": { "type": "think", "what": "Classified list" }, "at_home": "Find one Run-for-me AI at home." },
+        { "n": 2, "title": "Why AI Makes Things Up", "habits": ["check"], "idea": "Chatbots predict likely words. Likely isn't true.", "activity": "Next-word game, then ask AI about a made-up historical person.", "proof": { "type": "how", "what": "Screenshot + own explanation" }, "at_home": "Explain likely isn't true in one minute." },
+        { "n": 3, "title": "Should AI Do This?", "habits": ["choose"], "idea": "Ask what the task is for: learning, speed or people.", "activity": "Break a poster project into 8 steps, tag and defend.", "proof": { "type": "think", "what": "Task map" }, "at_home": "Map one real school project." },
+        { "n": 4, "title": "Context Is King", "habits": ["tell"], "idea": "AI knows only what you give it.", "activity": "Reusable About my project note; same request with and without it.", "proof": { "type": "made", "what": "Context note + comparison" }, "at_home": "Parent checks the note has no personal data." },
+        { "n": 5, "title": "Set Up a Study Buddy", "habits": ["tell"], "idea": "Describe the result, the steps and the behavior.", "activity": "Build a hint-giving quiz buddy, try to break it, fix the setup.", "proof": { "type": "how", "what": "Setup text + test log" }, "at_home": "Use the buddy on one real topic." },
+        { "n": 6, "title": "The Checking Loop", "habits": ["tell", "check"], "idea": "Name one exact problem per round.", "activity": "3 rounds on an explainer paragraph with precise fixes.", "proof": { "type": "how", "what": "Annotated loop log" }, "at_home": "Ask about the worst first-draft mistake." },
+        { "n": 7, "title": "Two Sources + Tool Face-off", "habits": ["check"], "idea": "Verify in 2 independent sources. Tools differ.", "activity": "Fact-check 3 claims; compare two chatbots.", "proof": { "type": "made", "what": "Fact-check table" }, "at_home": "Fact-check one viral post together." },
+        { "n": 8, "title": "Your Data, Your Call", "habits": ["own"], "idea": "Typed data can be stored and used for training. Age limits exist for a reason.", "activity": "Read real privacy settings with a parent; redact a sample text.", "proof": { "type": "how", "what": "Redacted text + settings checklist" }, "at_home": "Turn off training on data in family AI tools." },
+        { "n": 9, "title": "My AI Rules", "habits": ["own"], "idea": "When I use AI, my red lines, how I tell teachers, how I keep skills sharp.", "activity": "Draft, peer review, parent signs.", "proof": { "type": "think", "what": "1-page policy" }, "at_home": "Parent signs and adds one family rule." },
+        { "n": 10, "title": "Demo Day", "habits": ["choose", "tell", "check", "own"], "idea": "Show the process, not just the result.", "activity": "Team project with process log and How we used AI statement.", "proof": { "type": "made", "what": "Project + log + statement" }, "at_home": "Parents attend the demo." }
+      ],
+      "game_notes": {
+        "age_needs": "Friends and status matter most, hate anything babyish, want real tools and real stakes, love beating the system. Purpose, story and team roles keep girls in tech; competition and beat the system keep many boys in. Use both.",
+        "themes": ["social cause", "story", "music", "sport", "gaming"],
+        "rules": ["Rotate team roles (lead, typer, checker, presenter) every lesson."]
+      },
+      "games": [
+        { "id": "next-word", "name": "Next Word", "lessons": [2], "habits": ["check"], "how": "Teams guess the next word. You score when you match the most common guess.", "why": "They act like a language model and feel likely isn't true. Explains the mechanism with no math." },
+        { "id": "fake-historian", "name": "Fake Historian", "lessons": [2, 7], "habits": ["check"], "how": "Invent a person, ask AI about them, teams race to list every invented fact.", "why": "The shock moment: AI lies confidently. Memorable and filmable (launch reel, day 9)." },
+        { "id": "should-ai-court", "name": "Should AI? Court", "lessons": [3], "habits": ["choose", "own"], "how": "Mock trial: Sam used AI for the essay. Prosecutor, defense, judge, jury, clerk.", "why": "Teens love arguing about fairness. Judge and clerk roles let quiet kids take part too." },
+        { "id": "red-team-study-buddy", "name": "Red Team the Study Buddy", "lessons": [5], "habits": ["tell", "check"], "how": "Team A sets up a buddy that only gives hints. Team B tries to make it give answers. Fix, then swap.", "why": "Beat the system is the strongest motivator at this age. They learn instruction writing by attacking and defending it. Only goal allowed: get the homework answer." },
+        { "id": "blind-chatbot-taste-test", "name": "Blind Chatbot Taste Test", "lessons": [7], "habits": ["check"], "how": "Same question to two chatbots, answers shown as A and B. Teams judge blind, then reveal.", "why": "Breaks brand loyalty: judge quality, not the name." },
+        { "id": "fact-or-fake-feed", "name": "Fact or Fake: Feed Edition", "lessons": [7], "habits": ["check"], "how": "Real viral posts from their platforms. Teams check each in 2 independent sources against the clock.", "why": "Their own feed means real stakes and a skill they use daily." },
+        { "id": "make-a-game", "name": "Make a Game", "lessons": [10], "habits": ["choose", "tell", "check", "own"], "how": "Demo Day project: quiz game, text adventure or game design doc made with AI help, plus a How we used AI log.", "why": "At this age making a game beats playing one. Teams pick the theme, so everyone has a way in." }
+      ]
+    }
+  ],
+  "parent_trust_statement": "We use AI to help draft lesson ideas and pictures. A human teacher writes the final lessons, checks every fact, and decides what kids see. Kids never chat with AI alone.",
+  "launch_plan": [
+    { "day": 1, "platforms": ["instagram", "tiktok"], "format": "reel", "hook": "Your kid already uses AI. Who taught them how?", "idea": "4 habits in 20 s with Bloop gestures", "cta": "Free trial lesson" },
+    { "day": 3, "platforms": ["instagram"], "format": "carousel", "hook": "Robot or me? Try this at dinner", "idea": "6-8 lesson 2 card sort, printable", "cta": "Save and try" },
+    { "day": 5, "platforms": ["instagram", "tiktok"], "format": "reel", "hook": "We asked AI 5 questions about our town. Count its mistakes.", "idea": "9-11 Test the Robot, real filmed score", "cta": "Comment your town" },
+    { "day": 7, "platforms": ["instagram"], "format": "carousel", "hook": "Hint, not answer: the AI rule that stops cheating", "idea": "Coach request vs answer request", "cta": "Link to boss-of-ai" },
+    { "day": 9, "platforms": ["instagram", "tiktok"], "format": "reel", "hook": "AI invented a whole history person in 10 seconds", "idea": "12-14 lesson 2 demo", "cta": "Link to ai-pilot" },
+    { "day": 11, "platforms": ["instagram"], "format": "carousel", "hook": "5 things your child should never type into AI", "idea": "Secret rules + data detective", "cta": "Save for later" },
+    { "day": 12, "platforms": ["instagram"], "format": "story_poll", "hook": "Does your kid use AI for homework?", "idea": "Collect objections", "cta": "DM habits for the parent guide" },
+    { "day": 14, "platforms": ["instagram", "tiktok"], "format": "reel", "hook": "Demo day: 13-year-olds show HOW they used AI", "idea": "Process log + AI use statement", "cta": "Book a seat" }
+  ]
+}
