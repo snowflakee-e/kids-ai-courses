@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Cabinet: Bloop AI School</title>
+    <meta name="description" content="Your parent cabinet at Bloop AI School: follow your child's season, read every parent report and add courses for their age.">
+    <meta name="theme-color" content="#FFCE3A">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../base.css">
+    <style>
+        [hidden] { display: none !important; }
+        .card { padding: clamp(20px, 2.6vw, 30px); border-radius: calc(var(--rad) * .7 + 6px); background: var(--card); box-shadow: 0 0 0 1px var(--line), 0 26px 50px -40px color-mix(in oklch, var(--ink) 80%, transparent); }
+        .card h3 { margin: 0 0 4px; font-size: 1.35rem; line-height: 1.2; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .muted { color: var(--soft); }
+        .btn--acc { background: var(--acc); color: var(--on-acc); }
+        .btn--line { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px color-mix(in oklch, var(--ink) 30%, transparent); }
+        .btn--line:hover { box-shadow: inset 0 0 0 2px var(--ink); }
+        .btn--sm { min-height: 44px; padding: 0 16px; font-size: .95rem; }
+        .linkbtn { padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; cursor: pointer; }
+        section { padding: clamp(56px, 7vw, 96px) 0; }
+        .sec-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; margin-bottom: 28px; }
+        .sec-head h2 { margin: 0; }
+        .sec-head p { margin: 8px 0 0; }
+
+        /* Shapes and Bloop: same ident language as the landing page */
+        .shapes { position: absolute; inset: 0 0 0 42%; z-index: -1; pointer-events: none; }
+        .shape { position: absolute; transform-origin: center; transform: rotate(var(--r, 0deg)) scale(clamp(0, calc((var(--life) - var(--age)) / 1.6), 1)); transition: transform .5s var(--ease); }
+        .shape svg { display: block; width: 100%; height: 100%; overflow: visible; }
+        .chan .shapes { top: 80px; }
+        .host__bob { animation: bob 2.6s ease-in-out infinite; }
+        @keyframes bob { 50% { transform: translateY(calc(var(--bob) * -1)) rotate(calc(var(--bob) * .12deg)); } }
+
+        /* GATE: sign in or demo */
+        .gate { position: relative; isolation: isolate; overflow: hidden; background: var(--bg); color: var(--on-bg); min-height: calc(100dvh - 68px); display: grid; align-items: center; }
+        .gate__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 470px); gap: clamp(32px, 6vw, 80px); align-items: center; }
+        .gate h1 { margin: 0 0 16px; font-size: clamp(2.5rem, 5.6vw, 4.6rem); line-height: 1; max-width: 11em; }
+        .gate__lede { margin: 0; max-width: 32em; font-size: 1.15rem; opacity: .9; }
+        .gate__list { margin: 24px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; font-weight: 600; }
+        .gate__list li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; }
+        .gate__list svg { width: 20px; height: 20px; margin-top: 4px; }
+        .gate__bot { width: clamp(150px, 18vw, 230px); margin-top: 28px; }
+        .gate .card { color: var(--ink); }
+        .gate .card > p { margin: 0 0 20px; }
+        .gate form .btn { width: 100%; }
+        .or { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--soft); font-size: .9rem; font-weight: 600; }
+        .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+        .note { margin: 14px 0 0; color: var(--soft); font-size: .9rem; }
+        .field input, .field select { background: var(--page); }
+
+        /* CHANNEL: the child's hero, painted by their age */
+        .chan { position: relative; isolation: isolate; overflow: hidden; background: var(--bg); color: var(--on-bg); padding: 22px 0 clamp(30px, 4vw, 48px); }
+        .chan.is-switching::after { content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; background: repeating-linear-gradient(0deg, color-mix(in oklch, var(--on-bg) 22%, transparent) 0 2px, transparent 2px 5px); animation: signal .42s steps(6) both; }
+        @keyframes signal { 0% { opacity: 0; } 30% { opacity: .9; } 60% { opacity: .5; transform: translateY(6px); } 100% { opacity: 0; } }
+        .hello { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; }
+        .hello p { margin: 0; font-weight: 700; }
+        .kids { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+        .kids button { min-height: 44px; padding: 4px 16px; border: 2px solid color-mix(in oklch, var(--on-bg) 30%, transparent); border-radius: calc(var(--rad) * .45 + 6px); background: transparent; color: inherit; font: inherit; font-weight: 700; line-height: 1.15; text-align: left; cursor: pointer; transition: background .2s, border-color .2s; }
+        .kids button span { display: block; font-weight: 500; font-size: .8rem; opacity: .8; }
+        .kids button:hover { border-color: var(--on-bg); }
+        .kids button[aria-pressed="true"] { background: var(--on-bg); color: var(--bg); border-color: var(--on-bg); }
+        .kids .add { border-style: dashed; }
+        .chan__stage { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 20px; margin-top: clamp(14px, 3vw, 30px); }
+        .numeral { display: flex; align-items: flex-end; gap: clamp(10px, 2vw, 22px); }
+        .numeral__digits { display: block; overflow: hidden; line-height: 1; margin: -.1em 0 -.08em; padding: 0 .1em 0 .02em; font-size: clamp(7rem, 17vw, 14rem); font-variant-numeric: tabular-nums; letter-spacing: -.045em; }
+        .numeral__digits span { display: block; }
+        .numeral__digits.roll-up span { animation: rollUp .45s var(--ease) both; }
+        .numeral__digits.roll-down span { animation: rollDown .45s var(--ease) both; }
+        @keyframes rollUp { from { transform: translateY(55%); opacity: 0; } }
+        @keyframes rollDown { from { transform: translateY(-55%); opacity: 0; } }
+        .numeral__unit { padding-bottom: clamp(10px, 2vw, 22px); font-size: clamp(1.1rem, 2vw, 1.6rem); line-height: 1.1; font-weight: 700; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .numeral__unit small { display: block; margin-top: 4px; font-size: .7em; font-weight: 500; opacity: .8; }
+        .chan__host { width: clamp(150px, calc(300px - var(--m) * 150px), 300px); transition: width .5s var(--ease); }
+        .stepper { display: inline-flex; align-items: center; gap: 4px; margin-top: 14px; padding: 4px 4px 4px 14px; border-radius: 999px; background: color-mix(in oklch, var(--on-bg) 10%, transparent); font-size: .92rem; font-weight: 700; }
+        .stepper button { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--on-bg); color: var(--bg); font: inherit; font-size: 1.2rem; line-height: 1; cursor: pointer; }
+        .stepper button:disabled { opacity: .35; cursor: default; }
+        .stepper output { min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
+        .l3 { position: relative; margin-top: clamp(26px, 3vw, 34px); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px 28px; padding: clamp(18px, 2.4vw, 26px) clamp(18px, 2.6vw, 32px); background: var(--acc); color: var(--on-acc); border-radius: var(--rad); transform: rotate(var(--tilt)); transition: transform .5s var(--ease); box-shadow: 0 18px 40px -22px color-mix(in oklch, var(--on-bg) 70%, transparent); }
+        .l3__tab { position: absolute; left: clamp(18px, 2.6vw, 32px); top: 0; transform: translateY(-62%); padding: 5px 14px; border-radius: calc(var(--rad) * .5 + 2px); background: var(--on-bg); color: var(--bg); font-size: .9rem; font-weight: 800; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); white-space: nowrap; }
+        .l3 h1 { margin: 0; font-size: clamp(1.6rem, 3.2vw, 2.6rem); line-height: 1.05; }
+        .l3 p { margin: 8px 0 0; font-size: 1.05rem; opacity: .9; }
+        .l3 .btn { background: var(--on-acc); color: var(--acc); }
+
+        /* Season + habits */
+        .two { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+        .bar { height: 12px; border-radius: 999px; background: color-mix(in oklch, var(--ink) 12%, transparent); overflow: hidden; }
+        .bar i { display: block; height: 100%; width: var(--p); border-radius: inherit; background: var(--acc); transition: width .6s var(--ease); }
+        .barline { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 8px; font-weight: 700; }
+        .eps { margin: 24px 0 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+        .eps li { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 6px 16px; align-items: center; padding: 14px 10px 14px 0; border-bottom: 1px solid var(--line); }
+        .eps .mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: calc(var(--rad) * .3 + 4px); border: 2px solid color-mix(in oklch, var(--ink) 35%, transparent); font-weight: 800; font-size: .95rem; font-variant-numeric: tabular-nums; }
+        .eps .mark svg { width: 18px; height: 18px; }
+        .eps .is-done .mark { background: var(--acc); border-color: var(--acc); color: var(--on-acc); }
+        .eps .is-next { background: var(--card); border-radius: calc(var(--rad) * .4 + 4px); padding-left: 10px; margin-left: -10px; box-shadow: 0 0 0 2px var(--ink); border-bottom-color: transparent; }
+        .eps .is-next .mark { border-color: var(--ink); background: var(--ink); color: var(--page); }
+        .eps .is-later { color: var(--soft); }
+        .eps strong { display: block; font-size: 1.05rem; line-height: 1.25; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+        .eps small { display: block; font-size: .9rem; color: var(--soft); }
+        .eps .side { font-size: .9rem; font-weight: 700; text-align: right; }
+        .meters { display: grid; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; }
+        .meters li { display: grid; grid-template-columns: 70px auto; gap: 4px 12px; align-items: center; font-weight: 700; }
+        .meters em { grid-column: 1 / -1; font-style: normal; font-weight: 500; font-size: .9rem; color: var(--soft); }
+
+        /* Reports */
+        .reports { background: color-mix(in oklch, var(--acc) 12%, var(--page)); }
+        .rlist { display: grid; gap: 18px; }
+        .report { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px 36px; }
+        .report__top { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+        .report__top span { color: var(--soft); font-size: .95rem; }
+        .report h4 { margin: 0 0 4px; font-size: .85rem; color: var(--soft); }
+        .report p { margin: 0; }
+        .proofchip { display: inline-block; margin-top: 12px; padding: 4px 12px; border-radius: 999px; background: color-mix(in oklch, var(--acc) 24%, var(--card)); font-size: .9rem; font-weight: 700; }
+        .home { padding: 14px 18px; border-radius: calc(var(--rad) * .5 + 4px); background: color-mix(in oklch, var(--ink) 5%, var(--card)); }
+        .tried { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-weight: 700; cursor: pointer; }
+        .tried input { width: 22px; height: 22px; margin: 0; accent-color: var(--acc); cursor: pointer; }
+        .empty { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 24px; align-items: center; }
+
+        /* Courses */
+        .cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 20px; }
+        .course { display: flex; flex-direction: column; gap: 10px; }
+        .course__top { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; align-items: center; }
+        .course__bot { width: 72px; height: 72px; padding: 4px; border-radius: calc(var(--rad) * .5 + 4px); background: color-mix(in oklch, var(--C) 34%, var(--card)); }
+        .course h3 { font-size: 1.2rem; }
+        .course p { margin: 0; color: var(--soft); }
+        .course__meta { font-size: .9rem; font-weight: 700; }
+        .course__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: auto; padding-top: 6px; }
+        .status { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--ink); color: var(--page); font-size: .8rem; font-weight: 700; }
+        .more-title { margin: 48px 0 18px; font-size: 1.5rem; font-variation-settings: "CASL" var(--casl), "slnt" var(--slnt); }
+
+        /* Account */
+        .acc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+        .acc-grid dl { display: grid; gap: 12px; margin: 16px 0 0; }
+        .acc-grid dt { font-size: .85rem; font-weight: 700; color: var(--soft); }
+        .acc-grid dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+        .acc-actions { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-top: 8px; }
+        .danger { color: #C2262E; }
+        .acc-actions .danger { color: color-mix(in oklch, #E0353D 70%, var(--ink)); }
+
+        /* Add-a-child dialog and toast */
+        dialog { width: min(440px, calc(100% - 32px)); padding: 0; border: 0; border-radius: calc(var(--rad) * .7 + 6px); background: var(--card); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .5); }
+        dialog::backdrop { background: color-mix(in oklch, var(--ink) 45%, transparent); }
+        dialog form { padding: 26px; }
+        dialog h2 { font-size: 1.8rem; margin-bottom: 6px; }
+        dialog .row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+        .toast { position: fixed; left: 50%; bottom: 20px; z-index: 40; max-width: calc(100% - 32px); padding: 14px 20px; border-radius: calc(var(--rad) * .5 + 6px); background: var(--ink); color: var(--page); font-weight: 600; box-shadow: 0 16px 40px -16px rgba(0, 0, 0, .5); transform: translate(-50%, 140%); opacity: 0; transition: transform .35s var(--ease), opacity .35s; }
+        .toast.is-on { transform: translate(-50%, 0); opacity: 1; }
+
+        @media (max-width: 900px) {
+            .gate__grid, .two, .report, .acc-grid { grid-template-columns: 1fr; }
+            .gate { min-height: auto; padding: 40px 0 56px; }
+            .gate__bot { display: none; }
+            .l3 { grid-template-columns: 1fr; }
+            .l3 .btn { justify-self: start; }
+        }
+        @media (max-width: 560px) {
+            .chan__stage { grid-template-columns: 1fr; }
+            .chan__host { position: absolute; right: 0; top: 0; width: clamp(96px, 30vw, 140px); }
+            .numeral { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .numeral__unit { padding-bottom: 0; }
+            .eps li { grid-template-columns: 40px minmax(0, 1fr); }
+            .eps .side { grid-column: 2; text-align: left; }
+            .empty { grid-template-columns: 1fr; }
+            .empty > div:first-child { width: 90px; }
+            .shape--wide { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip" href="#main">Skip to the cabinet</a>
+
+    <header class="nav">
+        <div class="wrap nav__in">
+            <a class="logo" href="../" id="logo"><span class="logo__bot" data-bloop="neutral"></span><span class="logo__txt">Bloop <b>AI School</b></span></a>
+            <ul class="nav__links" id="dash-links" hidden>
+                <li><a href="#season">Season</a></li>
+                <li><a href="#reports">Reports</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#account">Account</a></li>
+            </ul>
+            <div class="nav__act">
+                <a class="btn btn--ghost" href="../" id="to-site"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span class="btn__lbl">Back to the site</span></a>
+                <a class="btn" href="../#book" id="nav-book">Book a free lesson</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+        <!-- GATE -->
+        <section class="gate" id="gate" hidden>
+            <div class="shapes" aria-hidden="true" data-shapes></div>
+            <div class="wrap gate__grid">
+                <div>
+                    <h1 class="display">Your child's school, in one place.</h1>
+                    <p class="gate__lede">Follow the season episode by episode, read every parent report and add courses for each child. The cabinet takes your child's colors: bright at 6, calm at 17.</p>
+                    <ul class="gate__list" id="gate-list"></ul>
+                    <div class="gate__bot host__bob" aria-hidden="true" id="gate-bot"></div>
+                </div>
+                <div class="card">
+                    <form id="gate-form" novalidate>
+                        <h3>Open your parent cabinet</h3>
+                        <p class="muted">No password in this preview. Your details stay in this browser.</p>
+                        <div class="field">
+                            <label for="g-name">Your name</label>
+                            <input id="g-name" type="text" autocomplete="name" required aria-describedby="ge-name">
+                            <p class="err" id="ge-name" aria-live="polite"></p>
+                        </div>
+                        <div class="field">
+                            <label for="g-contact">Email or phone</label>
+                            <input id="g-contact" type="text" inputmode="email" autocomplete="email" required aria-describedby="ge-contact">
+                            <p class="err" id="ge-contact" aria-live="polite"></p>
+                        </div>
+                        <div class="row2">
+                            <div class="field">
+                                <label for="g-kid">Child's first name</label>
+                                <input id="g-kid" type="text" autocomplete="off" maxlength="24" required aria-describedby="ge-kid">
+                                <p class="err" id="ge-kid" aria-live="polite"></p>
+                            </div>
+                            <div class="field">
+                                <label for="g-age">Child's age</label>
+                                <select id="g-age" data-ages></select>
+                                <p class="err" aria-live="polite"></p>
+                            </div>
+                        </div>
+                        <button class="btn btn--acc" type="submit">Open my cabinet</button>
+                    </form>
+                    <p class="or">or</p>
+                    <button class="btn btn--line" type="button" id="demo" style="width:100%">Look around with a demo family</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD -->
+        <div id="dash" hidden>
+            <section class="chan" id="chan" aria-label="Your child's channel">
+                <div class="shapes" aria-hidden="true" data-shapes></div>
+                <div class="wrap">
+                    <div class="hello">
+                        <p id="hello">Hi</p>
+                        <ul class="kids" id="kids" aria-label="Your children"></ul>
+                    </div>
+                    <div class="chan__stage">
+                        <div>
+                            <div class="numeral display" aria-hidden="true">
+                                <span class="numeral__digits" id="digits"><span>6</span></span>
+                                <span class="numeral__unit">years old<small id="kid-track">Explorers channel</small></span>
+                            </div>
+                            <div class="stepper" role="group" aria-label="Child's age">
+                                <span>Birthday? Age</span>
+                                <button type="button" id="age-down" aria-label="One year younger">&minus;</button>
+                                <output id="age-out" aria-live="polite">6</output>
+                                <button type="button" id="age-up" aria-label="One year older">+</button>
+                            </div>
+                        </div>
+                        <div class="chan__host" aria-hidden="true"><div class="host__bob" id="host"></div></div>
+                    </div>
+                    <div class="l3">
+                        <span class="l3__tab" id="l3-tab">Next episode</span>
+                        <div>
+                            <h1 class="display" id="l3-title"></h1>
+                            <p id="l3-text"></p>
+                        </div>
+                        <button class="btn" type="button" id="l3-btn">Add to my calendar</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="season">
+                <div class="wrap two">
+                    <div>
+                        <div class="sec-head"><div><h2 class="display" id="season-title"></h2><p class="lede" id="season-lede"></p></div></div>
+                        <p class="barline"><span id="season-count"></span><span id="season-pct"></span></p>
+                        <div class="bar" role="progressbar" aria-label="Season progress" aria-valuemin="0" id="season-bar"><i></i></div>
+                        <ol class="eps" id="eps"></ol>
+                    </div>
+                    <div class="card">
+                        <h3>The four habits</h3>
+                        <p class="muted" style="margin:0" id="habits-lede"></p>
+                        <ul class="meters" id="meters"></ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reports" id="reports">
+                <div class="wrap">
+                    <div class="sec-head"><div><h2 class="display">Parent reports</h2><p class="lede" id="reports-lede"></p></div></div>
+                    <div class="rlist" id="rlist"></div>
+                </div>
+            </section>
+
+            <section id="courses">
+                <div class="wrap">
+                    <div class="sec-head"><div><h2 class="display" id="courses-title"></h2><p class="lede">Courses add one hobby or skill on top of the season. The first lesson of every course is free.</p></div></div>
+                    <div class="cgrid" id="my-courses"></div>
+                    <h3 class="more-title" id="more-title"></h3>
+                    <div class="cgrid" id="more-courses"></div>
+                </div>
+            </section>
+
+            <section id="account" style="padding-top:0">
+                <div class="wrap">
+                    <div class="sec-head"><h2 class="display">Account</h2></div>
+                    <div class="acc-grid">
+                        <div class="card">
+                            <h3>You</h3>
+                            <dl><div><dt>Name</dt><dd id="p-name"></dd></div><div><dt>Email or phone</dt><dd id="p-contact"></dd></div></dl>
+                            <div class="acc-actions" style="margin-top:20px"><button class="linkbtn danger" type="button" id="signout">Sign out and clear this browser</button></div>
+                        </div>
+                        <div class="card">
+                            <form id="kid-form">
+                                <h3 id="kid-form-title">Child</h3>
+                                <div class="row2" style="margin-top:14px">
+                                    <div class="field"><label for="k-name">First name</label><input id="k-name" type="text" maxlength="24" required></div>
+                                    <div class="field"><label for="k-time">Lesson time</label><select id="k-time"><option>Weekday afternoon</option><option>Weekday evening</option><option>Weekend</option></select></div>
+                                </div>
+                                <div class="acc-actions">
+                                    <button class="btn btn--sm" type="submit">Save</button>
+                                    <button class="linkbtn danger" type="button" id="kid-remove"></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="end">
+        <div class="wrap">
+            <div class="end__in">
+                <h2 class="display" id="end-title">See you on the channel.</h2>
+                <a class="btn" href="../" id="end-site">Back to the site</a>
+            </div>
+            <div class="end__small">
+                <span>Bloop AI School. AI lessons for kids aged 6 to 17.</span>
+                <span>Design preview: the cabinet is saved only in this browser.</span>
+            </div>
+        </div>
+    </footer>
+
+    <dialog id="add-dlg" aria-labelledby="add-title">
+        <form method="dialog" id="add-form" novalidate>
+            <h2 class="display" id="add-title">Add a child</h2>
+            <p class="muted" style="margin:0 0 16px">Each child gets their own channel, season and colors.</p>
+            <div class="field"><label for="a-name">First name</label><input id="a-name" type="text" maxlength="24" required aria-describedby="ae-name"><p class="err" id="ae-name" aria-live="polite"></p></div>
+            <div class="field"><label for="a-age">Age</label><select id="a-age" data-ages></select></div>
+            <div class="row"><button class="btn btn--line btn--sm" type="button" value="cancel" id="add-cancel">Cancel</button><button class="btn btn--acc btn--sm" type="submit">Add child</button></div>
+        </form>
+    </dialog>
+
+    <p class="toast" id="toast" role="status" aria-live="polite"></p>
+
+    <script src="../bobik.js"></script>
+    <script src="../catalog.js"></script>
+    <script src="../channel.js"></script>
+    <script>
+    'use strict';
+    document.documentElement.classList.add('js');
+
+    var CATALOG = BLOOP_CATALOG, SITE_ROOT = '../';
+    var THUMB = ['acc', 'rb-body', 'rb-joint'];
+    var cab = loadCabinet();
+    var ageNow = 6, shownAge = -1, current = -1, raf = 0;
+
+    function aAge(n) { return (n === 8 || n === 11 || n === 18 ? 'an ' : 'a ') + n + '-year-old'; }
+    function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+    function persist() { if (!saveCabinet(cab)) toast('This browser blocks storage, so changes last until you close the tab.'); }
+
+    var toastTimer = 0;
+    function toast(msg) {
+        var t = $('toast');
+        t.textContent = msg;
+        t.classList.add('is-on');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { t.classList.remove('is-on'); }, 3600);
+    }
+
+    // Lesson dates from the chosen time: weekday slots are Tue and Thu, weekend is Sat
+    var SLOTS = { 'Weekday afternoon': { days: [2, 4], h: 16, m: 30 }, 'Weekday evening': { days: [2, 4], h: 18, m: 30 }, 'Weekend': { days: [6], h: 11, m: 0 } };
+    function lessonDate(time, step) {
+        var s = SLOTS[time] || SLOTS['Weekday afternoon'], d = new Date(), n = 0, dir = step >= 0 ? 1 : -1, want = Math.abs(step) + (step >= 0 ? 1 : 0);
+        d.setHours(s.h, s.m, 0, 0);
+        for (var i = 0; i < 400 && n < want; i++) {
+            d.setDate(d.getDate() + dir);
+            if (s.days.indexOf(d.getDay()) !== -1) n++;
+        }
+        return d;
+    }
+    function fmtDay(d) { return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }); }
+    function fmtTime(d) { return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
+
+    // Theme: same smooth travel through every age as the landing page, so switching from Mia (7) to Sam (16) visibly grows up
+    function setDigits(age) {
+        if (age === shownAge) return;
+        var el = $('digits');
+        el.classList.remove('roll-up', 'roll-down');
+        void el.offsetWidth;
+        if (shownAge !== -1 && !reduce.matches) el.classList.add(age > shownAge ? 'roll-up' : 'roll-down');
+        el.innerHTML = '<span>' + age + '</span>';
+        shownAge = age;
+    }
+    function frame(age, live) {
+        ageNow = age;
+        paint(age);
+        var whole = Math.round(age);
+        if (!$('dash').hidden) setDigits(whole);
+        if (!live) {
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', themeColor(whole));
+        }
+    }
+    function goTo(target) {
+        cancelAnimationFrame(raf);
+        var from = ageNow, start = performance.now(), dur = reduce.matches ? 0 : Math.min(900, 160 + Math.abs(target - from) * 70);
+        if (!dur) { frame(target); return; }
+        (function step(now) {
+            var p = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - p, 3);
+            frame(from + (target - from) * e, p < 1);
+            if (p < 1) raf = requestAnimationFrame(step);
+        })(start);
+    }
+
+    // Static parts
+    document.querySelectorAll('[data-shapes]').forEach(function (box) {
+        box.innerHTML = SHAPES.map(function (p) {
+            return '<span class="shape' + (p.mob ? '' : ' shape--wide') + '" style="left:' + p.x + ';top:' + p.y + ';width:' + p.w + 'px;height:' + p.w + 'px;--life:' + p.life + ';--r:' + p.r + 'deg;--C:var(--' + p.c + ')">' + SHAPE_SVG[p.k] + '</span>';
+        }).join('');
+    });
+    var ageOpts = '';
+    for (var a = 6; a <= 17; a++) ageOpts += '<option value="' + a + '">' + a + ' years old</option>';
+    document.querySelectorAll('[data-ages]').forEach(function (s) { s.innerHTML = ageOpts; });
+    $('gate-list').innerHTML = ['Every episode, with what it leaves you', 'A parent report after each one', 'Courses that fit each child\'s age'].map(function (x) { return '<li>' + ICON_CHECK + '<span>' + x + '</span></li>'; }).join('');
+    $('gate-bot').innerHTML = bloop('hello');
+
+    // Habit meters: two pips for every finished episode that trains the habit ("All 4" trains each)
+    function habitPips(t, done) {
+        var n = [0, 0, 0, 0], names = ['Choose', 'Tell', 'Check', 'Own'];
+        t.lessons.slice(0, done).forEach(function (l) {
+            l[1].forEach(function (h) { if (h === 'All 4') n = n.map(function (x) { return x + 1; }); else n[names.indexOf(h)]++; });
+        });
+        return n.map(function (x) { return Math.min(5, x * 2); });
+    }
+
+    function courseBox(c, k, enrolled, kid) {
+        var href = CATALOG.courseHref(c, SITE_ROOT), mine = enrolled && kid.courses.filter(function (x) { return x.id === c.id; })[0];
+        var body = '<div class="course__top"><div class="course__bot" style="--C:var(--' + THUMB[k % 3] + ')" aria-hidden="true">' + bloop(c.pose) + '</div><div><h3>' + esc(c.title) + '</h3><span class="course__meta">' + CATALOG.courseAges(c) + ' · ' + c.lessons + ' lessons · ' + c.minutes + ' min</span></div></div>';
+        if (mine) {
+            var done = Math.min(mine.done, c.lessons);
+            body += (done ? '<p class="barline" style="margin:4px 0 0"><span>' + done + ' of ' + c.lessons + ' lessons</span><span>' + Math.round(done / c.lessons * 100) + '%</span></p><div class="bar" role="progressbar" aria-label="' + esc(c.title) + ' progress" aria-valuemin="0" aria-valuemax="' + c.lessons + '" aria-valuenow="' + done + '" style="--p:' + (done / c.lessons * 100) + '%"><i></i></div>'
+                : '<p><span class="status">Free lesson booked</span></p><p>We\'ll write with ' + esc(kid.time.toLowerCase()) + ' times within one working day.</p>') +
+                '<div class="course__foot">' + (href ? '<a class="btn btn--acc btn--sm" href="' + href + '">' + (done ? 'Continue' : 'Try it now') + '</a>' : '') +
+                '<button class="linkbtn" type="button" data-drop="' + c.id + '">Remove</button></div>';
+        } else {
+            body += '<p>' + esc(c.desc) + '</p><div class="course__foot"><button class="btn btn--line btn--sm" type="button" data-add="' + c.id + '">Add, first lesson free</button></div>';
+        }
+        return '<article class="card course">' + body + '</article>';
+    }
+
+    // Everything below the nav for the active child
+    function render() {
+        var kid = activeKid(cab), t = TRACKS[trackOf(kid.age)], n = t.lessons.length, unit = unitOf(t);
+        var done = Math.min(kid.season, n), first = kid.name, low = kid.name === 'Your child' ? 'your child' : kid.name; // booked without a name
+        var mins = t.facts[1][0] + ' min';
+
+        $('hello').textContent = 'Hi, ' + (cab.parent.name.split(' ')[0] || 'there') + '. Whose channel?';
+        $('kids').innerHTML = cab.kids.map(function (k) {
+            return '<li><button type="button" data-kid="' + k.id + '" aria-pressed="' + (k.id === kid.id) + '">' + esc(k.name) + '<span>' + k.age + ', ' + TRACKS[trackOf(k.age)].name + '</span></button></li>';
+        }).join('') + '<li><button type="button" class="add" id="add-kid">+ Add a child<span>own channel</span></button></li>';
+                $('kid-track').textContent = first + ' on the ' + t.name + ' channel';
+        $('host').innerHTML = bloop(t.pose);
+        $('age-out').textContent = kid.age;
+        $('age-down').disabled = kid.age <= 6;
+        $('age-up').disabled = kid.age >= 17;
+
+        // Lower third: the next episode, or the end of the season
+        if (done < n) {
+            var l = t.lessons[done], when = lessonDate(kid.time, 0), r = RATINGS[l[4]];
+            $('l3-tab').textContent = 'Next ' + unit + ', ' + (done + 1) + ' of ' + n;
+            $('l3-title').textContent = l[0];
+            $('l3-text').textContent = fmtDay(when) + ', ' + fmtTime(when) + ' · ' + mins + ' · ' + r.label + '. ' + l[2];
+            $('l3-btn').textContent = 'Add to my calendar';
+            $('l3-btn').dataset.act = 'cal';
+        } else {
+            $('l3-tab').textContent = 'Season complete';
+            $('l3-title').textContent = first + ' finished all ' + n + ' ' + unit + 's of ' + t.season + '.';
+            $('l3-text').textContent = 'Every report is below. Pick a course for what comes next.';
+            $('l3-btn').textContent = 'See courses';
+            $('l3-btn').dataset.act = 'courses';
+        }
+
+        // Season list
+        $('season-title').textContent = 'Season: ' + t.season + '.';
+        $('season-lede').textContent = t.seasonLede;
+        $('season-count').textContent = done + ' of ' + n + ' ' + unit + 's';
+        $('season-pct').textContent = Math.round(done / n * 100) + '%';
+        var bar = $('season-bar');
+        bar.setAttribute('aria-valuemax', n); bar.setAttribute('aria-valuenow', done);
+        bar.style.setProperty('--p', (done / n * 100) + '%');
+        $('eps').innerHTML = t.lessons.map(function (l, k) {
+            var st = k < done ? 'is-done' : k === done ? 'is-next' : 'is-later';
+            var side = k < done ? '<a href="#r' + k + '">Report</a>' : k === done ? fmtDay(lessonDate(kid.time, 0)) : '<span class="rating" data-r="' + l[4] + '"><b aria-hidden="true">' + l[4] + '</b><span class="sr-only">' + RATINGS[l[4]].label + '</span></span>';
+            return '<li class="' + st + '"><span class="mark">' + (k < done ? ICON_CHECK : k + 1) + '</span><span><strong>' + esc(l[0]) + '</strong><small>' + esc(l[2]) + '</small></span><span class="side">' + side + '</span>' +
+                (k < done ? '<span class="sr-only">done</span>' : k === done ? '<span class="sr-only">next</span>' : '') + '</li>';
+        }).join('');
+
+        // Habits for this age
+        var pips = habitPips(t, done), ti = trackOf(kid.age);
+        $('habits-lede').textContent = 'What ' + low + ' practises at ' + kid.age + '. Pips fill as ' + unit + 's are done.';
+        $('meters').innerHTML = HABITS.map(function (h, k) {
+            var p = '';
+            for (var i = 0; i < 5; i++) p += '<i class="' + (i < pips[k] ? 'on' : '') + '"></i>';
+            return '<li><span>' + h[0] + '</span><span class="pips" role="img" aria-label="' + pips[k] + ' of 5">' + p + '</span><em>' + esc(h[1][ti]) + '</em></li>';
+        }).join('');
+
+        // Reports, newest first
+        kid.tried = kid.tried || [];
+        $('reports-lede').textContent = done ? 'One report after every ' + unit + ': what happened, the proof ' + low + ' brought home, and one thing to try together.' : '';
+        if (!done) {
+            var next = lessonDate(kid.time, 0);
+            $('rlist').innerHTML = '<div class="card empty"><div aria-hidden="true">' + bloop('sleep') + '</div><div><h3>No reports yet.</h3><p class="muted" style="margin:0">The first one arrives on ' + fmtDay(next) + ', after ' + unit + ' 1: ' + esc(t.lessons[0][0]).replace(/[^.?!]$/, '$&.') + ' You will see what ' + esc(low) + ' made and one thing to try at home.</p></div></div>';
+        } else {
+            var out = '';
+            for (var k = done - 1; k >= 0; k--) {
+                var L = t.lessons[k], on = kid.tried.indexOf(k) !== -1;
+                out += '<article class="card report" id="r' + k + '"><div class="report__top"><h3>' + (unit === 'lesson' ? 'Lesson ' : 'Episode ') + (k + 1) + ': ' + esc(L[0]) + '</h3><span>' + fmtDay(lessonDate(kid.time, -(done - k))) + '</span></div>' +
+                    '<div><h4>What happened</h4><p>' + esc(L[3]) + '</p><span class="proofchip">' + esc(L[5]) + '</span></div>' +
+                    '<div class="home"><h4>Try at home</h4><p>' + esc(L[6]) + '</p><label class="tried"><input type="checkbox" data-tried="' + k + '"' + (on ? ' checked' : '') + '>We tried it</label></div></article>';
+            }
+            $('rlist').innerHTML = out;
+        }
+
+        // Courses: enrolled, then the rest that fit this exact age
+        var mine = kid.courses.map(function (x) { return CATALOG.findCourse(x.id); }).filter(Boolean);
+        var more = CATALOG.coursesForAge(kid.age).filter(function (c) { return mine.indexOf(c) === -1; });
+        $('courses-title').textContent = first + '\'s courses';
+        $('my-courses').innerHTML = mine.length ? mine.map(function (c, k) { return courseBox(c, k, true, kid); }).join('')
+            : '<p class="lede">No courses yet. The season is running; add a course below for a hobby.</p>';
+        $('more-title').textContent = more.length ? 'More for ' + aAge(kid.age) : '';
+        $('more-courses').innerHTML = more.map(function (c, k) { return courseBox(c, k + mine.length, false, kid); }).join('');
+
+        // Account
+        $('p-name').textContent = cab.parent.name;
+        $('p-contact').textContent = cab.parent.contact;
+        $('kid-form-title').textContent = first;
+        $('k-name').value = kid.name;
+        $('k-time').value = kid.time;
+        $('kid-remove').textContent = cab.kids.length > 1 ? 'Remove ' + first + ' from the cabinet' : '';
+        $('kid-remove').hidden = cab.kids.length < 2;
+
+        $('end-title').textContent = 'See you on the ' + t.name + ' channel.';
+        var site = '../?age=' + kid.age;
+        $('to-site').href = site; $('end-site').href = site; $('logo').href = site; $('nav-book').href = site + '#book';
+        document.title = first + '\'s cabinet: Bloop AI School';
+        try { history.replaceState(null, '', '?kid=' + encodeURIComponent(kid.id) + location.hash); } catch (e) { /* file:// */ }
+
+        if (ti !== current && current !== -1 && !reduce.matches) {
+            var ch = $('chan');
+            ch.classList.remove('is-switching'); void ch.offsetWidth; ch.classList.add('is-switching');
+        }
+        current = ti;
+    }
+
+    function show(signedIn) {
+        $('gate').hidden = signedIn;
+        $('dash').hidden = !signedIn;
+        $('dash-links').hidden = !signedIn;
+        if (signedIn) { render(); shownAge = -1; goTo(activeKid(cab).age); }
+        else { current = -1; goTo(+$('g-age').value); }
+    }
+
+    // Gate: sign up, or a demo family with three ages to compare
+    function check(field, ok, msg) { var w = field.closest('.field'); w.classList.toggle('bad', !ok); w.querySelector('.err').textContent = ok ? '' : msg; field.setAttribute('aria-invalid', String(!ok)); return ok; }
+    function validContact(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || v.replace(/[^\d]/g, '').length >= 7; }
+    $('g-age').addEventListener('change', function () { goTo(+this.value); });
+    $('gate-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = $('g-name'), contact = $('g-contact'), kid = $('g-kid');
+        var ok = [check(name, name.value.trim().length > 1, 'Add your name.'), check(contact, validContact(contact.value.trim()), 'Add an email or a phone number with at least 7 digits.'), check(kid, kid.value.trim().length > 0, 'Add your child\'s first name.')];
+        var bad = [name, contact, kid][ok.indexOf(false)];
+        if (bad) { bad.focus(); return; }
+        cab = addKid(null, { name: kid.value, age: +$('g-age').value });
+        cab.parent = { name: name.value.trim(), contact: contact.value.trim() };
+        persist();
+        show(true);
+        $('main').focus();
+    });
+    $('demo').addEventListener('click', function () {
+        cab = {
+            parent: { name: 'Anna Demo', contact: 'anna@example.com' },
+            kids: [
+                { id: 'demo-mia', name: 'Mia', age: 7, time: 'Weekday afternoon', season: 4, tried: [0, 1, 2], courses: [{ id: 'hello-ai', done: 5 }, { id: 'ai-tales', done: 0 }] },
+                { id: 'demo-leo', name: 'Leo', age: 10, time: 'Weekday evening', season: 5, tried: [0, 3], courses: [{ id: 'prompts', done: 7 }] },
+                { id: 'demo-sam', name: 'Sam', age: 16, time: 'Weekend', season: 4, tried: [1], courses: [{ id: 'ai-trail', done: 11 }] }
+            ],
+            active: 'demo-mia'
+        };
+        persist();
+        show(true);
+        toast('Demo family loaded. Switch between Mia, Leo and Sam to see each channel.');
+    });
+
+    // Dashboard events
+    $('kids').addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        if (b.id === 'add-kid') { $('a-name').value = ''; check($('a-name'), true, ''); $('a-age').value = String(Math.min(17, activeKid(cab).age)); $('add-dlg').showModal(); return; }
+        if (b.getAttribute('data-kid') === cab.active) return;
+        cab.active = b.getAttribute('data-kid');
+        persist(); render(); goTo(activeKid(cab).age);
+        var nb = document.querySelector('#kids [data-kid="' + cab.active + '"]'); if (nb) nb.focus();
+    });
+    function setAge(delta) {
+        var kid = activeKid(cab), was = trackOf(kid.age);
+        kid.age = Math.min(17, Math.max(6, kid.age + delta));
+        var moved = trackOf(kid.age) !== was;
+        if (moved) { kid.season = 0; kid.tried = []; }
+        persist(); render(); goTo(kid.age);
+        if (moved) toast(kid.name + ' moved to the ' + TRACKS[trackOf(kid.age)].name + ' channel. The new season starts at ' + unitOf(TRACKS[trackOf(kid.age)]) + ' 1.');
+    }
+    $('age-up').addEventListener('click', function () { setAge(1); });
+    $('age-down').addEventListener('click', function () { setAge(-1); });
+    $('l3-btn').addEventListener('click', function () {
+        if (this.dataset.act === 'courses') { $('courses').scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth' }); return; }
+        toast('Design preview: a calendar invite would download here.');
+    });
+    $('rlist').addEventListener('change', function (e) {
+        var box = e.target.closest('[data-tried]'); if (!box) return;
+        var kid = activeKid(cab), k = +box.getAttribute('data-tried');
+        kid.tried = (kid.tried || []).filter(function (x) { return x !== k; });
+        if (box.checked) kid.tried.push(k);
+        persist();
+    });
+    $('courses').addEventListener('click', function (e) {
+        var add = e.target.closest('[data-add]'), drop = e.target.closest('[data-drop]'), kid = activeKid(cab);
+        if (add) {
+            var c = CATALOG.findCourse(add.getAttribute('data-add'));
+            kid.courses.push({ id: c.id, done: 0 });
+            persist(); render();
+            toast(c.title + ' added. We will write with times for the free lesson.');
+        } else if (drop) {
+            var d = CATALOG.findCourse(drop.getAttribute('data-drop'));
+            if (!confirm('Remove ' + d.title + ' from ' + kid.name + '\'s courses?')) return;
+            kid.courses = kid.courses.filter(function (x) { return x.id !== d.id; });
+            persist(); render();
+        }
+    });
+    $('kid-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var kid = activeKid(cab), nm = $('k-name').value.trim();
+        if (!nm) { $('k-name').focus(); return; }
+        kid.name = nm; kid.time = $('k-time').value;
+        persist(); render();
+        toast('Saved.');
+    });
+    $('kid-remove').addEventListener('click', function () {
+        var kid = activeKid(cab);
+        if (!confirm('Remove ' + kid.name + ' and their reports from this cabinet?')) return;
+        cab.kids = cab.kids.filter(function (k) { return k.id !== kid.id; });
+        cab.active = cab.kids[0].id;
+        persist(); render(); goTo(activeKid(cab).age);
+        window.scrollTo({ top: 0, behavior: reduce.matches ? 'auto' : 'smooth' });
+    });
+    $('signout').addEventListener('click', function () {
+        if (!confirm('Sign out? The cabinet is stored only in this browser, so it will be cleared.')) return;
+        cab = null; saveCabinet(null);
+        try { history.replaceState(null, '', location.pathname); } catch (e) { /* file:// */ }
+        show(false);
+        window.scrollTo(0, 0);
+    });
+    $('add-cancel').addEventListener('click', function () { $('add-dlg').close(); });
+    $('add-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var nm = $('a-name');
+        if (!check(nm, nm.value.trim().length > 0, 'Add a first name.')) { nm.focus(); return; }
+        if (cab.kids.some(function (k) { return k.name.toLowerCase() === nm.value.trim().toLowerCase(); })) { check(nm, false, 'There is already a child with this name.'); nm.focus(); return; }
+        cab = addKid(cab, { name: nm.value, age: +$('a-age').value, time: activeKid(cab).time });
+        persist();
+        $('add-dlg').close();
+        render(); goTo(activeKid(cab).age);
+        toast(activeKid(cab).name + '\'s channel is ready.');
+    });
+    dark.addEventListener('change', function () { paint(ageNow); });
+
+    // Start: ?kid=<id> from the booking form, or the last child viewed
+    var want = /[?&]kid=([^&#]+)/.exec(location.search);
+    if (cab && want) { var id = decodeURIComponent(want[1]); if (cab.kids.some(function (k) { return k.id === id; })) cab.active = id; }
+    var startAge = cab ? activeKid(cab).age : 6;
+    var qa = /[?&]age=(\d{1,2})/.exec(location.search);
+    if (!cab && qa) { startAge = Math.min(17, Math.max(6, +qa[1])); $('g-age').value = String(startAge); }
+    ageNow = startAge;
+    show(!!cab);
+    </script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloop AI School — AI courses for kids</title>
+    <meta name="description" content="Artificial intelligence courses for kids and teens aged 6–17: play, draw, write stories, build robot helpers and learn to use AI wisely and safely.">
+    <meta name="theme-color" content="#9ED3FF">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Rubik:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Shared cloud shape: used in the header, footer and under the mascot -->
+    <svg class="sprite" aria-hidden="true">
+        <symbol id="cloud" viewBox="0 0 200 110">
+            <g class="cloud-shade" transform="translate(8 8)">
+                <circle cx="55" cy="68" r="30"/><circle cx="98" cy="48" r="40"/><circle cx="142" cy="62" r="31"/>
+                <rect x="22" y="66" width="160" height="34" rx="17"/>
+            </g>
+            <g class="cloud-body">
+                <circle cx="55" cy="68" r="30"/><circle cx="98" cy="48" r="40"/><circle cx="142" cy="62" r="31"/>
+                <rect x="22" y="66" width="160" height="34" rx="17"/>
+            </g>
+        </symbol>
+    </svg>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- HEADER: sky, clouds, mascot and school name -->
+    <header class="sky" id="sky">
+        <div class="sky__bg" aria-hidden="true">
+            <div class="sun"></div>
+            <svg class="cloud c1"><use href="#cloud"/></svg>
+            <svg class="cloud c2"><use href="#cloud"/></svg>
+            <svg class="cloud c3"><use href="#cloud"/></svg>
+            <svg class="cloud c4"><use href="#cloud"/></svg>
+            <svg class="cloud c5"><use href="#cloud"/></svg>
+            <svg class="cloud c6"><use href="#cloud"/></svg>
+            <span class="spark s1">✦</span>
+            <span class="spark s2">✦</span>
+            <span class="spark s3">✦</span>
+        </div>
+
+        <div class="nav-slot">
+            <nav class="nav" id="nav" aria-label="Main menu">
+                <a class="logo" href="#/">
+                    <span class="logo__bot" id="logo-bobik"></span>
+                    <span class="logo__text">Bloop <b>AI School</b></span>
+                </a>
+
+                <ul class="nav__menu" id="nav-menu">
+                    <li><a href="#/" data-route="home"><span aria-hidden="true">🏠</span> Home</a></li>
+                    <li><a href="#/courses" data-route="courses"><span aria-hidden="true">🚀</span> Courses</a></li>
+                    <li><a href="#/method" data-route="method"><span aria-hidden="true">💡</span> How we learn</a></li>
+                    <li><a href="#/parents" data-route="parents"><span aria-hidden="true">💛</span> For parents</a></li>
+                </ul>
+
+                <div class="nav__actions">
+                    <button class="btn btn--login" id="auth-btn" type="button">
+                        <span class="btn__icon" aria-hidden="true">🔑</span>
+                        <span class="auth-text">My cabinet</span>
+                    </button>
+                    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <div class="hero" id="hero">
+            <div class="hero__text">
+                <p class="hero__kicker" id="hero-kicker">AI school for kids and teens aged 6–17</p>
+                <h1 class="hero__title" id="hero-title">Bloop <span>AI School</span></h1>
+                <p class="hero__lead" id="hero-lead">We learn to be friends with AI: drawing pictures, writing fairy tales and building our own robot helpers together with Bobik.</p>
+                <div class="hero__cta" id="hero-cta">
+                    <a class="btn btn--primary btn--lg" href="#/courses" data-point>Choose a course</a>
+                    <button class="btn btn--white btn--lg" type="button" data-open="lead">Free trial lesson</button>
+                </div>
+                <ul class="hero__facts" aria-label="Key facts">
+                    <li><b id="course-count">12</b> courses</li>
+                    <li><b>6–17</b> years old</li>
+                    <li><b>1st</b> lesson free</li>
+                </ul>
+            </div>
+            <div class="hero__mascot">
+                <p class="bubble" id="bubble">Hi! I'm Bobik 👋</p>
+                <button class="mascot" id="hero-bobik" type="button" aria-label="Pet Bobik"></button>
+                <svg class="mascot__cloud" aria-hidden="true"><use href="#cloud"/></svg>
+            </div>
+        </div>
+
+        <svg class="sky__edge" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+            <path class="edge-back" d="M0 120V58Q70 8 150 52Q220 0 310 46Q390 6 470 50Q560 4 650 48Q740 8 820 50Q910 2 1000 46Q1080 8 1160 50Q1250 4 1340 48Q1400 26 1440 40V120Z"/>
+            <path class="edge-front" d="M0 120V78Q80 34 170 74Q250 30 340 72Q430 36 520 76Q610 30 700 72Q790 34 880 76Q970 32 1060 72Q1150 36 1240 76Q1330 34 1440 70V120Z"/>
+        </svg>
+    </header>
+
+    <main id="main" tabindex="-1">
+        <!-- HOME -->
+        <section class="page" data-page="home">
+            <div class="wrap">
+                <!-- Прогресс из личного кабинета: показывается, если ребёнок уже вошёл -->
+                <div class="welcome-back" id="welcome-back" hidden>
+                    <div class="welcome-back__bot" id="welcome-bobik"></div>
+                    <div class="welcome-back__text">
+                        <h2 id="welcome-title">Welcome back!</h2>
+                        <ul class="welcome-back__stats" id="welcome-stats"></ul>
+                    </div>
+                    <a class="btn btn--primary btn--lg" href="../kids-ai-cabinet/" data-cabinet-link id="welcome-cta">Continue learning →</a>
+                </div>
+
+                <div class="section-head">
+                    <h2>Why kids love it here</h2>
+                    <p>No boring lectures: just games, creativity and a small discovery every lesson.</p>
+                </div>
+                <div class="features">
+                    <article class="feature feature--sky">
+                        <span class="feature__icon" aria-hidden="true">🎮</span>
+                        <h3>Learn by playing</h3>
+                        <p>Every lesson is a mini quest with tasks, stars and rewards.</p>
+                    </article>
+                    <article class="feature feature--mint">
+                        <span class="feature__icon" aria-hidden="true">🎨</span>
+                        <h3>Create with AI</h3>
+                        <p>Draw pictures, write stories and make music together with AI.</p>
+                    </article>
+                    <article class="feature feature--peach">
+                        <span class="feature__icon" aria-hidden="true">🧠</span>
+                        <h3>Think for yourself</h3>
+                        <p>Find out how AI learns and why it sometimes gets things wrong.</p>
+                    </article>
+                    <article class="feature feature--lav">
+                        <span class="feature__icon" aria-hidden="true">🛡️</span>
+                        <h3>Stay safe</h3>
+                        <p>Trusted tools and online safety rules from the very first lesson.</p>
+                    </article>
+                </div>
+
+                <div class="section-head section-head--row">
+                    <div>
+                        <h2 id="home-courses-title">Find courses for your child’s age</h2>
+                        <p>Every course is made for one age group, so tasks are never too easy or too hard.</p>
+                    </div>
+                    <a class="link-more" id="home-courses-more" href="#/courses" hidden>More for this age →</a>
+                </div>
+                <!-- кнопки возраста добавляет main.js; у вошедшего ребёнка возраст берётся из кабинета -->
+                <div class="chips age-chips" role="group" aria-label="Child’s age" data-age-chips></div>
+                <p class="age-note" data-age-note hidden></p>
+                <div class="course-grid" id="home-courses"></div>
+
+                <div class="steps-band">
+                    <h2>How a lesson works</h2>
+                    <ol class="steps">
+                        <li><span class="steps__num">1</span><h3>Meet Bobik</h3><p>Bobik tells a story and sets the goal of the lesson.</p></li>
+                        <li><span class="steps__num">2</span><h3>Try it yourself</h3><p>Your child completes tasks in a safe AI sandbox.</p></li>
+                        <li><span class="steps__num">3</span><h3>Get a reward</h3><p>Stars, badges and a new level for every step.</p></li>
+                    </ol>
+                </div>
+
+                <div class="cta-band">
+                    <div class="cta-band__bot" id="cta-bobik"></div>
+                    <div class="cta-band__text">
+                        <h2>The first lesson is free!</h2>
+                        <p>Try it together with your child and watch their eyes light up.</p>
+                    </div>
+                    <button class="btn btn--primary btn--lg" type="button" data-open="lead">Sign up</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- COURSES -->
+        <section class="page" data-page="courses" hidden>
+            <div class="wrap">
+                <div class="toolbar">
+                    <!-- кнопки возраста добавляет main.js; у вошедшего ребёнка возраст берётся из кабинета -->
+                    <div class="chips" role="group" aria-label="Child’s age" data-age-chips></div>
+                    <p class="age-note" data-age-note hidden></p>
+                    <p class="results" id="results-count"></p>
+                </div>
+                <div class="course-grid" id="all-courses"></div>
+            </div>
+        </section>
+
+        <!-- HOW WE LEARN -->
+        <section class="page" data-page="method" hidden>
+            <div class="wrap">
+                <div class="section-head">
+                    <h2>The young explorer's path</h2>
+                    <p>From "what is AI?" to your own robot helper, one step at a time.</p>
+                </div>
+                <ol class="path">
+                    <li class="path__step path__step--sky"><span class="path__badge">Level 1</span><h3>Getting to know AI</h3><p>What artificial intelligence is, where it lives and how it learns from examples.</p></li>
+                    <li class="path__step path__step--mint"><span class="path__badge">Level 2</span><h3>Talking to AI</h3><p>Learning to ask questions and write clear instructions: prompts.</p></li>
+                    <li class="path__step path__step--peach"><span class="path__badge">Level 3</span><h3>Creativity</h3><p>Making pictures, stories, music and cartoons with AI tools.</p></li>
+                    <li class="path__step path__step--lav"><span class="path__badge">Level 4</span><h3>Own project</h3><p>Building a chatbot or a game and showing it to friends and family.</p></li>
+                </ol>
+
+                <div class="skills">
+                    <h2>What your child will learn</h2>
+                    <ul class="skills__list">
+                        <li>🗣️ Express ideas and tasks clearly</li>
+                        <li>🔍 Check facts instead of believing everything</li>
+                        <li>🎨 Turn ideas into pictures and stories</li>
+                        <li>🧩 Break a big task into small steps</li>
+                        <li>🛡️ Stay safe on the internet</li>
+                        <li>🤝 Work in a team and present a project</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOR PARENTS -->
+        <section class="page" data-page="parents" hidden>
+            <div class="wrap">
+                <div class="section-head">
+                    <h2>Lesson formats</h2>
+                    <p>Choose the way that works best for your child.</p>
+                </div>
+                <div class="formats">
+                    <article class="format">
+                        <span class="format__icon" aria-hidden="true">👫</span>
+                        <h3>Mini group</h3>
+                        <ul><li>Up to 6 kids of the same age</li><li>Two 45-minute lessons a week</li><li>Live teacher online</li></ul>
+                    </article>
+                    <article class="format format--hot">
+                        <span class="format__tag">Most popular</span>
+                        <span class="format__icon" aria-hidden="true">🎓</span>
+                        <h3>One-on-one</h3>
+                        <ul><li>Program built around your child's interests</li><li>Flexible schedule</li><li>Report for parents after each lesson</li></ul>
+                    </article>
+                    <article class="format">
+                        <span class="format__icon" aria-hidden="true">🤖</span>
+                        <h3>With Bobik</h3>
+                        <ul><li>Self-paced quest lessons</li><li>Any time, at your own speed</li><li>Progress in the personal cabinet</li></ul>
+                    </article>
+                </div>
+                <div class="center">
+                    <button class="btn btn--primary btn--lg" type="button" data-open="lead">Book a free trial lesson</button>
+                </div>
+
+                <div class="section-head">
+                    <h2>Frequently asked questions</h2>
+                </div>
+                <div class="faq">
+                    <details>
+                        <summary>What age can my child start at?</summary>
+                        <p>From 6. Younger kids get game-based courses with little text; older kids work on projects and coding.</p>
+                    </details>
+                    <details>
+                        <summary>Is it safe? Will my child talk to AI directly?</summary>
+                        <p>Kids work in a learning sandbox with content filters. The first module of every course covers online safety rules.</p>
+                    </details>
+                    <details>
+                        <summary>What do we need for the lessons?</summary>
+                        <p>A computer or tablet, an internet connection and a good mood. Everything else is on the platform.</p>
+                    </details>
+                    <details>
+                        <summary>How will I know how my child is doing?</summary>
+                        <p>Progress, rewards and projects are visible in the personal cabinet. In group and one-on-one formats the teacher also sends a report.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <svg class="footer__edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 0V40Q90 80 180 46Q270 80 360 44Q450 80 540 46Q630 80 720 44Q810 80 900 46Q990 80 1080 44Q1170 80 1260 46Q1350 80 1440 42V0Z"/>
+        </svg>
+        <div class="wrap footer__inner">
+            <div class="footer__brand">
+                <span class="logo__text">Bloop <b>AI School</b></span>
+                <p>The artificial intelligence school for kids. Learning with a smile.</p>
+            </div>
+            <nav class="footer__nav" aria-label="Footer menu">
+                <a href="#/">Home</a>
+                <a href="#/courses">Courses</a>
+                <a href="#/method">How we learn</a>
+                <a href="#/parents">For parents</a>
+                <a href="../kids-ai-cabinet/" data-cabinet-link>My cabinet</a>
+            </nav>
+            <p class="footer__copy">© <span id="year"></span> Bloop AI School</p>
+        </div>
+    </footer>
+
+    <!-- Cabinet login -->
+    <dialog class="modal" id="login-modal" aria-labelledby="login-title">
+        <form class="modal__box" id="login-form" method="dialog">
+            <button class="modal__close" type="button" data-close aria-label="Close">✕</button>
+            <div class="modal__bot" id="login-bobik"></div>
+            <h2 id="login-title">Log in to your cabinet</h2>
+            <p>Type your name and Bobik will take you to your lessons, stars and badges.</p>
+            <label class="field">
+                <span>What's your name?</span>
+                <input name="name" type="text" autocomplete="given-name" maxlength="24" required placeholder="For example, Emma">
+            </label>
+            <label class="field">
+                <span>How old are you?</span>
+                <select name="age" required>
+                    <option value="" disabled selected>Choose your age</option>
+                </select>
+            </label>
+            <button class="btn btn--primary btn--block" type="submit">Let's go 🚀</button>
+        </form>
+    </dialog>
+
+    <!-- Free trial lesson sign-up -->
+    <dialog class="modal" id="lead-modal" aria-labelledby="lead-title">
+        <form class="modal__box" id="lead-form" method="dialog">
+            <button class="modal__close" type="button" data-close aria-label="Close">✕</button>
+            <div class="modal__bot" id="lead-bobik"></div>
+            <div class="lead-body">
+                <h2 id="lead-title">Free trial lesson</h2>
+                <p>Leave your contacts and we'll find the right course and time.</p>
+                <label class="field">
+                    <span>Parent's name</span>
+                    <input name="parent" type="text" autocomplete="name" required>
+                </label>
+                <label class="field">
+                    <span>Email or phone</span>
+                    <input name="contact" type="text" autocomplete="email" required>
+                </label>
+                <label class="field">
+                    <span>Child's age</span>
+                    <select name="age" required>
+                        <option value="" disabled selected>Choose</option>
+                    </select>
+                </label>
+                <button class="btn btn--primary btn--block" type="submit">Sign up</button>
+                <p class="form-note" id="lead-note" role="status"></p>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="bobik.js"></script>
+    <script src="catalog.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

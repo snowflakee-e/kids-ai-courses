@@ -1,6 +1,6 @@
 # Design: Channel Bloop (parent pages)
 
-Source of truth: `designs/parents/channel/index.html`. Direction: kids' TV idents that grow into a teen documentary channel. The age dial is a channel dial.
+Source of truth: `index.html` (the site root, the main page of Bloop AI School) with `base.css`, `channel.js` and the parent cabinet in `cabinet/`. Old URLs under `designs/parents/channel/` redirect here; the previous kids site lives at `classic.html`. Direction: kids' TV idents that grow into a teen documentary channel. The age dial is a channel dial.
 
 ## The one rule
 Every visual token comes from the child's age. Nothing swaps abruptly: the dial blends between four stops in OKLCH (`paint(age)`, visual position `v = clamp((age - 7) / 3, 0, 3)`).
@@ -26,6 +26,7 @@ One variable face: Recursive (Google Fonts, axes slnt, wght, CASL, CRSV, MONO). 
 - Lower third: track tab + h1 answering that age's worry + "Book a free lesson".
 - Tuner: native range input (6-17, keyboard: arrows, PageUp/PageDown by track, Home/End) + four channel buttons + tick numbers.
 - Programme guide: one `<details>` row per episode: number, title + idea, habit chips, screen rating badge, proof it leaves; opens to activity + "Try at home".
+- Games list under the guide (tracks 6-8, 9-11, 12-14; hidden for 15-17): name, which episode, how it plays, why it is there. One game for every child, the child picks the theme. Source: `kids-courses/choose-tell-check-own/curriculum.md`.
 - Screen ratings: U Unplugged, G Grown-up types, S Simulator, R Real tool, W With you, A In the app.
 - Standards slate (ink section): screen count, tool rule per age, our AI use statement.
 - Sample parent report: four habits as 5 pips, latest Made / How / Think.
